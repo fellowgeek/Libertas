@@ -4,10 +4,14 @@
     GENERAL SETTINGS
 ******************************************************/
 
+// the application name
 define('__APP__','libertas');
-define('__SELF__', dirname(__FILE__).'/');   				// The should contain the path to your application
-define('__PATH_TO_CORE__', dirname(__FILE__).'/core/');		// The path to obray's core files
-define('__DebugMode__',TRUE);								// Enable Debug Mode
+// the should contain the path to your application
+define('__SELF__', dirname(__FILE__).'/');
+// the path to obray's core files
+define('__PATH_TO_CORE__', dirname(__FILE__).'/core/');
+// enable Debug Mode
+define('__DebugMode__',TRUE);
 
 /******************************************************
     DEFINE AVAILABLE ROUTES
@@ -16,7 +20,8 @@ define('__DebugMode__',TRUE);								// Enable Debug Mode
 define('__ROUTES__',
 	serialize(
 		array(
-			"cmd" => __SELF__."lib/"
+			"cmd" => __SELF__."lib/",
+			"core" => __PATH_TO_CORE__
 		)
 	)
 );
@@ -25,17 +30,26 @@ define('__ROUTES__',
     DATABASE SETTINGS
 ******************************************************/
 
-define('__DBHost__','localhost');						// database server host
-define('__DBPort__','3306');							// database server port
-define('__DBUserName__','root');						// database username
-define('__DBPassword__','t0nback23jende');				// database password
-define('__DB__','libertas');							// database name
-define('__DBEngine__','MyISAM');						// database engine
-define('__DBCharSet__','utf8');							// database characterset (default: utf8)
+// database server host
+define('__DBHost__','localhost');
+// database server port
+define('__DBPort__','3306');
+// database username
+define('__DBUserName__','root');
+// database password
+define('__DBPassword__','t0nback23jende');
+// database name
+define('__DB__','libertas');
+
+// do not edit these unless you know what you are doing
+define('__DBEngine__','MyISAM');
+define('__DBCharSet__','utf8');
 
 /******************************************************
     User Settings
 ******************************************************/
 
-define('__MAX_FAILED_LOGIN_ATTEMPTS__',10);				// The maximium allowed failed login attempts before an account is locked
+// the maximium allowed failed login attempts before an account is locked
+define('__MAX_FAILED_LOGIN_ATTEMPTS__',10);
+
 ?>

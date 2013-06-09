@@ -49,7 +49,7 @@
 
 			$start_time = microtime(TRUE);
 
-			$obj = parent::route($path,$params,$direct);												// Call the parent class default route function
+			$obj = parent::route($path,$params,$direct);											// Call the parent class default route function
 
 			/*****************************************************************************************
 
@@ -130,22 +130,22 @@
 
 			$obj->cleanUp();
 
-			switch($content_type){  		                                                        // handle OObject content types
+			switch($content_type){  		                                                        						// handle OObject content types
 
-    			 case 'application/json':                                                            // Handle JSON (default)
+    			 case 'application/json':                                                            						// Handle JSON (default)
 
 					$obj->runtime = (microtime(TRUE) - $start_time)*1000;
 					echo json_encode($obj,JSON_PRETTY_PRINT|JSON_NUMERIC_CHECK);
 					break;
 
-    			 case 'text/html':                                                                   // Handle HTML
+    			 case 'text/html':                                                                   						// Handle HTML
 
     			 	$obj->runtime = (microtime(TRUE) - $start_time)*1000;
-    			 	if(!headers_sent()){ header("Server-Runtime: " . $obj->runtime . "ms" ); }    			// set header runtime
+    			 	if(!headers_sent()){ header("Server-Runtime: " . $obj->runtime . "ms" ); }    							// set header runtime
     			 	echo $obj->html;
 					break;
 
-    			 case 'application/xml':                                                             // Handle XML
+    			 case 'application/xml':                                                             						// Handle XML
 
     			    break;
 

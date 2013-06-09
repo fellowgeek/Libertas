@@ -24,42 +24,24 @@
 
 	/********************************************************************************************************************
 
-		WDictionary:	This is our controller object for our Dictionary application.
+		AUsers:	Application scoper user manager
 
 	********************************************************************************************************************/
+	include __PATH_TO_CORE__ . "OUsers.php";
 
-	Class missing extends ODBO{
+	Class users extends OUsers{
 
 		public function __construct(){
 
 			parent::__construct();
 
-			$this->table = "papers";
-			$this->table_definition = array(
-				"paper_id" =>			array("primary_key" => TRUE),
-				"paper_key" =>			array("required" => TRUE,	"data_type"=>"varchar(255)"),
-				"paper_text" =>		array("required" => TRUE,	"data_type"=>"text")
-			);
-
 			$this->permissions = array(
 				"object"=>"any",
-				"out"=>"any",
-				"add"=>"any"
+				"add"=>"any",
+				"login"=>"any",
+				"get"=>"user",
+				"logout"=>"any"
 			);
-
-		}
-
-		public function out(){
-
-		}
-
-		public function missing($path,$params=array(),$direct=TRUE){
-
-			$this->setContentType("text/html");
-			$this->html = '...';
-			//$this->data = explode('/',$path);
-
-			new dBug(explode('/',$path));
 
 		}
 

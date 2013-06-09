@@ -1,18 +1,25 @@
 <?php
-	require_once 'settings.php';					   // see if a setting file exists for a given application (looks at the base path where your obray.php file exists)
-
+	// see if a setting file exists for a given application (looks at the base path where your obray.php file exists)
+	require_once 'settings.php';
 
 	// enable debugging
-	error_reporting(E_ALL);							   // Set error reporting to display all errors and types
-	ini_set('display_errors', true); 				   // PHP configuration set display errors to true
+	error_reporting(E_ALL);
+	// set error reporting to display all errors and types
+	ini_set('display_errors', true);
 
+	// starts a session in PHP
 	session_set_cookie_params(0);
-	session_start();								   // Starts a session in PHP
+	session_start();
 
-	require_once __PATH_TO_CORE__ . 'ORouter.php';     // include ORouter
+	// include ORouter
+	require_once __PATH_TO_CORE__ . 'ORouter.php';
 
-	$router = new ORouter();                           // instatiate ORouter
-	$router->setMissingPathHandler("Paper",__SELF__."lib/Paper.php");
-	$router->route($_SERVER["REQUEST_URI"]);           // call ORouter's "route" function
+	// instatiate ORouter
+	$router = new ORouter();
 
+	// set missing path handler object
+	$router->setMissingPathHandler("missing",__SELF__."lib/missing.php");
+
+	// call ORouter's "route" function
+	$router->route($_SERVER["REQUEST_URI"]);
 ?>

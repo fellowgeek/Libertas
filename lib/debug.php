@@ -28,7 +28,7 @@
 
 	********************************************************************************************************************/
 
-	Class test extends ODBO{
+	Class debug extends ODBO{
 
 		public $permissions = array(
 			"object"=>"any",
@@ -38,31 +38,11 @@
 
 		public function out(){
 
-
-			$test = $this->('/cmd/test/');
-			$test->route('/blah/');
-			$test->blah(array());
-
-			$test2 = $this->('/cmd/test/blah/');
-
-
-			//$this->setContentType("text/html");
-			$this->html = "yah";
-			$this->data = array("hello"=>"blah");
-
-
-
-
+			$this->setContentType("text/html");
+			$this->html = "";
+			new dBug($_SESSION);
 
 		}
-
-		public function blah($params){
-
-			$this->data = array();
-			$this->data[] = "hello";
-
-		}
-
 
 	}
 ?>

@@ -49,7 +49,7 @@
 			);
 
 			$this->permissions = array(
-				"object"=>"any",
+				"object"=>1,
 				"get"=>"any",
 				"add"=>"any",
 				"update"=>"any",
