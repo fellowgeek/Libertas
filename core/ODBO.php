@@ -503,6 +503,7 @@
         public function get($params){
 
         	$original_params = $params;
+        	
         	if( !isSet($params["where"]) ){ $params["where"] = array("="=>$params); }
         	if( isSet($params["with"]) ){ $with = explode('|',$params["with"]); unset($params["with"]); } else { $with = array(); }
 
@@ -631,9 +632,11 @@
 
 	        $where = "";
 	        $param_array = array();
-
-	        forEach( $params as $operator => $pair ){
-
+			
+			forEach( $params as $operator => $pair ){
+				
+				
+				
 	        	forEach($pair as $key => $value){
 
 	        		if( is_array($value) ){ $obj = $this->buildWhereClause($value); $where .= $obj->where; $param_array = array_merge($param_array,$obj->params); }
@@ -641,7 +644,7 @@
 	        		if(array_key_exists($key, $this->table_definition) || $key === 'slug' || $key === 'parent_id'){
 
 
-						if( isSet($this->table_definition[$key]["data_type"]) && $this->table_definition[$key]["data_type"] == "password" ){ $password_key = $key; $password = $v; } else {
+						if( isSet($this->table_definition[$key]["data_type"]) && $this->table_definition[$key]["data_type"] == "password" ){ $password_key = $key; $password = $value; } else {
 
 				        	// define ORs within a where clause
 				        	$value = explode('|',$value);

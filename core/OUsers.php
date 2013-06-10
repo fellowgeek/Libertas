@@ -46,6 +46,11 @@
 				"ouser_failed_attempts" =>	array("data_type"=>"integer",			"required"=>FALSE,	"label"=>"Failed Logins"),
 				"ouser_last_login" =>		array("data_type"=>"datetime",			"required"=>FALSE,	"label"=>"Last Login")
 			);
+			
+			$this->permissions = array(
+				"object"=>"any",
+				"login"=>"any"
+			);
 
 		}
 
@@ -58,7 +63,6 @@
 		public function login($params){
 
 			// Validate the required parameters
-
 			if( !isSet( $params["ouser_email"] ) ){ $this->throwError("Email is required",500,"ouser_email"); }
 			if( !isSet( $params["ouser_password"] ) ){ $this->throwError("Password is required",500,"ouser_password"); }
 
@@ -68,7 +72,7 @@
 
 				// get user based on credentials
 				$this->get(array("ouser_email"=>$params["ouser_email"], "ouser_password" => $params["ouser_password"]));
-
+				
 				// if the user exists log them in but only if they haven't exceed the max number of failed attempts (set in settings)
 				if( count($this->data) === 1 && $this->data[0]->ouser_failed_attempts < __MAX_FAILED_LOGIN_ATTEMPTS__ && $this->data[0]->ouser_status != "disabled"){
 					$_SESSION["ouser"] = $this->data[0];
@@ -105,7 +109,6 @@
 		public function logout($params){ unset($_SESSION["ouser"]);	}
 
 		public function authorize($params=array()){
-
 
 			if( !isSet( $_SESSION["ouser"] ) ){
 				$this->throwError("Forbidden",403);
