@@ -20,7 +20,7 @@
 
     ***********************************************************************/
 
-	if (!class_exists( 'OObject' )) { die(); }
+	if (!class_exists( "OObject" )) { die(); }
 
 	/********************************************************************************************************************
 
@@ -56,10 +56,10 @@
 		public function missing($path,$params=array(),$direct=TRUE){
 
 			$this->setContentType("text/html");
-			$this->html = '...';
-			//$this->data = explode('/',$path);
+			$this->html = "...";
+			//$this->data = explode("/",$path);
 
-			new dBug(explode('/',$path));
+			new dBug(explode("/",$path));
 
 		}
 
