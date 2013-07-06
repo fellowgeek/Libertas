@@ -1,24 +1,30 @@
 <?php
 
-	/***********************************************************************
+	/*****************************************************************************
 
-	Obray - Super lightweight framework.  Write a little, do a lot, fast.
-    Copyright (C) 2013  Nathan A Obray
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-    ***********************************************************************/
+	The MIT License (MIT)
+	
+	Copyright (c) 2013 Nathan A Obray <nathanobray@gmail.com>
+	
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+	
+	The above copyright notice and this permission notice shall be included in
+	all copies or substantial portions of the Software.
+	
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	THE SOFTWARE.
+	
+	*****************************************************************************/
 
 	if (!class_exists( 'OObject' )) { die(); }
 
@@ -503,12 +509,11 @@
         public function get($params){
 
         	$original_params = $params;
-        	
         	if( !isSet($params["where"]) ){ 
         		if( isSet($params["="]) ){
-	        		$params["where"] = $params;
+        			$params["where"] = $params; 
         		} else {
-        			$params["where"] = array("="=>$params); 
+	        		$params["where"] = array("="=>$params); 
         		}
         	}
         	if( isSet($params["with"]) ){ $with = explode('|',$params["with"]); unset($params["with"]); } else { $with = array(); }
@@ -563,7 +568,7 @@
 
         }
 
-        //private function mergeParams($eq,$neq,$gte,$lte,$gt,$lt,$like){ return array("="=>$eq,"!="=>$neq,">="=>$gte,"<="=>$lte,">"=>$gt,"<"=>$lt,"like"=>$like); }
+        private function mergeParams($eq,$neq,$gte,$lte,$gt,$lt,$like){ return array("="=>$eq,"!="=>$neq,">="=>$gte,"<="=>$lte,">"=>$gt,"<"=>$lt,"like"=>$like); }
 
         /********************************************************************
 
@@ -638,11 +643,9 @@
 
 	        $where = "";
 	        $param_array = array();
-			
-			forEach( $params as $operator => $pair ){
-				
-				
-				
+
+	        forEach( $params as $operator => $pair ){
+
 	        	forEach($pair as $key => $value){
 
 	        		if( is_array($value) ){ $obj = $this->buildWhereClause($value); $where .= $obj->where; $param_array = array_merge($param_array,$obj->params); }
@@ -759,4 +762,3 @@
         }
 
 	}
-?>

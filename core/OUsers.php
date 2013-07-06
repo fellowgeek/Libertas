@@ -1,24 +1,30 @@
 <?php
 
-    /***********************************************************************
+	/*****************************************************************************
 
-    Obray - Super lightweight framework.  Write a little, do a lot, fast.
-    Copyright (C) 2013  Nathan A Obray
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-    ***********************************************************************/
+	The MIT License (MIT)
+	
+	Copyright (c) 2013 Nathan A Obray
+	
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+	
+	The above copyright notice and this permission notice shall be included in
+	all copies or substantial portions of the Software.
+	
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	THE SOFTWARE.
+	
+	*****************************************************************************/
 
 	if (!class_exists( 'OObject' )) { die(); }
 
@@ -46,11 +52,6 @@
 				"ouser_failed_attempts" =>	array("data_type"=>"integer",			"required"=>FALSE,	"label"=>"Failed Logins"),
 				"ouser_last_login" =>		array("data_type"=>"datetime",			"required"=>FALSE,	"label"=>"Last Login")
 			);
-			
-			$this->permissions = array(
-				"object"=>"any",
-				"login"=>"any"
-			);
 
 		}
 
@@ -63,6 +64,7 @@
 		public function login($params){
 
 			// Validate the required parameters
+
 			if( !isSet( $params["ouser_email"] ) ){ $this->throwError("Email is required",500,"ouser_email"); }
 			if( !isSet( $params["ouser_password"] ) ){ $this->throwError("Password is required",500,"ouser_password"); }
 
@@ -72,7 +74,7 @@
 
 				// get user based on credentials
 				$this->get(array("ouser_email"=>$params["ouser_email"], "ouser_password" => $params["ouser_password"]));
-				
+
 				// if the user exists log them in but only if they haven't exceed the max number of failed attempts (set in settings)
 				if( count($this->data) === 1 && $this->data[0]->ouser_failed_attempts < __MAX_FAILED_LOGIN_ATTEMPTS__ && $this->data[0]->ouser_status != "disabled"){
 					$_SESSION["ouser"] = $this->data[0];
@@ -109,6 +111,7 @@
 		public function logout($params){ unset($_SESSION["ouser"]);	}
 
 		public function authorize($params=array()){
+
 
 			if( !isSet( $_SESSION["ouser"] ) ){
 				$this->throwError("Forbidden",403);
