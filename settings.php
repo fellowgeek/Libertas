@@ -20,7 +20,7 @@ define("__DebugMode__",TRUE);
 define("__ROUTES__",
 	serialize(
 		array(
-			"cmd" => __SELF__."lib/",
+			"cmd" => __SELF__."system/",
 			"core" => __PATH_TO_CORE__
 		)
 	)

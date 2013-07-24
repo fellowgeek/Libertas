@@ -26,9 +26,6 @@
 
 	*****************************************************************************/
 
-
-	require_once "settings.php";										                  // see if a setting file exists for a given application (looks at the base path where your obray.php file exists)
-
 	require_once "dbug.php";                                                              // easy readout function (i.e. new dBug($yourvariable);
 	require_once "functions.php";
 	require_once "OObject.php";                                                           // the base object for all obray objects (basically everything will extend this or a class that has already extended it)
