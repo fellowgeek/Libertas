@@ -18,7 +18,7 @@
 	$router = new ORouter();
 
 	// set missing path handler object
-	$router->setMissingPathHandler("missing",__SELF__."lib/missing.php");
+	$router->setMissingPathHandler("missing",__SELF__."/system/missing.php");
 
 	// call ORouter"s "route" function
 	$router->route($_SERVER["REQUEST_URI"]);

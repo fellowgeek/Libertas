@@ -22,6 +22,4 @@ require_once __PATH_TO_CORE__ . "ORouter.php";
 $router = new ORouter();
 
 
-print("HELLO");
-
 ?>

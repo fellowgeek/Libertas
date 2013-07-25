@@ -56,10 +56,29 @@
 		public function missing($path,$params=array(),$direct=TRUE){
 
 			$this->setContentType("text/html");
-			$this->html = "...";
-			//$this->data = explode("/",$path);
 
-			new dBug(explode("/",$path));
+			$pageArray = explode("/",$path);
+			$pageName = $pageArray[0];
+
+			//new dBug(explode("/",$path));
+
+			$templateName = 'besmart';
+			if($pageName == "simple") {
+				$templateLayout = "simple.html";
+			} else {
+				$templateLayout = "index.html";
+			}
+
+			$template = file_get_contents(__SELF__ . 'templates/' . $templateName . '/' . $templateLayout);
+
+			// fix the path of all relative href attributes
+			$template = preg_replace("@href=\"(([^http://]|[^https://])(.*?))\"@", "href=\"" . __SITE__ . "/templates/". $templateName. "/$1\"",$template);
+			// fix the path of all relative src attributes
+			$template = preg_replace("@src=\"(([^http://]|[^https://])(.*?))\"@", "src=\"" . __SITE__ . "/templates/". $templateName. "/$1\"",$template);
+
+			$this->html = $template;
+
+
 
 		}
 
