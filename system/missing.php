@@ -62,7 +62,7 @@
 
 			//new dBug(explode("/",$path));
 
-			$templateName = 'besmart';
+			$templateName = 'html5up-txt';
 			if($pageName == "simple") {
 				$templateLayout = "simple.html";
 			} else {
@@ -75,6 +75,10 @@
 			$template = preg_replace("@href=\"(([^http://]|[^https://])(.*?))\"@", "href=\"" . __SITE__ . "/templates/". $templateName. "/$1\"",$template);
 			// fix the path of all relative src attributes
 			$template = preg_replace("@src=\"(([^http://]|[^https://])(.*?))\"@", "src=\"" . __SITE__ . "/templates/". $templateName. "/$1\"",$template);
+
+
+			$template = preg_replace("@_skel_config\.prefix ?= ?\"(.*?)\"@", "_skel_config.prefix = \"" . __SITE__ . "/templates/". $templateName. "/$1\"",$template);
+
 
 			$this->html = $template;
 
