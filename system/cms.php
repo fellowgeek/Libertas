@@ -28,29 +28,19 @@
 
 	********************************************************************************************************************/
 
-	Class missing extends ODBO{
+	Class cms extends OObject{
 
 		public function __construct(){
 
-			parent::__construct();
-
-			$this->table = "papers";
-			$this->table_definition = array(
-				"paper_id" =>			array("primary_key" => TRUE),
-				"paper_key" =>			array("required" => TRUE,	"data_type"=>"varchar(255)"),
-				"paper_text" =>		array("required" => TRUE,	"data_type"=>"text")
-			);
-
 			$this->permissions = array(
 				"object"=>"any",
-				"out"=>"any",
-				"add"=>"any"
+				"out"=>"any"
 			);
 
 		}
 
 		public function out(){
-
+			$this->missing("",$params=array(),$direct=TRUE);
 		}
 
 		public function missing($path,$params=array(),$direct=TRUE){
@@ -60,7 +50,7 @@
 			$pageArray = explode("/",$path);
 			$pageName = $pageArray[0];
 
-			//new dBug(explode("/",$path));
+			new dBug(explode("/",$path));
 
 			$templateName = 'html5up-txt';
 			if($pageName == "simple") {
@@ -81,8 +71,6 @@
 
 
 			$this->html = $template;
-
-
 
 		}
 

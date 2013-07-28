@@ -26,8 +26,9 @@ define("__SITE__","http://libertas.erfan.me");
 define("__ROUTES__",
 	serialize(
 		array(
-			"cmd" => __SELF__."system/",
-			"core" => __PATH_TO_CORE__
+			"sys" => __SELF__."system/",
+			"com" => __SELF__."components/",
+			"c" => __PATH_TO_CORE__
 		)
 	)
 );

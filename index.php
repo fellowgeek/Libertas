@@ -1,25 +1,25 @@
 <?php
+	// see if a setting file exists for a given application (looks at the base path where your obray.php file exists)
+	require_once "settings.php";
 
-// libertas CMS
+	// enable debugging
+	error_reporting(E_ALL);
+	// set error reporting to display all errors and types
+	ini_set("display_errors", true);
 
+	// starts a session in PHP
+	session_set_cookie_params(0);
+	session_start();
 
-// see if a setting file exists for a given application (looks at the base path where your obray.php file exists)
-require_once "settings.php";
+	// include ORouter
+	require_once __PATH_TO_CORE__ . "ORouter.php";
 
-// enable debugging
-error_reporting(E_ALL);
-// set error reporting to display all errors and types
-ini_set("display_errors", true);
+	// instatiate ORouter
+	$router = new ORouter();
 
-// starts a session in PHP
-session_set_cookie_params(0);
-session_start();
+	// set missing path handler object
+	$router->setMissingPathHandler("cms", __SELF__ . "/system/cms.php");
 
-// include ORouter
-require_once __PATH_TO_CORE__ . "ORouter.php";
-
-// instatiate ORouter
-$router = new ORouter();
-
-
+	// call ORouter"s "route" function
+	$router->route($_SERVER["REQUEST_URI"]);
 ?>
