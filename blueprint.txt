@@ -1,0 +1,47 @@
+Template Commands :
+
+[P:COMMAND]
+
+"P" stands for current page master post.
+
+[P:Title]
+[P:Slug]
+[P:Link]
+[P:Image]
+[P:Video]
+[P:Audio]
+[P:Text]
+[P:Author]
+[P:Description]
+[P:Timestamp]
+[P:Views]
+[P:Tags]
+[P:Keywords]
+[P:Categories]
+
+
+[S:TITLE|COMMAND]
+
+"S" stands for snnipet, this is the text portion of a post which is embeded in another page (other than it's own page)
+
+[S:Title]
+[S:Title|Title]
+[S:Title|Slug]
+[S:Title|Link]
+[S:Title|Image]
+[S:Title|Video]
+[S:Title|Audio]
+[S:Title|Text]
+[S:Title|Author]
+[S:Title|Description]
+[S:Title|Timestamp]
+[S:Title|Views]
+[S:Title|Tags]
+[S:Title|Keywords]
+[S:Title|Categories]
+
+
+[C:COMPONENT|PARAM1=VALUE,PARAM2=VALUE,...]
+
+"C" stands for component, this command will load a component and sets the parameters (if any)
+

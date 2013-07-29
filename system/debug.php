@@ -28,7 +28,7 @@
 
 	********************************************************************************************************************/
 
-	Class debug extends ODBO{
+	Class debug extends OObject{
 
 		public $permissions = array(
 			"object"=>"any",

@@ -73,7 +73,7 @@
 				"post_status" => 		 "published"
 			);
 
-			$this->route("/cmd/posts/add/",$params);
+			$this->route("/sys/posts/add/",$params);
 		}
 
 	}

@@ -50,14 +50,10 @@
 			$pageArray = explode("/",$path);
 			$pageName = $pageArray[0];
 
-			new dBug(explode("/",$path));
+			//new dBug(explode("/",$path));
 
-			$templateName = 'html5up-txt';
-			if($pageName == "simple") {
-				$templateLayout = "simple.html";
-			} else {
-				$templateLayout = "index.html";
-			}
+			$templateName = 'bootstrap';
+			$templateLayout = "plain.html";
 
 			$template = file_get_contents(__SELF__ . 'templates/' . $templateName . '/' . $templateLayout);
 
