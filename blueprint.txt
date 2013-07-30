@@ -2,46 +2,50 @@ Template Commands :
 
 [P:COMMAND]
 
-"P" stands for current page master post.
+"P" stands for current page's master post.
 
-[P:Title]
-[P:Slug]
-[P:Link]
-[P:Image]
-[P:Video]
-[P:Audio]
-[P:Text]
-[P:Author]
-[P:Description]
-[P:Timestamp]
-[P:Views]
-[P:Tags]
-[P:Keywords]
-[P:Categories]
+[P:Title] 							// returns the current post's title
+[P:Slug]							// returns the current post's slug ( The-Awesome-Post )
+[P:Link]							// returns the current post's link ( http://www.example.com/The-Awesome-Post/ )
+[P:Image]							// returns the current post's first image link ( http://www.example.com/AS2DFGDG3432RE2D2F.jpg )
+[P:Video]							// returns the current post's first video link ( http://www.example.com/AS2DFGDG3432RE2D2F.mp4 )
+[P:Audio]							// returns the current post's first audio link ( http://www.example.com/AS2DFGDG3432RE2D2F.mp3 )
+[P:Text]							// returns the current post's text
+[P:Author]							// returns the current post's author
+[P:Description]						// returns the current post's description
+[P:Timestamp]						// returns the current post's timestamp in the number of seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
+[P:Timestamp|Format=FORMAT]			// returns the current post's timestamp formatted used php Date(FORMAT,Timestamp) function
+[P:Views]							// returns the current post's views
+[P:Tags]							// returns the current post's list of tags in <ul></li>TAG</li></ul> format
+[P:Keywords]						// returns the current post's list of keywords in <ul></li>KEYWORDS</li></ul> format
+[P:Categories]						// returns the current post's list of tags in <ul></li>CATEGORY</li></ul> format
 
 
 [S:TITLE|COMMAND]
 
-"S" stands for snnipet, this is the text portion of a post which is embeded in another page (other than it's own page)
+"S" stands for snippet, this is the text portion of a post which is embeded in another page (other than it's own page)
 
-[S:Title]
-[S:Title|Title]
-[S:Title|Slug]
-[S:Title|Link]
-[S:Title|Image]
-[S:Title|Video]
-[S:Title|Audio]
-[S:Title|Text]
-[S:Title|Author]
-[S:Title|Description]
-[S:Title|Timestamp]
-[S:Title|Views]
-[S:Title|Tags]
-[S:Title|Keywords]
-[S:Title|Categories]
+[S:Title]							// returns the current snippets's text
+[S:Title|Title]						// returns the current snippets's title
+[S:Title|Slug]						// returns the current snippets's slug ( The-Awesome-Snippet )
+[S:Title|Link]						// returns the current snippets's link ( http://www.example.com/The-Awesome-Snippet/ )
+[S:Title|Image]						// returns the current snippets's first image link ( http://www.example.com/AS2DFGDG3432RE2D2F.jpg )
+[S:Title|Video]						// returns the current snippets's first video link ( http://www.example.com/AS2DFGDG3432RE2D2F.mp4 )
+[S:Title|Audio]						// returns the current snippets's first audio link ( http://www.example.com/AS2DFGDG3432RE2D2F.mp3 )
+[S:Title|Text]						// returns the current snippets's text
+[S:Title|Author]					// returns the current snippets's author
+[S:Title|Description]				// returns the current snippets's description
+[S:Title|Timestamp]					// returns the current snippets's timestamp in the number of seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
+[S:Title|Timestamp; Format=FORMAT]	// returns the current snippets's timestamp formatted used php Date(FORMAT,Timestamp) function
+[S:Title|Views]						// returns the current snippets's views
+[S:Title|Tags]						// returns the current snippets's list of tags in <ul></li>TAG</li></ul> format
+[S:Title|Keywords]					// returns the current snippets's list of keywords in <ul></li>KEYWORDS</li></ul> format
+[S:Title|Categories]				// returns the current snippets's list of tags in <ul></li>CATEGORY</li></ul> format
 
 
-[C:COMPONENT|PARAM1=VALUE,PARAM2=VALUE,...]
+[C:COMPONENT|PARAM1=VALUE; PARAM2=VALUE; ...]
+
+[C:LatestPosts|Categories=Stories, Music, Dance; Length=200; Class=lastest-posts]
 
 "C" stands for component, this command will load a component and sets the parameters (if any)
 
