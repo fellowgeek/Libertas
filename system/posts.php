@@ -20,7 +20,7 @@
 
     ***********************************************************************/
 
-	if (!class_exists( "OObject" )) { die(); }
+	if (!class_exists( 'OObject' )) { die(); }
 
 	/********************************************************************************************************************
 
@@ -28,52 +28,56 @@
 
 	********************************************************************************************************************/
 
-	Class posts extends ODBO{
+	Class posts extends ODBO {
 
-		public function __construct(){
+		public function __construct() {
 
 			parent::__construct();
 
-			$this->table = "posts";
+			$this->table = 'posts';
 			$this->table_definition = array(
-				"post_id" =>				array("primary_key" => TRUE),
-				"post_title" =>				array("data_type" => "varchar(255)",		"required" => TRUE,			"slug" => TRUE),
-				"post_text" =>				array("data_type" => "text",				"required" => FALSE),
-				"post_author" =>			array("data_type" => "integer",				"required" => FALSE),
-				"post_categories" =>		array("data_type" => "varchar(255)",		"required" => FALSE),
-				"post_keywords" =>			array("data_type" => "varchar(255)",		"required" => FALSE),
-				"post_description" =>		array("data_type" => "text",				"required" => FALSE),
-				"post_tags" =>				array("data_type" => "varchar(255)",		"required" => FALSE),
-				"post_views" =>				array("data_type" => "integer",				"required" => FALSE),
-				"post_status" =>			array("data_type" => "varchar(255)",		"required" => FALSE)
+				'post_id' =>				array('primary_key' => TRUE),
+				'post_title' =>				array('data_type' => 'varchar(255)',		'required' => TRUE,			'slug' => TRUE),
+				'post_path' =>				array('data_type' => 'varchar(512)',		'required' => TRUE),
+				'post_path_hash' =>			array('data_type' => 'varchar(512)',		'required' => TRUE),
+				'post_text' =>				array('data_type' => 'text',				'required' => FALSE),
+				'post_author' =>			array('data_type' => 'integer',				'required' => FALSE),
+				'post_categories' =>		array('data_type' => 'varchar(255)',		'required' => FALSE),
+				'post_keywords' =>			array('data_type' => 'varchar(255)',		'required' => FALSE),
+				'post_description' =>		array('data_type' => 'text',				'required' => FALSE),
+				'post_tags' =>				array('data_type' => 'varchar(255)',		'required' => FALSE),
+				'post_views' =>				array('data_type' => 'integer',				'required' => FALSE),
+				'post_status' =>			array('data_type' => 'varchar(255)',		'required' => FALSE)
 			);
 
 			$this->permissions = array(
-				"object"=>1,
-				"get"=>"any",
-				"add"=>"any",
-				"update"=>"any",
-				"delete"=>"any",
-				"out"=>"any"
+				'object' => 'any',
+				'get' => 'any',
+				'add' => 'any',
+				'update' => 'any',
+				'delete' => 'any',
+				'out' => 'any'
 			);
 
 		}
 
-		public function out(){
-
+		public function out() {
+			/*
 			$params = array(
-				"post_title" =>			 "Lorem Ipsum",
-				"post_text"  =>			 "<p>Nesciunt cliche officia  ennui ethnic iPhone leggings, nisi banjo keytar.  Gentrify nulla  elit Schlitz kale chips shabby chic.  Bicycle rights cred artisan polaroid.  Pug semiotics pour-over, keytar Brooklyn stumptown artisan Terry Richardson tofu fingerstache.  Cupidatat  veniam keffiyeh chambray culpa.  Pour-over messenger bag Brooklyn thundercats id, sustainable ullamco.  Dreamcatcher meh typewriter sriracha, velit  forage seitan.</p>",
-				"post_author" => 		 0,
-				"post_categories" =>	 "stories,place holder",
-				"post_keywords" =>		 "",
-				"post_description" =>	 "<p>Nesciunt cliche officia  ennui ethnic iPhone leggings, nisi banjo keytar...</p>",
-				"post_tags" => 			 "Lorem,Ipsum,Dolor,Sit",
-				"post_views" => 		 rand(1,10000),
-				"post_status" => 		 "published"
-			);
+					"post_title" =>			 "Lorem Ipsum",
+					"post_path" =>			 "test/example/",
+					"post_text"  =>			 "<p>Nesciunt cliche officia  ennui ethnic iPhone leggings, nisi banjo keytar.  Gentrify nulla  elit Schlitz kale chips shabby chic.  Bicycle rights cred artisan polaroid.  Pug semiotics pour-over, keytar Brooklyn stumptown artisan Terry Richardson tofu fingerstache.  Cupidatat  veniam keffiyeh chambray culpa.  Pour-over messenger bag Brooklyn thundercats id, sustainable ullamco.  Dreamcatcher meh typewriter sriracha, velit  forage seitan.</p>",
+					"post_author" => 		 0,
+					"post_categories" =>	 "stories,place holder",
+					"post_keywords" =>		 "",
+					"post_description" =>	 "<p>Nesciunt cliche officia  ennui ethnic iPhone leggings, nisi banjo keytar...</p>",
+					"post_tags" => 			 "Lorem,Ipsum,Dolor,Sit",
+					"post_views" => 		 rand(1,10000),
+					"post_status" => 		 "published"
+				);
 
 			$this->route("/sys/posts/add/",$params);
+			*/
 		}
 
 	}

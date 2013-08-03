@@ -20,30 +20,28 @@
 
     ***********************************************************************/
 
-	if (!class_exists( "OObject" )) { die(); }
+	if (!class_exists( 'OObject' )) { die(); }
 
 	/********************************************************************************************************************
 
 		users:
 
 	********************************************************************************************************************/
-	include __PATH_TO_CORE__ . "OUsers.php";
+	include __PATH_TO_CORE__ . 'OUsers.php';
 
-	Class users extends OUsers{
+	Class users extends OUsers {
 
-		public function __construct(){
+		public function __construct() {
 
 			parent::__construct();
 
 			$this->permissions = array(
-				"object"=>"any",
-				"add"=>"any",
-				"login"=>"any",
-				"get"=>"user",
-				"logout"=>"any"
+				'object' => 'any',
+				'add' => 'any',
+				'login' => 'any',
+				'get' => 'user',
+				'logout' => 'any'
 			);
-
 		}
-
 	}
 ?>

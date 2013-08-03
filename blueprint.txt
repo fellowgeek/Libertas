@@ -5,6 +5,7 @@ Template Commands :
 "P" stands for current page's master post.
 
 [P:Title] 							// returns the current post's title
+[P:Subtitle]
 [P:Slug]							// returns the current post's slug ( The-Awesome-Post )
 [P:Link]							// returns the current post's link ( http://www.example.com/The-Awesome-Post/ )
 [P:Image]							// returns the current post's first image link ( http://www.example.com/AS2DFGDG3432RE2D2F.jpg )
