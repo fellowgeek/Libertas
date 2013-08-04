@@ -46,6 +46,8 @@
 				'post_keywords' =>			array('data_type' => 'varchar(255)',		'required' => FALSE),
 				'post_description' =>		array('data_type' => 'text',				'required' => FALSE),
 				'post_tags' =>				array('data_type' => 'varchar(255)',		'required' => FALSE),
+				'post_layout' =>			array('data_type' => 'varchar(255)',		'required' => FALSE),
+				'post_theme' =>				array('data_type' => 'varchar(255)',		'required' => FALSE),
 				'post_views' =>				array('data_type' => 'integer',				'required' => FALSE),
 				'post_status' =>			array('data_type' => 'varchar(255)',		'required' => FALSE)
 			);
@@ -62,22 +64,25 @@
 		}
 
 		public function out() {
-			/*
+
 			$params = array(
 					"post_title" =>			 "Lorem Ipsum",
 					"post_path" =>			 "test/example/",
+					"post_path_hash" =>		 md5("test/example/"),
 					"post_text"  =>			 "<p>Nesciunt cliche officia  ennui ethnic iPhone leggings, nisi banjo keytar.  Gentrify nulla  elit Schlitz kale chips shabby chic.  Bicycle rights cred artisan polaroid.  Pug semiotics pour-over, keytar Brooklyn stumptown artisan Terry Richardson tofu fingerstache.  Cupidatat  veniam keffiyeh chambray culpa.  Pour-over messenger bag Brooklyn thundercats id, sustainable ullamco.  Dreamcatcher meh typewriter sriracha, velit  forage seitan.</p>",
 					"post_author" => 		 0,
 					"post_categories" =>	 "stories,place holder",
 					"post_keywords" =>		 "",
 					"post_description" =>	 "<p>Nesciunt cliche officia  ennui ethnic iPhone leggings, nisi banjo keytar...</p>",
 					"post_tags" => 			 "Lorem,Ipsum,Dolor,Sit",
+					"post_layout" => 		 "",
+					"post_theme" => 		 "",
 					"post_views" => 		 rand(1,10000),
 					"post_status" => 		 "published"
 				);
 
-			$this->route("/sys/posts/add/",$params);
-			*/
+			//$this->route("/sys/posts/add/",$params);
+
 		}
 
 	}
