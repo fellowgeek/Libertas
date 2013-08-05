@@ -66,8 +66,6 @@
 			// create a MD5 hash from the current path
 			$path_hash = md5($path);
 
-			//print($path);
-			//print($path_hash);
 			// check the database for existing post at the path
 			$params = array(
 				'post_path_hash' => $path_hash
@@ -93,37 +91,52 @@
 				}
 
 				// if theme / layout exists
-				if(file_exists(__SELF__ . 'themes/' . $theme . '/' . $layout) == true) {
+				if(file_exists(__SELF__ . 'themes/' . $theme . '/' . $layout) == TRUE) {
 					// load theme / layout in memory
 					$output = file_get_contents(__SELF__ . 'themes/' . $theme . '/' . $layout);
 					// fix the path of all relative href attributes
-					$output = preg_replace("@href=\"(([^http://]|[^https://])(.*?))\"@", "href=\"" . $porotocol . __SITE__ . "/themes/". $theme. "/$1\"", $output);
+					$output = preg_replace("@href=\"(?!(http://)|(https://))(.*?)\"@i", "href=\"" . $porotocol . __SITE__ . "/themes/". $theme. "/$3\"", $output);
 					// fix the path of all relative src attributes
-					$output = preg_replace("@src=\"(([^http://]|[^https://])(.*?))\"@", "src=\"" . $porotocol . __SITE__ . "/themes/". $theme. "/$1\"", $output);
+					$output = preg_replace("@src=\"(?!(http://)|(https://))(.*?)\"@i", "src=\"" . $porotocol . __SITE__ . "/themes/". $theme. "/$3\"", $output);
 					// fix for themes built on skell.js
-					$output = preg_replace("@_skel_config\.prefix ?= ?\"(.*?)\"@", "_skel_config.prefix = \"" . $porotocol . __SITE__ . "/themes/". $theme. "/$1\"", $output);
+					$output = preg_replace("@_skel_config\.prefix ?= ?\"(.*?)\"@i", "_skel_config.prefix = \"" . $porotocol . __SITE__ . "/themes/". $theme. "/$1\"", $output);
 
 					// process post [P:COMMAND] commands
-					$output = preg_replace("@\[P\:Title\]@", $post->data[0]->post_title, $output);
-					$output = preg_replace("@\[P\:Slug\]@", $post->data[0]->slug, $output);
-					$output = preg_replace("@\[P\:Link\]@", $post->data[0]->post_path, $output);
-					$output = preg_replace("@\[P\:Image\]@", "#", $output);
-					$output = preg_replace("@\[P\:Video\]@", "#", $output);
-					$output = preg_replace("@\[P\:Audio\]@", "#", $output);
-					$output = preg_replace("@\[P\:Text\]@", $post->data[0]->post_text, $output);
+					$post_text = $post->data[0]->post_text;
 
-					$output = preg_replace("@\[P\:Author\]@", $post->data[0]->post_author, $output);
-					$output = preg_replace("@\[P\:Description\]@", $post->data[0]->post_description, $output);
-					$output = preg_replace("@\[P\:Timestamp\]@", date('U',time()), $output);
-					$output = preg_replace("@\[P\:Timestamp\|Format=(.*?)\]@", date("$1",time()), $output);
-					//$output = preg_replace("@\[P\:Timestamp\]@", date('U',strtotime($post->data[0]->OCDT)), $output);
-					//$output = preg_replace("@\[P\:Timestamp\|Format=(.*?)\]@", date("$1",strtotime($post->data[0]->OCDT)), $output);
+					$output = preg_replace("@\[P\:Text\]@i", $post->data[0]->post_text, $output);
+					$output = preg_replace("@\[P\:Title\]@i", $post->data[0]->post_title, $output);
+					$output = preg_replace("@\[P\:Slug\]@i", $post->data[0]->slug, $output);
+					$output = preg_replace("@\[P\:Link\]@i", $post->data[0]->post_path, $output);
+					$output = preg_replace("@\[P\:Image\]@i", $post->data[0]->post_image, $output);
+					$output = preg_replace("@\[P\:Audio\]@i", $post->data[0]->post_audio, $output);
+					$output = preg_replace("@\[P\:Video\]@i", $post->data[0]->post_video, $output);
+					$output = preg_replace("@\[P\:File\]@i", $post->data[0]->post_file, $output);
+					$output = preg_replace("@\[P\:Author\]@i", $post->data[0]->post_author, $output);
+					$output = preg_replace("@\[P\:Description\]@i", $post->data[0]->post_description, $output);
 
-					$output = preg_replace("@\[P\:Views\]@", $post->data[0]->post_views, $output);
-					$output = preg_replace("@\[P\:Tags\]@", $post->data[0]->post_tags, $output);
-					$output = preg_replace("@\[P\:Keywords\]@", $post->data[0]->post_keywords, $output);
-					$output = preg_replace("@\[P\:Keywords\]@", $post->data[0]->post_keywords, $output);
-					$output = preg_replace("@\[P\:Categories\]@", $post->data[0]->post_categories, $output);
+					// process timestamp
+					$post_timestamp = $post->data[0]->post_timestamp;
+					$output = preg_replace("@\[P\:Timestamp\]@i", date('U', $post_timestamp), $output);
+
+					$post_timestamp_format = '';
+					preg_match_all("@\[P\:Timestamp\|Format=(.*?)\]@i", $output, $matches);
+					if(empty($matches[1]) == FALSE) {
+						foreach($matches[1] as $post_timestamp_format) {
+							$output = str_replace("[P:Timestamp|Format=" . $post_timestamp_format . "]", date($post_timestamp_format, $post_timestamp), $output);
+						}
+					}
+
+					$output = preg_replace("@\[P\:Views\]@i", $post->data[0]->post_views, $output);
+
+					$output = preg_replace("@\[P\:Tags\]@i", $post->data[0]->post_tags, $output);
+					$output = preg_replace("@\[P\:Tags\|Format=List\]@i", $post->data[0]->post_tags_list, $output);
+
+					$output = preg_replace("@\[P\:Keywords\]@i", $post->data[0]->post_keywords, $output);
+					$output = preg_replace("@\[P\:Keywords\|Format=List\]@i", $post->data[0]->post_keywords_list, $output);
+
+					$output = preg_replace("@\[P\:Categories\]@i", $post->data[0]->post_categories, $output);
+					$output = preg_replace("@\[P\:Categories\|Format=List\]@i", $post->data[0]->post_categories_list, $output);
 
 				} else {
 					$this->throwError('Selected theme and layout does not exist.',500,$type='notfound');
@@ -135,15 +148,15 @@
 				$layout = '404.html';
 
 				// if theme / layout exists
-				if(file_exists(__SELF__ . 'themes/' . __THEME__ . '/' . $layout) == true) {
+				if(file_exists(__SELF__ . 'themes/' . __THEME__ . '/' . $layout) == TRUE) {
 					// load theme / layout in memory
 					$output = file_get_contents(__SELF__ . 'themes/' . $theme . '/' . $layout);
 					// fix the path of all relative href attributes
-					$output = preg_replace("@href=\"(([^http://]|[^https://])(.*?))\"@", "href=\"" . $porotocol . __SITE__ . "/themes/". $theme. "/$1\"", $output);
+					$output = preg_replace("@href=\"(?!(http://)|(https://))(.*?)\"@i", "href=\"" . $porotocol . __SITE__ . "/themes/". $theme. "/$3\"", $output);
 					// fix the path of all relative src attributes
-					$output = preg_replace("@src=\"(([^http://]|[^https://])(.*?))\"@", "src=\"" . $porotocol . __SITE__ . "/themes/". $theme. "/$1\"", $output);
+					$output = preg_replace("@src=\"(?!(http://)|(https://))(.*?)\"@i", "src=\"" . $porotocol . __SITE__ . "/themes/". $theme. "/$3\"", $output);
 					// fix for themes built on skell.js
-					$output = preg_replace("@_skel_config\.prefix ?= ?\"(.*?)\"@", "_skel_config.prefix = \"" . $porotocol . __SITE__ . "/themes/". $theme. "/$1\"", $output);
+					$output = preg_replace("@_skel_config\.prefix ?= ?\"(.*?)\"@i", "_skel_config.prefix = \"" . $porotocol . __SITE__ . "/themes/". $theme. "/$1\"", $output);
 				} else {
 					$this->throwError('Page not found.',404,$type='notfound');
 					print("404 Not Found.");

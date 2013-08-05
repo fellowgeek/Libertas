@@ -5,21 +5,24 @@ Template Commands :
 "P" stands for current page's master post.
 
 [P:Title] 							// returns the current post's title
+[P:Text]							// returns the current post's text
 [P:Subtitle]
 [P:Slug]							// returns the current post's slug ( The-Awesome-Post )
 [P:Link]							// returns the current post's link ( http://www.example.com/The-Awesome-Post/ )
 [P:Image]							// returns the current post's first image link ( http://www.example.com/AS2DFGDG3432RE2D2F.jpg )
-[P:Video]							// returns the current post's first video link ( http://www.example.com/AS2DFGDG3432RE2D2F.mp4 )
+[P:Image|Channel=A]					// returns the current post's first image link that is assigned to channel A ( http://www.example.com/AS2DFGDG3432RE2D2F.jpg )
 [P:Audio]							// returns the current post's first audio link ( http://www.example.com/AS2DFGDG3432RE2D2F.mp3 )
-[P:Text]							// returns the current post's text
+[P:Audio|Channel=A]					// returns the current post's first audio link that is assigned to channel A ( http://www.example.com/AS2DFGDG3432RE2D2F.mp3 )
+[P:Video]							// returns the current post's first video link ( http://www.example.com/AS2DFGDG3432RE2D2F.mp4 )
+[P:Video|Channel=A]					// returns the current post's first video link that is assigned to channel A ( http://www.example.com/AS2DFGDG3432RE2D2F.mp4 )
 [P:Author]							// returns the current post's author
 [P:Description]						// returns the current post's description
 [P:Timestamp]						// returns the current post's timestamp in the number of seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
 [P:Timestamp|Format=FORMAT]			// returns the current post's timestamp formatted used php Date(FORMAT,Timestamp) function
 [P:Views]							// returns the current post's views
-[P:Tags]							// returns the current post's list of tags in <ul></li>TAG</li></ul> format
-[P:Keywords]						// returns the current post's list of keywords in <ul></li>KEYWORDS</li></ul> format
-[P:Categories]						// returns the current post's list of tags in <ul></li>CATEGORY</li></ul> format
+[P:Tags|Format=List]				// returns the current post's list of tags in <ul></li>TAG</li></ul> format
+[P:Keywords|Format=List]			// returns the current post's list of keywords in <ul></li>KEYWORDS</li></ul> format
+[P:Categories|Format=List]			// returns the current post's list of tags in <ul></li>CATEGORY</li></ul> format
 
 
 [S:TITLE|COMMAND]
@@ -37,16 +40,20 @@ Template Commands :
 [S:Title|Author]					// returns the current snippets's author
 [S:Title|Description]				// returns the current snippets's description
 [S:Title|Timestamp]					// returns the current snippets's timestamp in the number of seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
-[S:Title|Timestamp; Format=FORMAT]	// returns the current snippets's timestamp formatted used php Date(FORMAT,Timestamp) function
+[S:Title|Timestamp|Format=FORMAT]	// returns the current snippets's timestamp formatted used php Date(FORMAT,Timestamp) function
 [S:Title|Views]						// returns the current snippets's views
 [S:Title|Tags]						// returns the current snippets's list of tags in <ul></li>TAG</li></ul> format
 [S:Title|Keywords]					// returns the current snippets's list of keywords in <ul></li>KEYWORDS</li></ul> format
 [S:Title|Categories]				// returns the current snippets's list of tags in <ul></li>CATEGORY</li></ul> format
 
 
-[C:COMPONENT|PARAM1=VALUE; PARAM2=VALUE; ...]
+[C:COMPONENT|PARAM1=VALUE|PARAM2=VALUE|...]
 
 [C:LatestPosts|Categories=Stories, Music, Dance; Length=200; Class=lastest-posts]
 
 "C" stands for component, this command will load a component and sets the parameters (if any)
 
+
+Wiki Markup :
+
+[File:]

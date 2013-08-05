@@ -39,7 +39,7 @@
 				'object' => 'any',
 				'add' => 'any',
 				'login' => 'any',
-				'get' => 'user',
+				'get' => 'any',
 				'logout' => 'any'
 			);
 		}

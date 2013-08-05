@@ -63,25 +63,110 @@
 
 		}
 
-		public function out() {
+		public function get($params=array()) {
+
+			parent::get($params);
+			$post_text = $this->data[0]->post_text;
+
+			// process the text for default image
+			$post_image = '';
+			if(preg_match("@\[image:(.*?)\.(jpg|png)\|(.*?)\]@i", $post_text, $matches) == 0) {
+				preg_match("@\[image:(.*?)\.(jpg|png)\]@i", $post_text, $matches);
+			}
+			if(empty($matches[1]) == FALSE && empty($matches[2]) == FALSE) {
+				$post_image = $matches[1] . '.' . $matches[2];
+			}
+			$matches = array();
+			$this->data[0]->post_image = $post_image;
+
+			// process the text for default audio
+			$post_audio = '';
+			if(preg_match("@\[Audio:(.*?)\.(mp3|ogg)\|(.*?)\]@i", $post_text, $matches) == 0) {
+				preg_match("@\[Audio:(.*?)\.(mp3|ogg)\]@i", $post_text, $matches);
+			}
+			if(empty($matches[1]) == FALSE && empty($matches[2]) == FALSE) {
+				$post_audio = $matches[1] . '.' . $matches[2];
+			}
+			$matches = array();
+			$this->data[0]->post_audio = $post_audio;
+
+			// process the text for default video
+			$post_video = '';
+			if(preg_match("@\[Video:(.*?)\.(mp4|mov)\|(.*?)\]@i", $post_text, $matches) == 0) {
+				preg_match("@\[Video:(.*?)\.(mp4|mov)\]@i", $post_text, $matches);
+			}
+			if(empty($matches[1]) == FALSE && empty($matches[2]) == FALSE) {
+				$post_video = $matches[1] . '.' . $matches[2];
+			}
+			$matches = array();
+			$this->data[0]->post_video = $post_video;
+
+			// process the text for default file
+			$post_file = '';
+			if(preg_match("@\[File:(.*?)\.(.*?)\|(.*?)\]@i", $post_text, $matches) == 0) {
+				preg_match("@\[File:(.*?)\.(.*?)\]@i", $post_text, $matches);
+			}
+			if(empty($matches[1]) == FALSE && empty($matches[2]) == FALSE) {
+				$post_file = $matches[1] . '.' . $matches[2];
+			}
+			$matches = array();
+			$this->data[0]->post_file = $post_file;
+
+			// process the post for author full name
+			$post_author = '';
 
 			$params = array(
-					"post_title" =>			 "Lorem Ipsum",
-					"post_path" =>			 "test/example/",
-					"post_path_hash" =>		 md5("test/example/"),
-					"post_text"  =>			 "<p>Nesciunt cliche officia  ennui ethnic iPhone leggings, nisi banjo keytar.  Gentrify nulla  elit Schlitz kale chips shabby chic.  Bicycle rights cred artisan polaroid.  Pug semiotics pour-over, keytar Brooklyn stumptown artisan Terry Richardson tofu fingerstache.  Cupidatat  veniam keffiyeh chambray culpa.  Pour-over messenger bag Brooklyn thundercats id, sustainable ullamco.  Dreamcatcher meh typewriter sriracha, velit  forage seitan.</p>",
-					"post_author" => 		 0,
-					"post_categories" =>	 "stories,place holder",
-					"post_keywords" =>		 "",
-					"post_description" =>	 "<p>Nesciunt cliche officia  ennui ethnic iPhone leggings, nisi banjo keytar...</p>",
-					"post_tags" => 			 "Lorem,Ipsum,Dolor,Sit",
-					"post_layout" => 		 "",
-					"post_theme" => 		 "",
-					"post_views" => 		 rand(1,10000),
-					"post_status" => 		 "published"
-				);
+				'ouser_id' => $this->data[0]->post_author
+			);
 
-			//$this->route("/sys/posts/add/",$params);
+			$user = $this->route('/sys/users/get/', $params);
+			if(isset($user->data) == TRUE && count($user->data) !=0) {
+				$post_author = $user->data[0]->ouser_first_name . ' ' . $user->data[0]->ouser_last_name;
+			}
+			$this->data[0]->post_author = $post_author;
+
+			// process timestamp
+			$timestamp = time(); // replace with OCDT
+			$this->data[0]->post_timestamp = $timestamp;
+
+			// process tags
+			$post_tags = '';
+			$post_tags_array = explode(',', $this->data[0]->post_tags);
+
+			if(count($post_tags_array) != 0) {
+				$post_tags = '<ul>';
+				foreach($post_tags_array as $post_tag) {
+					$post_tags .= '<li>' . trim($post_tag) . '</li>';
+				}
+				$post_tags .= '</ul>';
+			}
+			$this->data[0]->post_tags_list = $post_tags;
+
+			// process keywords
+			$post_keywords = '';
+			$post_keywords_array = explode(',', $this->data[0]->post_keywords);
+
+			if(count($post_keywords_array) != 0) {
+				$post_keywords = '<ul>';
+				foreach($post_keywords_array as $post_keyword) {
+					$post_keywords .= '<li>' . trim($post_keyword) . '</li>';
+				}
+				$post_keywords .= '</ul>';
+			}
+			$this->data[0]->post_keywords_list = $post_keywords;
+
+			// process categories
+			$post_categories = '';
+			$post_categories_array = explode(',', $this->data[0]->post_categories);
+
+			if(count($post_categories_array) != 0) {
+				$post_categories = '<ul>';
+				foreach($post_categories_array as $post_category) {
+					$post_categories .= '<li>' . trim($post_category) . '</li>';
+				}
+				$post_categories .= '</ul>';
+			}
+			$this->data[0]->post_categories_list = $post_categories;
 
 		}
 
