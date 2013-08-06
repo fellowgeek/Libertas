@@ -1,4 +1,4 @@
-Template Commands :
+Commands :
 
 [P:COMMAND]
 
@@ -15,6 +15,8 @@ Template Commands :
 [P:Audio|Channel=A]					// returns the current post's first audio link that is assigned to channel A ( http://www.example.com/AS2DFGDG3432RE2D2F.mp3 )
 [P:Video]							// returns the current post's first video link ( http://www.example.com/AS2DFGDG3432RE2D2F.mp4 )
 [P:Video|Channel=A]					// returns the current post's first video link that is assigned to channel A ( http://www.example.com/AS2DFGDG3432RE2D2F.mp4 )
+[P:File]							// returns the current post's first file link ( http://www.example.com/AS2DFGDG3432RE2D2F.pdf )
+[P:File|Channel=A]					// returns the current post's first file link that is assigned to channel A ( http://www.example.com/AS2DFGDG3432RE2D2F.pdf )
 [P:Author]							// returns the current post's author
 [P:Description]						// returns the current post's description
 [P:Timestamp]						// returns the current post's timestamp in the number of seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
@@ -34,8 +36,9 @@ Template Commands :
 [S:Title|Slug]						// returns the current snippets's slug ( The-Awesome-Snippet )
 [S:Title|Link]						// returns the current snippets's link ( http://www.example.com/The-Awesome-Snippet/ )
 [S:Title|Image]						// returns the current snippets's first image link ( http://www.example.com/AS2DFGDG3432RE2D2F.jpg )
-[S:Title|Video]						// returns the current snippets's first video link ( http://www.example.com/AS2DFGDG3432RE2D2F.mp4 )
 [S:Title|Audio]						// returns the current snippets's first audio link ( http://www.example.com/AS2DFGDG3432RE2D2F.mp3 )
+[S:Title|Video]						// returns the current snippets's first video link ( http://www.example.com/AS2DFGDG3432RE2D2F.mp4 )
+[S:Title|File]						// returns the current snippets's first file link ( http://www.example.com/AS2DFGDG3432RE2D2F.pdf )
 [S:Title|Text]						// returns the current snippets's text
 [S:Title|Author]					// returns the current snippets's author
 [S:Title|Description]				// returns the current snippets's description
@@ -47,7 +50,7 @@ Template Commands :
 [S:Title|Categories]				// returns the current snippets's list of tags in <ul></li>CATEGORY</li></ul> format
 
 
-[C:COMPONENT|PARAM1=VALUE|PARAM2=VALUE|...]
+[C:COMPONENT|Param1=VALUE|Param2=VALUE|...]
 
 [C:LatestPosts|Categories=Stories, Music, Dance; Length=200; Class=lastest-posts]
 
@@ -56,4 +59,24 @@ Template Commands :
 
 Wiki Markup :
 
-[File:]
+''TEXT''							// italic
+'''TEXT'''							// bold
+=TEXT=								// heading level 1 <h1>TEXT</h1>
+==TEXT==							// heading level 2 <h2>TEXT</h2>
+===TEXT===							// heading level 3 <h3>TEXT</h3>
+====TEXT====						// heading level 4 <h4>TEXT</h4>
+=====TEXT=====						// heading level 5 <h5>TEXT</h5>
+---									// horizontal line <hr />
+[return key twice]					// line break <br />
+{{Title}}							// template, loads another post's text inside current post, similar to [S:Title]
+
+[Image:filename.jpg|Description=Lorem ipsum dolor sit amet|Width=300|Class=CLASS|Channel=A]
+[Audio:filename.mp3|Description=Lorem ipsum dolor sit amet|Class=CLASS|Channel=A]
+[Video:filename.mp4|Description=Lorem ipsum dolor sit amet|Width=300|Class=CLASS|Channel=A]
+[File:filename.pdf]
+
+--8<--								// page break in print mode after this
+
+
+
+

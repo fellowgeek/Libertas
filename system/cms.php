@@ -2,31 +2,31 @@
 
     /***********************************************************************
 
-    Obray - Super lightweight framework.  Write a little, do a lot, fast.
-    Copyright (C) 2013  Nathan A Obray
+	The MIT License (MIT)
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+	Copyright (c) 2013 Erfan Reed <erfan.reed@gmail.com>
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+	The above copyright notice and this permission notice shall be included in
+	all copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	THE SOFTWARE.
 
     ***********************************************************************/
 
 	if (!class_exists( 'OObject' )) { die(); }
-
-	/********************************************************************************************************************
-
-		missing:
-
-	********************************************************************************************************************/
 
 	Class cms extends OObject {
 
@@ -47,13 +47,16 @@
 		public function missing($path, $params=array(), $direct=TRUE) {
 			// default object
 			$post = new stdClass();
+			$snippet = new stdClass();
+
 			// default output
 			$output = '';
+
 			// default protocol
 			$porotocol = 'http://';
+
 			// set the theme
 			$theme = __THEME__;
-
 
 			// set the content type
 			$this->setContentType('text/html');
@@ -104,39 +107,92 @@
 					// process post [P:COMMAND] commands
 					$post_text = $post->data[0]->post_text;
 
-					$output = preg_replace("@\[P\:Text\]@i", $post->data[0]->post_text, $output);
-					$output = preg_replace("@\[P\:Title\]@i", $post->data[0]->post_title, $output);
-					$output = preg_replace("@\[P\:Slug\]@i", $post->data[0]->slug, $output);
-					$output = preg_replace("@\[P\:Link\]@i", $post->data[0]->post_path, $output);
-					$output = preg_replace("@\[P\:Image\]@i", $post->data[0]->post_image, $output);
-					$output = preg_replace("@\[P\:Audio\]@i", $post->data[0]->post_audio, $output);
-					$output = preg_replace("@\[P\:Video\]@i", $post->data[0]->post_video, $output);
-					$output = preg_replace("@\[P\:File\]@i", $post->data[0]->post_file, $output);
-					$output = preg_replace("@\[P\:Author\]@i", $post->data[0]->post_author, $output);
-					$output = preg_replace("@\[P\:Description\]@i", $post->data[0]->post_description, $output);
+					$output = str_ireplace("[P:Text]", $post->data[0]->post_text, $output);
+
+					// process snippets [S:Title]
+					$snippet = '';
+					preg_match_all("@\[S:(.*?)\]@i", $output, $matches);
+					if(empty($matches[1]) == FALSE) {
+						foreach($matches[1] as $snippet_title) {
+							$snippet_path_hash = md5($snippet_title);
+
+							$params = array(
+								'post_path_hash' => $snippet_path_hash
+							);
+
+							$snippet = $this->route('/sys/posts/get/', $params);
+
+							// if snippet exists at path
+							if(isset($snippet->data) && count($snippet->data) != 0) {
+								$output = str_ireplace("[S:" . $snippet_title . "]", $snippet->data[0]->post_text, $output);
+
+								$output = str_ireplace("[S:" . $snippet_title . "|Text]", $snippet->data[0]->post_text, $output);
+								$output = str_ireplace("[S:" . $snippet_title . "|Title]", $snippet->data[0]->post_title, $output);
+								$output = str_ireplace("[S:" . $snippet_title . "|Slug]", $snippet->data[0]->slug, $output);
+								$output = str_ireplace("[S:" . $snippet_title . "|Link]", $snippet->data[0]->post_path, $output);
+								$output = str_ireplace("[S:" . $snippet_title . "|Image]", $snippet->data[0]->post_image, $output);
+								$output = str_ireplace("[S:" . $snippet_title . "|Audio]", $snippet->data[0]->post_audio, $output);
+								$output = str_ireplace("[S:" . $snippet_title . "|Video]", $snippet->data[0]->post_video, $output);
+								$output = str_ireplace("[S:" . $snippet_title . "|File]", $snippet->data[0]->post_file, $output);
+								$output = str_ireplace("[S:" . $snippet_title . "|Author]", $snippet->data[0]->post_author, $output);
+								$output = str_ireplace("[S:" . $snippet_title . "|Description]", $snippet->data[0]->post_description, $output);
+
+								// process timestamp
+								$snippet_timestamp = $snippet->data[0]->post_timestamp;
+								$output = str_ireplace("[S:" . $snippet_title . "|Timestamp]", date('U', $snippet_timestamp), $output);
+
+								$snippet_timestamp_format = '';
+								preg_match_all("@\[S\:(.*?)\|Timestamp\|Format=(.*?)\]@i", $output, $matches);
+								if(empty($matches[2]) == FALSE) {
+									foreach($matches[2] as $snippet_timestamp_format) {
+										$output = str_ireplace("[S:" . $snippet_title . "|Timestamp|Format=" . $snippet_timestamp_format . "]", date($snippet_timestamp_format, $snippet_timestamp), $output);
+									}
+								}
+								unset($matches);
+
+								$output = str_ireplace("[S:" . $snippet_title . "|Views]", $snippet->data[0]->post_views, $output);
+								$output = str_ireplace("[S:" . $snippet_title . "|Tags]", $snippet->data[0]->post_tags, $output);
+								$output = str_ireplace("[S:" . $snippet_title . "|Tags|Format=List]", $snippet->data[0]->post_tags_list, $output);
+								$output = str_ireplace("[S:" . $snippet_title . "|Keywords]", $snippet->data[0]->post_keywords, $output);
+								$output = str_ireplace("[S:" . $snippet_title . "|Keywords|Format=List]", $snippet->data[0]->post_keywords_list, $output);
+								$output = str_ireplace("[S:" . $snippet_title . "|Categories]", $snippet->data[0]->post_categories, $output);
+								$output = str_ireplace("[S:" . $snippet_title . "|Categories|Format=List]", $snippet->data[0]->post_categories_list, $output);
+							}
+						}
+					}
+					unset($matches);
+
+
+					$output = str_ireplace("[P:Title]", $post->data[0]->post_title, $output);
+					$output = str_ireplace("[P:Slug]", $post->data[0]->slug, $output);
+					$output = str_ireplace("[P:Link]", $post->data[0]->post_path, $output);
+					$output = str_ireplace("[P:Image]", $post->data[0]->post_image, $output);
+					$output = str_ireplace("[P:Audio]", $post->data[0]->post_audio, $output);
+					$output = str_ireplace("[P:Video]", $post->data[0]->post_video, $output);
+					$output = str_ireplace("[P:File]", $post->data[0]->post_file, $output);
+					$output = str_ireplace("[P:Author]", $post->data[0]->post_author, $output);
+					$output = str_ireplace("[P:Description]", $post->data[0]->post_description, $output);
 
 					// process timestamp
 					$post_timestamp = $post->data[0]->post_timestamp;
-					$output = preg_replace("@\[P\:Timestamp\]@i", date('U', $post_timestamp), $output);
+					$output = str_ireplace("[P:Timestamp]", date('U', $post_timestamp), $output);
 
 					$post_timestamp_format = '';
 					preg_match_all("@\[P\:Timestamp\|Format=(.*?)\]@i", $output, $matches);
 					if(empty($matches[1]) == FALSE) {
 						foreach($matches[1] as $post_timestamp_format) {
-							$output = str_replace("[P:Timestamp|Format=" . $post_timestamp_format . "]", date($post_timestamp_format, $post_timestamp), $output);
+							$output = str_ireplace("[P:Timestamp|Format=" . $post_timestamp_format . "]", date($post_timestamp_format, $post_timestamp), $output);
 						}
 					}
+					unset($matches);
 
-					$output = preg_replace("@\[P\:Views\]@i", $post->data[0]->post_views, $output);
-
-					$output = preg_replace("@\[P\:Tags\]@i", $post->data[0]->post_tags, $output);
-					$output = preg_replace("@\[P\:Tags\|Format=List\]@i", $post->data[0]->post_tags_list, $output);
-
-					$output = preg_replace("@\[P\:Keywords\]@i", $post->data[0]->post_keywords, $output);
-					$output = preg_replace("@\[P\:Keywords\|Format=List\]@i", $post->data[0]->post_keywords_list, $output);
-
-					$output = preg_replace("@\[P\:Categories\]@i", $post->data[0]->post_categories, $output);
-					$output = preg_replace("@\[P\:Categories\|Format=List\]@i", $post->data[0]->post_categories_list, $output);
+					$output = str_ireplace("[P:Views]", $post->data[0]->post_views, $output);
+					$output = str_ireplace("[P:Tags]", $post->data[0]->post_tags, $output);
+					$output = str_ireplace("[P:Tags|Format=List]", $post->data[0]->post_tags_list, $output);
+					$output = str_ireplace("[P:Keywords]", $post->data[0]->post_keywords, $output);
+					$output = str_ireplace("[P:Keywords|Format=List]", $post->data[0]->post_keywords_list, $output);
+					$output = str_ireplace("[P:Categories]", $post->data[0]->post_categories, $output);
+					$output = str_ireplace("[P:Categories|Format=List]", $post->data[0]->post_categories_list, $output);
 
 				} else {
 					$this->throwError('Selected theme and layout does not exist.',500,$type='notfound');
