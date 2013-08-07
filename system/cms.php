@@ -163,10 +163,23 @@
 					unset($matches);
 
 
+					// process [P:Image|Channel=A]
+					preg_match_all("@\[P:Image\|Channel=(.*?)\]@i", $output, $matches);
+					if(empty($matches[1]) == FALSE) {
+						foreach($matches[1] as $channel) {
+							$output = str_ireplace("[P:Image|Channel=" . $channel . "]", "--". $channel ."--", $output);
+						}
+					}
+					//new dBug($matches);
+
+
 					$output = str_ireplace("[P:Title]", $post->data[0]->post_title, $output);
 					$output = str_ireplace("[P:Slug]", $post->data[0]->slug, $output);
 					$output = str_ireplace("[P:Link]", $post->data[0]->post_path, $output);
 					$output = str_ireplace("[P:Image]", $post->data[0]->post_image, $output);
+
+
+
 					$output = str_ireplace("[P:Audio]", $post->data[0]->post_audio, $output);
 					$output = str_ireplace("[P:Video]", $post->data[0]->post_video, $output);
 					$output = str_ireplace("[P:File]", $post->data[0]->post_file, $output);

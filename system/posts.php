@@ -64,9 +64,14 @@
 				'add' => 'any',
 				'update' => 'any',
 				'delete' => 'any',
-				'out' => 'any'
+				'out' => 'any',
+				'getImageAtChannel' => 'any'
 			);
 
+		}
+
+		public function getImageAtChannel($params=array()) {
+			parent::get($params);
 		}
 
 		public function get($params=array()) {
