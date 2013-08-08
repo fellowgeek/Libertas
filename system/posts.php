@@ -55,8 +55,9 @@
 				'post_layout' =>			array('data_type' => 'varchar(255)',		'required' => FALSE),
 				'post_theme' =>				array('data_type' => 'varchar(255)',		'required' => FALSE),
 				'post_views' =>				array('data_type' => 'integer',				'required' => FALSE),
-				'post_status' =>			array('data_type' => 'varchar(255)',		'required' => FALSE)
+				'post_status' =>			array('data_type' => 'varchar(255)',		'required' => FALSE),
 			);
+
 
 			$this->permissions = array(
 				'object' => 'any',
@@ -81,15 +82,95 @@
 			if(isset($this->data) && count($this->data) != 0) {
 				$post_text = $this->data[0]->post_text;
 
+				// process image at channel [P:Image|Channel=A]
+				if(isset($params['channel']) == TRUE && $params['channel'] != '' && isset($params['item']) == TRUE && $params['item'] == 'Image') {
+					$image_at_channel = '';
+
+					preg_match_all("@\[image:((.*?)\.(jpg|png))(.*?)\|channel=(.*?)(\|(.*?))?\]@i", $post_text, $matches);
+
+					if(empty($matches[1]) == FALSE && empty($matches[5]) == FALSE) {
+						$i = 0;
+						foreach($matches[5] as $matched_channel) {
+							if($matched_channel == $params['channel']) {
+								$image_at_channel = $matches[1][$i];
+							}
+						$i++;
+						}
+					}
+
+					$this->data[0]->image_at_channel = $image_at_channel;
+				}
+				unset($matches);
+
+				// process audio at channel [P:Audio|Channel=A]
+				if(isset($params['channel']) == TRUE && $params['channel'] != '' && isset($params['item']) == TRUE && $params['item'] == 'Audio') {
+					$audio_at_channel = '';
+
+					preg_match_all("@\[Audio:((.*?)\.(mp3|ogg))(.*?)\|channel=(.*?)(\|(.*?))?\]@i", $post_text, $matches);
+
+					if(empty($matches[1]) == FALSE && empty($matches[5]) == FALSE) {
+						$i = 0;
+						foreach($matches[5] as $matched_channel) {
+							if($matched_channel == $params['channel']) {
+								$audio_at_channel = $matches[1][$i];
+							}
+						$i++;
+						}
+					}
+
+					$this->data[0]->audio_at_channel = $audio_at_channel;
+				}
+				unset($matches);
+
+				// process video at channel [P:Video|Channel=A]
+				if(isset($params['channel']) == TRUE && $params['channel'] != '' && isset($params['item']) == TRUE && $params['item'] == 'Video') {
+					$video_at_channel = '';
+
+					preg_match_all("@\[Video:((.*?)\.(mp4|mov))(.*?)\|channel=(.*?)(\|(.*?))?\]@i", $post_text, $matches);
+
+					if(empty($matches[1]) == FALSE && empty($matches[5]) == FALSE) {
+						$i = 0;
+						foreach($matches[5] as $matched_channel) {
+							if($matched_channel == $params['channel']) {
+								$video_at_channel = $matches[1][$i];
+							}
+						$i++;
+						}
+					}
+
+					$this->data[0]->video_at_channel = $video_at_channel;
+				}
+				unset($matches);
+
+				// process file at channel [P:File|Channel=A]
+				if(isset($params['channel']) == TRUE && $params['channel'] != '' && isset($params['item']) == TRUE && $params['item'] == 'File') {
+					$file_at_channel = '';
+
+					preg_match_all("@\[File:((.*?)\.(.*))(.*?)\|channel=(.*?)(\|(.*?))?\]@i", $post_text, $matches);
+
+					if(empty($matches[1]) == FALSE && empty($matches[5]) == FALSE) {
+						$i = 0;
+						foreach($matches[5] as $matched_channel) {
+							if($matched_channel == $params['channel']) {
+								$file_at_channel = $matches[1][$i];
+							}
+						$i++;
+						}
+					}
+
+					$this->data[0]->file_at_channel = $file_at_channel;
+				}
+				unset($matches);
+
 				// process the text for default image
 				$post_image = '';
-				if(preg_match("@\[image:(.*?)\.(jpg|png)\|(.*?)\]@i", $post_text, $matches) == 0) {
-					preg_match("@\[image:(.*?)\.(jpg|png)\]@i", $post_text, $matches);
+				if(preg_match("@\[Image:(.*?)\.(jpg|png)\|(.*?)\]@i", $post_text, $matches) == 0) {
+					preg_match("@\[Image:(.*?)\.(jpg|png)\]@i", $post_text, $matches);
 				}
 				if(empty($matches[1]) == FALSE && empty($matches[2]) == FALSE) {
 					$post_image = $matches[1] . '.' . $matches[2];
 				}
-				$matches = array();
+				unset($matches);
 				$this->data[0]->post_image = $post_image;
 
 				// process the text for default audio
@@ -100,7 +181,7 @@
 				if(empty($matches[1]) == FALSE && empty($matches[2]) == FALSE) {
 					$post_audio = $matches[1] . '.' . $matches[2];
 				}
-				$matches = array();
+				unset($matches);
 				$this->data[0]->post_audio = $post_audio;
 
 				// process the text for default video
@@ -122,7 +203,7 @@
 				if(empty($matches[1]) == FALSE && empty($matches[2]) == FALSE) {
 					$post_file = $matches[1] . '.' . $matches[2];
 				}
-				$matches = array();
+				unset($matches);
 				$this->data[0]->post_file = $post_file;
 
 				// process the post for author full name

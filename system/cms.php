@@ -48,6 +48,7 @@
 			// default object
 			$post = new stdClass();
 			$snippet = new stdClass();
+			$item = new stdClass();
 
 			// default output
 			$output = '';
@@ -60,6 +61,8 @@
 
 			// set the content type
 			$this->setContentType('text/html');
+
+			//new dBug($path);
 
 			// pre process path ( ensure all ends with "/"
 			if($path[strlen($path)-1] != '/') {
@@ -111,21 +114,22 @@
 
 					// process snippets [S:Title]
 					$snippet = '';
-					preg_match_all("@\[S:(.*?)\]@i", $output, $matches);
+					preg_match_all("@\[S:(.*?)(\|(.*?))?\]@i", $output, $matches);
+
 					if(empty($matches[1]) == FALSE) {
 						foreach($matches[1] as $snippet_title) {
-							$snippet_path_hash = md5($snippet_title);
+							//$snippet_path_hash = md5($snippet_title);
 
 							$params = array(
-								'post_path_hash' => $snippet_path_hash
+								'post_title' => $snippet_title
 							);
 
 							$snippet = $this->route('/sys/posts/get/', $params);
 
 							// if snippet exists at path
 							if(isset($snippet->data) && count($snippet->data) != 0) {
-								$output = str_ireplace("[S:" . $snippet_title . "]", $snippet->data[0]->post_text, $output);
 
+								$output = str_ireplace("[S:" . $snippet_title . "]", $snippet->data[0]->post_text, $output);
 								$output = str_ireplace("[S:" . $snippet_title . "|Text]", $snippet->data[0]->post_text, $output);
 								$output = str_ireplace("[S:" . $snippet_title . "|Title]", $snippet->data[0]->post_title, $output);
 								$output = str_ireplace("[S:" . $snippet_title . "|Slug]", $snippet->data[0]->slug, $output);
@@ -162,15 +166,97 @@
 					}
 					unset($matches);
 
-
 					// process [P:Image|Channel=A]
+					$image_at_channel = '';
 					preg_match_all("@\[P:Image\|Channel=(.*?)\]@i", $output, $matches);
 					if(empty($matches[1]) == FALSE) {
 						foreach($matches[1] as $channel) {
-							$output = str_ireplace("[P:Image|Channel=" . $channel . "]", "--". $channel ."--", $output);
+
+							$params = array(
+								'post_path_hash' => $path_hash,
+								'item'			 => 'Image',
+								'channel'		 => $channel
+							);
+
+							$item = $this->route('/sys/posts/get/', $params);
+
+							// if item exists at path and channel
+							if(isset($item->data) && count($item->data) != 0) {
+								$image_at_channel = $item->data[0]->image_at_channel;
+								$output = str_ireplace("[P:Image|Channel=" . $channel . "]", $image_at_channel, $output);
+							}
 						}
 					}
-					//new dBug($matches);
+					unset($matches);
+
+					// process [P:Audio|Channel=A]
+					$audio_at_channel = '';
+					preg_match_all("@\[P:Audio\|Channel=(.*?)\]@i", $output, $matches);
+					if(empty($matches[1]) == FALSE) {
+						foreach($matches[1] as $channel) {
+
+							$params = array(
+								'post_path_hash' => $path_hash,
+								'item'			 => 'Audio',
+								'channel'		 => $channel
+							);
+
+							$item = $this->route('/sys/posts/get/', $params);
+
+							// if item exists at path and channel
+							if(isset($item->data) && count($item->data) != 0) {
+								$audio_at_channel = $item->data[0]->audio_at_channel;
+								$output = str_ireplace("[P:Audio|Channel=" . $channel . "]", $audio_at_channel, $output);
+							}
+						}
+					}
+					unset($matches);
+
+					// process [P:Video|Channel=A]
+					$video_at_channel = '';
+					preg_match_all("@\[P:Video\|Channel=(.*?)\]@i", $output, $matches);
+					if(empty($matches[1]) == FALSE) {
+						foreach($matches[1] as $channel) {
+
+							$params = array(
+								'post_path_hash' => $path_hash,
+								'item'			 => 'Video',
+								'channel'		 => $channel
+							);
+
+							$item = $this->route('/sys/posts/get/', $params);
+
+							// if item exists at path and channel
+							if(isset($item->data) && count($item->data) != 0) {
+								$video_at_channel = $item->data[0]->video_at_channel;
+								$output = str_ireplace("[P:Video|Channel=" . $channel . "]", $video_at_channel, $output);
+							}
+						}
+					}
+					unset($matches);
+
+					// process [P:File|Channel=A]
+					$file_at_channel = '';
+					preg_match_all("@\[P:File\|Channel=(.*?)\]@i", $output, $matches);
+					if(empty($matches[1]) == FALSE) {
+						foreach($matches[1] as $channel) {
+
+							$params = array(
+								'post_path_hash' => $path_hash,
+								'item'			 => 'File',
+								'channel'		 => $channel
+							);
+
+							$item = $this->route('/sys/posts/get/', $params);
+
+							// if item exists at path and channel
+							if(isset($item->data) && count($item->data) != 0) {
+								$file_at_channel = $item->data[0]->file_at_channel;
+								$output = str_ireplace("[P:File|Channel=" . $channel . "]", $file_at_channel, $output);
+							}
+						}
+					}
+					unset($matches);
 
 
 					$output = str_ireplace("[P:Title]", $post->data[0]->post_title, $output);
