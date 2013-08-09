@@ -44,6 +44,59 @@
 			$this->missing('', $params=array(), $direct=TRUE);
 		}
 
+		public function parser($text) {
+
+			/*
+	        // platform-independent newlines
+		    $text=preg_replace("/(\r\n|\r)/","\n",$text);
+	   		// remove excess newlines
+	    	$text=preg_replace("/\n\n+/","\n\n",$text);
+			*/
+
+			$text = preg_replace("@---\n@", "<hr />", $text);
+			$text = preg_replace("@'''(.*?)'''@", "<b>$1</b>", $text);
+			$text = preg_replace("@''(.*?)''@", "<i>$1</i>", $text);
+			$text = preg_replace("@=(.*?)=\n@", "<h1>$1</h1>", $text);
+			$text = preg_replace("@==(.*?)==\n@", "<h2>$1</h2>", $text);
+			$text = preg_replace("@===(.*?)===\n@", "<h3>$1</h3>", $text);
+			$text = preg_replace("@====(.*?)====\n@", "<h4>$1</h4>", $text);
+			$text = preg_replace("@=====(.*?)=====\n@", "<h5>$1</h5>", $text);
+			$text = preg_replace("@======(.*?)======\n@", "<h6>$1</h6>", $text);
+			$text = preg_replace("@-8<-\n@","\n<div style=\"page-break-after: always;\"></div>\n",$text);
+
+
+			/*
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			$text = preg_replace("@@", "", $text);
+			*/
+
+			return $text;
+		}
+
 		public function missing($path, $params=array(), $direct=TRUE) {
 			// default object
 			$post = new stdClass();
@@ -109,8 +162,10 @@
 
 					// process post [P:COMMAND] commands
 					$post_text = $post->data[0]->post_text;
+					// process wiki markup
+					$post_text = $this->parser($post_text);
 
-					$output = str_ireplace("[P:Text]", $post->data[0]->post_text, $output);
+					$output = str_ireplace("[P:Text]", $post_text, $output);
 
 					// process snippets [S:Title]
 					$snippet = '';
@@ -118,7 +173,6 @@
 
 					if(empty($matches[1]) == FALSE) {
 						foreach($matches[1] as $snippet_title) {
-							//$snippet_path_hash = md5($snippet_title);
 
 							$params = array(
 								'post_title' => $snippet_title
@@ -162,6 +216,106 @@
 								$output = str_ireplace("[S:" . $snippet_title . "|Categories]", $snippet->data[0]->post_categories, $output);
 								$output = str_ireplace("[S:" . $snippet_title . "|Categories|Format=List]", $snippet->data[0]->post_categories_list, $output);
 							}
+						}
+					}
+					unset($matches);
+
+					// process [S:Title|Image|Channel=A]
+					$i = 0;
+					$image_at_channel = '';
+					preg_match_all("@\[S:(.*?)\|Image\|Channel=(.*?)\]@i", $output, $matches);
+					if(empty($matches[1]) == FALSE && empty($matches[2]) == FALSE) {
+						foreach($matches[2] as $channel) {
+							$snippet_title = $matches[1][$i];
+							$params = array(
+								'post_title' => $snippet_title,
+								'item'			 => 'Image',
+								'channel'		 => $channel
+							);
+
+							$item = $this->route('/sys/posts/get/', $params);
+
+							// if item exists at path and channel
+							if(isset($item->data) && count($item->data) != 0) {
+								$image_at_channel = $item->data[0]->image_at_channel;
+								$output = str_ireplace("[S:" . $snippet_title . "|Image|Channel=" . $channel . "]", $image_at_channel, $output);
+							}
+						$i++;
+						}
+					}
+					unset($matches);
+
+					// process [S:Title|Audio|Channel=A]
+					$i = 0;
+					$audio_at_channel = '';
+					preg_match_all("@\[S:(.*?)\|Audio\|Channel=(.*?)\]@i", $output, $matches);
+					if(empty($matches[1]) == FALSE && empty($matches[2]) == FALSE) {
+						foreach($matches[2] as $channel) {
+							$snippet_title = $matches[1][$i];
+							$params = array(
+								'post_title' => $snippet_title,
+								'item'			 => 'Audio',
+								'channel'		 => $channel
+							);
+
+							$item = $this->route('/sys/posts/get/', $params);
+
+							// if item exists at path and channel
+							if(isset($item->data) && count($item->data) != 0) {
+								$audio_at_channel = $item->data[0]->audio_at_channel;
+								$output = str_ireplace("[S:" . $snippet_title . "|Audio|Channel=" . $channel . "]", $audio_at_channel, $output);
+							}
+						$i++;
+						}
+					}
+					unset($matches);
+
+					// process [S:Title|Video|Channel=A]
+					$i = 0;
+					$video_at_channel = '';
+					preg_match_all("@\[S:(.*?)\|Video\|Channel=(.*?)\]@i", $output, $matches);
+					if(empty($matches[1]) == FALSE && empty($matches[2]) == FALSE) {
+						foreach($matches[2] as $channel) {
+							$snippet_title = $matches[1][$i];
+							$params = array(
+								'post_title' => $snippet_title,
+								'item'			 => 'Video',
+								'channel'		 => $channel
+							);
+
+							$item = $this->route('/sys/posts/get/', $params);
+
+							// if item exists at path and channel
+							if(isset($item->data) && count($item->data) != 0) {
+								$video_at_channel = $item->data[0]->video_at_channel;
+								$output = str_ireplace("[S:" . $snippet_title . "|Video|Channel=" . $channel . "]", $video_at_channel, $output);
+							}
+						$i++;
+						}
+					}
+					unset($matches);
+
+					// process [S:Title|File|Channel=A]
+					$i = 0;
+					$file_at_channel = '';
+					preg_match_all("@\[S:(.*?)\|File\|Channel=(.*?)\]@i", $output, $matches);
+					if(empty($matches[1]) == FALSE && empty($matches[2]) == FALSE) {
+						foreach($matches[2] as $channel) {
+							$snippet_title = $matches[1][$i];
+							$params = array(
+								'post_title' => $snippet_title,
+								'item'			 => 'File',
+								'channel'		 => $channel
+							);
+
+							$item = $this->route('/sys/posts/get/', $params);
+
+							// if item exists at path and channel
+							if(isset($item->data) && count($item->data) != 0) {
+								$file_at_channel = $item->data[0]->file_at_channel;
+								$output = str_ireplace("[S:" . $snippet_title . "|File|Channel=" . $channel . "]", $file_at_channel, $output);
+							}
+						$i++;
 						}
 					}
 					unset($matches);
@@ -292,6 +446,9 @@
 					$output = str_ireplace("[P:Keywords|Format=List]", $post->data[0]->post_keywords_list, $output);
 					$output = str_ireplace("[P:Categories]", $post->data[0]->post_categories, $output);
 					$output = str_ireplace("[P:Categories|Format=List]", $post->data[0]->post_categories_list, $output);
+
+					// process [C:COMPONENT|Param1=VALUE|Param2=VALUE|...] command
+
 
 				} else {
 					$this->throwError('Selected theme and layout does not exist.',500,$type='notfound');

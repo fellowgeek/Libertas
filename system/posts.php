@@ -56,6 +56,7 @@
 				'post_theme' =>				array('data_type' => 'varchar(255)',		'required' => FALSE),
 				'post_views' =>				array('data_type' => 'integer',				'required' => FALSE),
 				'post_status' =>			array('data_type' => 'varchar(255)',		'required' => FALSE),
+				'OCDT' =>					array()
 			);
 
 
@@ -146,11 +147,11 @@
 				if(isset($params['channel']) == TRUE && $params['channel'] != '' && isset($params['item']) == TRUE && $params['item'] == 'File') {
 					$file_at_channel = '';
 
-					preg_match_all("@\[File:((.*?)\.(.*))(.*?)\|channel=(.*?)(\|(.*?))?\]@i", $post_text, $matches);
+					preg_match_all("@\[File:(.*?)\|((.*?)\|)?channel=(.*?)(\|(.*?))?\]@i", $post_text, $matches);
 
-					if(empty($matches[1]) == FALSE && empty($matches[5]) == FALSE) {
+					if(empty($matches[1]) == FALSE && empty($matches[4]) == FALSE) {
 						$i = 0;
-						foreach($matches[5] as $matched_channel) {
+						foreach($matches[4] as $matched_channel) {
 							if($matched_channel == $params['channel']) {
 								$file_at_channel = $matches[1][$i];
 							}
@@ -220,7 +221,7 @@
 				$this->data[0]->post_author = $post_author;
 
 				// process timestamp
-				$timestamp = time(); // replace with OCDT
+				$timestamp =  strtotime($this->data[0]->OCDT); // replace with OCDT
 				$this->data[0]->post_timestamp = $timestamp;
 
 				// process tags
