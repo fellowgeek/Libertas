@@ -33,6 +33,7 @@
 	require_once 'functions.php';
 	require_once 'OObject.php';                                                           // the base object for all obray objects (basically everything will extend this or a class that has already extended it)
 	require_once 'ODBO.php';                                                              // object that extends OObject but includes database functionality and table definition support
+	require_once 'OUsers.php';
 
 	if (!class_exists( 'OObject' )) { die(); }
 
@@ -137,20 +138,20 @@
 
 			switch($content_type){  		                                                        // handle OObject content types
 
-    			 case 'application/json':                                                           // Handle JSON (default)
+    			 case 'application/json':                                                            // Handle JSON (default)
 
 					$obj->runtime = (microtime(TRUE) - $start_time)*1000;
 					echo json_encode($obj,JSON_PRETTY_PRINT|JSON_NUMERIC_CHECK);
 					break;
 
-    			 case 'text/html':                                                                  // Handle HTML
+    			 case 'text/html':                                                                   // Handle HTML
 
     			 	$obj->runtime = (microtime(TRUE) - $start_time)*1000;
-    			 	if(!headers_sent()){ header("Server-Runtime: " . $obj->runtime . "ms" ); }    	// set header runtime
+    			 	if(!headers_sent()){ header("Server-Runtime: " . $obj->runtime . "ms" ); }    			// set header runtime
     			 	echo $obj->html;
 					break;
 
-    			 case 'application/xml':                                                            // Handle XML
+    			 case 'application/xml':                                                             // Handle XML
 
     			    break;
 
@@ -161,6 +162,8 @@
 				3.	Returning the final object for output
 
 			*****************************************************************************************/
+
+
 
 			return $obj;
 
