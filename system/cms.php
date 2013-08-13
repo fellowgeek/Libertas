@@ -44,11 +44,75 @@
 			$this->missing('', $params=array(), $direct=TRUE);
 		}
 
+		// parse lists ( handler )
+		function parse_lists_handler($matches,$close=false) {
+			$this->listtypes = array("*" => "ul", "#" => "ol");
+			$output='';
+
+			if($close == true) {
+				$newlevel = 0;
+			} else {
+				$newlevel = strlen($matches[1]);
+			}
+			while ($this->list_level != $newlevel) {
+				$listchar = substr($matches[1], -1);
+				if(empty($listchar) == FALSE) {
+					$listtype = $this->listtypes[$listchar];
+				}
+				if ($this->list_level > $newlevel) {
+					$listtype = '/' . array_pop($this->list_level_types);
+					$this->list_level--;
+				} else {
+					$this->list_level++;
+					array_push($this->list_level_types, $listtype);
+				}
+				$output .= "<{$listtype}>\n";
+			}
+			if ($close) return $output;
+			$output .= "<li>" . $matches[2] . "</li>";
+			return $output;
+		}
+
+		// process lists ( line )
+		function parse_lists_line($line) {
+			$line_regexes=array("list" => "^([\*\*]+)(.*?)$");
+			$this->stop = FALSE;
+			$this->stop_all = FALSE;
+			$called["list"] = FALSE;
+			foreach($line_regexes as $func => $regex) {
+				if(preg_match("/$regex/i", $line, $matches)) {
+					$called[$func] = TRUE;
+					$line = $this->parse_lists_handler($matches);
+					if ($this->stop || $this->stop_all) break;
+				}
+			}
+			if (($this->list_level > 0) && !$called["list"]) $line = $this->parse_lists_handler(FALSE, TRUE) . $line;
+			return $line;
+		}
+
+
+		// process lists ( main )
+		public function parse_lists($text) {
+			$output="";
+			$this->list_level_types = array();
+			$this->list_level = 0;
+			$lines = explode("\n", $text);
+			foreach ($lines as $line) {
+				$line = $this->parse_lists_line($line);
+				$output .= "\n" . $line;
+			}
+	    return $output;
+		}
+
 		public function parser($text, $protocol, $paragraphs=TRUE) {
 
 			// process <nowiki></nowiki> tags
-			preg_match("@<nowiki>(.*?)<\/nowiki>@s", $text, $matches);
-			print_r($matches);
+			preg_match_all("@<nowiki>(.*?)<\/nowiki>@s", $text, $matches);
+			if(empty($matches[1]) == FALSE) {
+				foreach($matches[1] as $nowiki) {
+					$text = str_ireplace("<nowiki>" . $nowiki . "</nowiki>", "[Base64:" . base64_encode($nowiki) . "]", $text);
+				}
+			}
 			unset($matches);
 
 			// paragraphs
@@ -402,8 +466,10 @@
 			// page break after in print
 			$text = preg_replace("@-8<-\n@","\n<div style=\"page-break-after: always;\"></div>\n",$text);
 
+
+			$text = $this->parse_lists($text);
+
 			/*
-			$text = preg_replace("@@", "", $text);
 			$text = preg_replace("@@", "", $text);
 			$text = preg_replace("@@", "", $text);
 			$text = preg_replace("@@", "", $text);
