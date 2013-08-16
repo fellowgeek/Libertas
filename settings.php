@@ -28,8 +28,9 @@ define('__LAYOUT__', 'index.html');
 define('__ROUTES__',
 	serialize(
 		array(
-			'sys' => __SELF__.'system/',
-			'com' => __SELF__.'components/',
+			'cmd' => __SELF__ . '/',
+			'sys' => __SELF__ . 'system/',
+			// do not chnage this route
 			'c' => __PATH_TO_CORE__
 		)
 	)
@@ -59,6 +60,6 @@ define('__DBCharSet__','utf8');
 ******************************************************/
 
 // the maximium allowed failed login attempts before an account is locked
-define('__MAX_FAILED_LOGIN_ATTEMPTS__',10);
+define('__MAX_FAILED_LOGIN_ATTEMPTS__', 10);
 
 ?>

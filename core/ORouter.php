@@ -147,7 +147,7 @@
     			 case 'text/html':                                                                   // Handle HTML
 
     			 	$obj->runtime = (microtime(TRUE) - $start_time)*1000;
-    			 	if(!headers_sent()){ header("Server-Runtime: " . $obj->runtime . "ms" ); }    			// set header runtime
+    			 	if(!headers_sent()){ header("Server-Runtime: " . $obj->runtime . "ms" ); }    	// set header runtime
     			 	echo $obj->html;
 					break;
 

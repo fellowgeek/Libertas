@@ -64,17 +64,12 @@
 			$this->permissions = array(
 				'object' => 'any',
 				'get' => 'any',
-				'add' => 'any',
-				'update' => 'any',
-				'delete' => 'any',
-				'out' => 'any',
-				'getImageAtChannel' => 'any'
+				'add' => 1,
+				'update' => 1,
+				'delete' => 1,
+				'out' => 'any'
 			);
 
-		}
-
-		public function getImageAtChannel($params=array()) {
-			parent::get($params);
 		}
 
 		public function get($params=array()) {
@@ -82,6 +77,9 @@
 			parent::get($params);
 
 			if(isset($this->data) && count($this->data) != 0) {
+
+				// add new line to the begining and end of page text
+				$this->data[0]->page_text = "\n" . $this->data[0]->page_text . "\n";
 				$page_text = $this->data[0]->page_text;
 
 				// process image at channel [P:Image|Channel=A]
