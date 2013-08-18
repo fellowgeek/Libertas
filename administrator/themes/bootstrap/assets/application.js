@@ -1,12 +1,17 @@
-
-$(document).ready(function(){
+// task to be done when page ready
+$(document).ready(function() {
     // init jquery masonry layout
     init_masonry();
 });
 
+// enhance text editor using behave.js
+if(document.getElementById('pageText') != undefined) {
+	var editor = new Behave({
+	    textarea: document.getElementById('pageText')
+	});
+}
 
-//	javascript code to display media items using masonry
-
+// display media items using masonry
 var $container = $('.media-content');
 
 var gutter = 15;
@@ -31,7 +36,7 @@ function setReArrange() {
 	});
 }
 
-$(window).resize(function(){
+$(window).resize(function() {
 	containerWidth = $container.width();
 	if(reArrange == true) {
 		$container.masonry('option', {
@@ -43,7 +48,6 @@ $(window).resize(function(){
 });
 
 function init_masonry() {
-
     $container.imagesLoaded( function() {
         $container.masonry({
             itemSelector : '.item',

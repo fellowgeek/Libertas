@@ -50,7 +50,6 @@
 			//new dBug($path);
 			//new dBug($params);
 
-
 			// set the content type
 			$this->setContentType('text/html');
 
@@ -60,8 +59,12 @@
 			// set the theme
 			$theme = 'bootstrap';
 
-			// set the layout
+			// default layout
 			$layout = 'dashboard.html';
+
+			// set the layout based on the path
+			if($path == '/admin/newPage/') { $layout = 'newpage.html'; }
+
 
 			// if theme / layout exists
 			if(file_exists(__SELF__ . 'administrator/themes/' . $theme . '/' . $layout) == TRUE) {

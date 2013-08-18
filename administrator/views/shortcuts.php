@@ -1,6 +1,6 @@
 <div class="shortcuts">
 	<ul>
-		<li><a class="btn btn-info"><i class="icon-pencil icon"></i><br/>+ Page</a></li>
+		<li><a class="btn btn-info" href="/admin/newPage/"><i class="icon-pencil icon"></i><br/>+ Page</a></li>
 		<li><a class="btn btn-info"><i class="icon-user icon"></i><br/>+ User</a></li>
 		<li><a class="btn btn-info"><i class="icon-file-text-alt icon"></i><br/>Content</a></li>
 		<li><a class="btn btn-info"><i class="icon-puzzle-piece icon"></i><br/>Components</a></li>

@@ -14,6 +14,7 @@
         <link href="assets/styles.css" rel="stylesheet" media="screen">
         <script src="vendors/jquery-1.9.1.min.js"></script>
         <script src="bootstrap/js/bootstrap.min.js"></script>
+        <script src="vendors/behave.js"></script>
         <script src="vendors/imagesloaded.min.js"></script>
         <script src="vendors/masonry.min.js"></script>
     </head>
@@ -113,61 +114,83 @@
                 <!--/span-->
                 <div class="admin-container">
                     <div class="row-fluid">
-                        <div class="span6 hidden-phone">
+                        <div class="span9">
                             <!-- block -->
                             <div class="block">
                                 <div class="navbar navbar-inner block-header">
-                                    <div class="muted pull-left"><i class="icon-bar-chart"></i> Quick Stats</div>
+                                    <div class="muted pull-left"><i class="icon-pencil"></i> Add New Page</div>
                                 </div>
-                                <div class="block-content collapse in">[A:Stats]</div>
+                                <div class="block-content collapse in">
+									<br/>
+									<form class="form-horizontal">
+                                      <fieldset>
+                                        <!-- page title -->
+                                        <div class="control-group">
+                                          <label class="control-label" for="pageTitle">Title</label>
+                                          <div class="controls">
+                                            <input class="span11" id="pageTitle" type="text" value="">
+                                          </div>
+                                        </div>
+                                        <!-- page path -->
+                                        <div class="control-group">
+                                          <label class="control-label" for="pagePath">Path</label>
+                                          <div class="controls">
+                                            <input class="span11" id="pagePath" type="text" value="">
+                                          </div>
+                                        </div>
+
+										<!-- toolbar -->
+                                        <div class="control-group">
+                                          <div class="controls">
+											<div class="btn-toolbar">
+											  <div class="btn-group">
+												<button class="btn"><i class="icon-font"></i> Heading</button>
+												<button class="btn dropdown-toggle" data-toggle="dropdown">
+													<span class="caret"></span>
+												</button>
+												<ul class="dropdown-menu">
+													<li><a href="#">Heading Level 1</a></li>
+													<li><a href="#">Heading Level 2</a></li>
+													<li><a href="#">Heading Level 3</a></li>
+													<li><a href="#">Heading Level 4</a></li>
+													<li><a href="#">Heading Level 5</a></li>
+													<li><a href="#">Heading Level 6</a></li>
+												</ul>
+											  </div>
+											  <div class="btn-group">
+												<button class="btn"><i class="icon-bold"></i></button>
+												<button class="btn"><i class="icon-italic"></i></button>
+												<button class="btn"><i class="icon-link"></i></button>
+												<button class="btn"><i class="icon-external-link"></i></button>
+												<button class="btn"><i class="icon-list-ul"></i></button>
+												<button class="btn"><i class="icon-list-ol"></i></button>
+												<button class="btn"><i class="icon-quote-right"></i></button>
+												<button class="btn"><i class="icon-cut"></i></button>
+												<button class="btn"><i class="icon-picture"></i></button>
+												<button class="btn"><i class="icon-music"></i></button>
+												<button class="btn"><i class="icon-film"></i></button>
+												<button class="btn"><i class="icon-file"></i></button>
+											  </div>
+											</div>
+											<textarea  class="span11" id="pageText" rows="20"></textarea>
+                                          </div>
+                                        </div>
+										<!-- toolbar -->
+                                      </fieldset>
+                                    </form>
+                                </div>
                             </div>
                             <!-- /block -->
                         </div>
-                        <div class="span6">
+                        <div class="span3">
                             <!-- block -->
                             <div class="block">
                                 <div class="navbar navbar-inner block-header">
-                                    <div class="muted pull-left"><i class="icon-bookmark-empty"></i> Quick Shortcuts</div>
+                                    <div class="muted pull-left"><i class="icon-pencil"></i> Page Attributes</div>
                                 </div>
-                                <div class="block-content collapse in">[A:Shortcuts]</div>
-                            </div>
-                            <!-- /block -->
-                        </div>
-                    </div>
-                    <div class="row-fluid">
-                        <div class="span6">
-                            <!-- block -->
-                            <div class="block">
-                                <div class="navbar navbar-inner block-header">
-                                    <div class="muted pull-left"><i class="icon-file-text-alt"></i> Pending Approval</div>
-                                    <div class="pull-right"><span class="badge">[A:Pending|Count]</span>
-                                    </div>
+                                <div class="block-content collapse in">
+	                                <br/><br/><br/><br/><br/><br/><br/>
                                 </div>
-                                <div class="block-content collapse in">[A:Pending]</div>
-                            </div>
-                            <!-- /block -->
-                        </div>
-                        <div class="span6">
-                            <!-- block -->
-                            <div class="block">
-                                <div class="navbar navbar-inner block-header">
-                                    <div class="muted pull-left"><i class="icon-file-text-alt"></i> Drafts</div>
-                                    <div class="pull-right"><span class="badge">[A:Drafts|Count]</span>
-                                    </div>
-                                </div>
-                                <div class="block-content collapse in">[A:Drafts]</div>
-                            </div>
-                            <!-- /block -->
-                        </div>
-                    </div>
-                    <div class="row-fluid">
-                        <div class="span12">
-                            <!-- block -->
-                            <div class="block">
-                                <div class="navbar navbar-inner block-header">
-                                    <div class="muted pull-left"><i class="icon-picture"></i> Recent Images</div>
-                                </div>
-                                <div class="block-content collapse in">[A:Images]</div>
                             </div>
                             <!-- /block -->
                         </div>
