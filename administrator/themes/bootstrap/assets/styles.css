@@ -1,3 +1,8 @@
+/* main container */
+.admin-container {
+	margin: 30px;
+}
+
 /* shortcuts */
 .shortcuts ul {
 	list-style: none;
@@ -53,4 +58,22 @@
   display: inline-block;
   vertical-align: top;
   margin-top: 15px;
+  float: left;
+}
+
+/* responsive override */
+@media (min-width: 768px) and (max-width: 979px) {
+	body {
+		padding-top: 0px;
+	}
+}
+
+@media (max-width: 767px) {
+	body {
+		padding-top: 0px;
+	}
+
+	.admin-container {
+		margin: 0px;
+	}
 }

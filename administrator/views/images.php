@@ -88,5 +88,5 @@
 	</div>
 	<div class="clearfix"></div>
 	<br/>
-    <a class="btn">See All <i class="icon-chevron-right"></i></a>
+    <a class="btn btn-info">See All <i class="icon-chevron-right"></i></a>
 </div>

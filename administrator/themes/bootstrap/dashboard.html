@@ -2,9 +2,12 @@
 <html class="no-js">
 
     <head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
         <title>Admin Home Page</title>
         <!-- Bootstrap -->
-        <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
         <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
         <link href="bootstrap/css/font-awesome.min.css" rel="stylesheet" media="screen">
         <link href="assets/theme.css" rel="stylesheet" media="screen">
@@ -103,34 +106,10 @@
         </div>
         <div class="container-fluid">
             <div class="row-fluid">
-                <div class="span3" id="sidebar">
-                    <ul class="nav nav-list bs-docs-sidenav nav-collapse collapse">
-                        <li class="active">
-                            <a href="index.html"><i class="icon-chevron-right"></i>Dashboard</a>
-                        </li>
-                        <li>
-                            <a href="stats.html"><i class="icon-chevron-right"></i>Content</a>
-                        </li>
-                        <li>
-                            <a href="buttons.html"><i class="icon-chevron-right"></i>Components</a>
-                        </li>
-                        <li>
-                            <a href="interface.html"><i class="icon-chevron-right"></i>Users</a>
-                        </li>
-                        <li>
-                            <a href="calendar.html"><i class="icon-chevron-right"></i>Settings</a>
-                        </li>
-                        <li>
-                            <a href="calendar.html"><i class="icon-chevron-right"></i>Help</a>
-                        </li>
-                    </ul>
-                </div>
-
                 <!--/span-->
-                <div class="span9" id="content">
-					<br/>
+                <div class="admin-container">
                     <div class="row-fluid">
-                        <div class="span6">
+                        <div class="span6 hidden-phone">
                             <!-- block -->
                             <div class="block">
                                 <div class="navbar navbar-inner block-header">
@@ -182,9 +161,9 @@
                             <!-- block -->
                             <div class="block">
                                 <div class="navbar navbar-inner block-header">
-                                    <div class="muted pull-left"><i class="icon-picture"></i> Media</div>
+                                    <div class="muted pull-left"><i class="icon-picture"></i> Recent Images</div>
                                 </div>
-                                <div class="block-content collapse in">[A:Media]</div>
+                                <div class="block-content collapse in">[A:Images]</div>
                             </div>
                             <!-- /block -->
                         </div>

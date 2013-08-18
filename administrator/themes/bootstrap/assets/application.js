@@ -50,7 +50,7 @@ function init_masonry() {
             gutter: 15,
 			isResizable: true,
             isAnimated: true,
-            columnWidth: getAdjustedWidth(containerWidth)
+			columnWidth: getAdjustedWidth(containerWidth)
         });
 
     });

@@ -80,8 +80,10 @@
 			$output = str_ireplace("[A:Shortcuts]", include_view( __SELF__ . 'administrator/views/shortcuts.php'), $output);
 			$output = str_ireplace("[A:Stats]", include_view( __SELF__ . 'administrator/views/stats.php'), $output);
 			$output = str_ireplace("[A:Pending]", include_view( __SELF__ . 'administrator/views/pending.php'), $output);
+			$output = str_ireplace("[A:Pending|Count]", rand(1,100), $output);
 			$output = str_ireplace("[A:Drafts]", include_view( __SELF__ . 'administrator/views/drafts.php'), $output);
-			$output = str_ireplace("[A:Media]", include_view( __SELF__ . 'administrator/views/media.php'), $output);
+			$output = str_ireplace("[A:Drafts|Count]", rand(1,100), $output);
+			$output = str_ireplace("[A:Images]", include_view( __SELF__ . 'administrator/views/images.php'), $output);
 
 			$this->html = $output;
 		}
