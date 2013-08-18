@@ -45,7 +45,11 @@
 		}
 
 		// admin output method
-		public function out($params) {
+		public function out($path, $params, $direct=TRUE) {
+
+			//new dBug($path);
+			//new dBug($params);
+
 
 			// set the content type
 			$this->setContentType('text/html');
@@ -57,7 +61,7 @@
 			$theme = 'bootstrap';
 
 			// set the layout
-			$layout = 'index.html';
+			$layout = 'dashboard.html';
 
 			// if theme / layout exists
 			if(file_exists(__SELF__ . 'administrator/themes/' . $theme . '/' . $layout) == TRUE) {
@@ -70,6 +74,14 @@
 				// fix for themes built on skell.js
 				$output = preg_replace("@_skel_config\.prefix ?= ?\"(.*?)\"@i", "_skel_config.prefix = \"" . $protocol . __SITE__ . "/administrator/themes/". $theme. "/$1\"", $output);
 			}
+
+			// process admin dashboard
+
+			$output = str_ireplace("[A:Shortcuts]", include_view( __SELF__ . 'administrator/views/shortcuts.php'), $output);
+			$output = str_ireplace("[A:Stats]", include_view( __SELF__ . 'administrator/views/stats.php'), $output);
+			$output = str_ireplace("[A:Pending]", include_view( __SELF__ . 'administrator/views/pending.php'), $output);
+			$output = str_ireplace("[A:Drafts]", include_view( __SELF__ . 'administrator/views/drafts.php'), $output);
+			$output = str_ireplace("[A:Media]", include_view( __SELF__ . 'administrator/views/media.php'), $output);
 
 			$this->html = $output;
 		}

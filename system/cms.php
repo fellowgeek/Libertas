@@ -430,6 +430,7 @@
 					$file_hidden = '';
 					$file_alignment = '';
 					$file_description = '';
+					$file_download = '';
 
 					foreach($file_params as $file_param) {
 						// hidden
@@ -444,6 +445,10 @@
 						preg_match("@^Description=(.*?)$@i", $file_param, $matched_param);
 						if(isset($matched_param[1]) == TRUE) { $file_description = $matched_param[1]; }
 						unset($matched_param);
+						// HTML5 download
+						preg_match("@^Download=(.*?)$@i", $file_param, $matched_param);
+						if(isset($matched_param[1]) == TRUE) { $file_download = $matched_param[1]; }
+						unset($matched_param);
 					}
 
 					$file_html = '';
@@ -451,6 +456,7 @@
 					if($file_hidden == 'YES') { $file_html .= 'style="display: none;"'; } else { if($file_alignment != '') { $file_html .= 'style="float: ' . $file_alignment . ';"'; } }
 					$file_html .= '>';
 					$file_html .= '<a href="' . $protocol . __SITE__ . '/files/' . $file . '" ';
+					if($file_download != '') { $file_html .= 'download'; }
 					$file_html .= '>' . $file . '</a>';
 					if($file_description != '') { $file_html .= '<p>' . $file_description . '</p>'; }
 					$file_html .= '</div>' . "\n";
@@ -482,7 +488,10 @@
 
 			// route to administrator panel
 			if(isset($path_array[1]) == TRUE && $path_array[1] == 'admin') {
-				$this->html = $this->route('/cmd/administrator/admin/out/', $params, $direct)->html;
+				//new dBug($path_array);
+				$oobject_admin = $this->route('/cmd/administrator/admin/');
+				$oobject_admin->out($path, $params, $direct);
+				$this->html = $oobject_admin->html;
 			} else {
 				// default object
 				$page = new stdClass();
