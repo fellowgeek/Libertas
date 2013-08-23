@@ -6,14 +6,22 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <title>Admin Home Page</title>
-        <!-- Bootstrap -->
-		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-        <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
-        <link href="bootstrap/css/font-awesome.min.css" rel="stylesheet" media="screen">
+        <!-- styles -->
+		<link href="assets/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <!-- <link href="assets/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen"> -->
+        <link href="assets/css/font-awesome.min.css" rel="stylesheet" media="screen">
+        <link href="vendors/datepicker.css" rel="stylesheet" media="screen">
+        <link href="vendors/uniform.default.css" rel="stylesheet" media="screen">
+        <link href="vendors/select2.css" rel="stylesheet" media="screen">
         <link href="assets/theme.css" rel="stylesheet" media="screen">
         <link href="assets/styles.css" rel="stylesheet" media="screen">
-        <script src="vendors/jquery-1.9.1.min.js"></script>
-        <script src="bootstrap/js/bootstrap.min.js"></script>
+		<!-- javascript -->
+        <script src="vendors/jquery-1.9.1.js"></script>
+        <script src="assets/js/bootstrap.min.js"></script>
+        <script src="vendors/jquery.uniform.min.js"></script>
+        <script src="vendors/select2.min.js"></script>
+        <script src="vendors/bootstrap-datepicker.js"></script>
+        <script src="vendors/behave.js"></script>
         <script src="vendors/imagesloaded.min.js"></script>
         <script src="vendors/masonry.min.js"></script>
     </head>
@@ -117,7 +125,7 @@
                             <!-- block -->
                             <div class="block">
                                 <div class="navbar navbar-inner block-header">
-                                    <div class="muted pull-left"><i class="icon-bar-chart"></i> Quick Stats</div>
+                                    <div class="pull-left"><i class="icon-th-large"></i> Quick Stats</div>
                                 </div>
                                 <div class="block-content collapse in">[A:Stats]</div>
                             </div>
@@ -127,7 +135,7 @@
                             <!-- block -->
                             <div class="block">
                                 <div class="navbar navbar-inner block-header">
-                                    <div class="muted pull-left"><i class="icon-bookmark-empty"></i> Quick Shortcuts</div>
+                                    <div class="pull-left"><i class="icon-th-large"></i> Quick Shortcuts</div>
                                 </div>
                                 <div class="block-content collapse in">[A:Shortcuts]</div>
                             </div>
@@ -139,7 +147,7 @@
                             <!-- block -->
                             <div class="block">
                                 <div class="navbar navbar-inner block-header">
-                                    <div class="muted pull-left"><i class="icon-file-text-alt"></i> Pending Approval</div>
+                                    <div class="pull-left"><i class="icon-th-large"></i> Pending Approval</div>
                                     <div class="pull-right"><span class="badge">[A:Pending|Count]</span>
                                     </div>
                                 </div>
@@ -151,7 +159,7 @@
                             <!-- block -->
                             <div class="block">
                                 <div class="navbar navbar-inner block-header">
-                                    <div class="muted pull-left"><i class="icon-file-text-alt"></i> Drafts</div>
+                                    <div class="pull-left"><i class="icon-th-large"></i> Drafts</div>
                                     <div class="pull-right"><span class="badge">[A:Drafts|Count]</span>
                                     </div>
                                 </div>
@@ -165,7 +173,7 @@
                             <!-- block -->
                             <div class="block">
                                 <div class="navbar navbar-inner block-header">
-                                    <div class="muted pull-left"><i class="icon-picture"></i> Recent Images</div>
+                                    <div class="pull-left"><i class="icon-th-large"></i> Recent Images</div>
                                 </div>
                                 <div class="block-content collapse in">[A:Images]</div>
                             </div>

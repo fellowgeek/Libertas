@@ -63,7 +63,7 @@
 
 			$this->permissions = array(
 				'object' => 'any',
-				'get' => 'any',
+				'get' => 1,
 				'add' => 1,
 				'update' => 1,
 				'delete' => 1,

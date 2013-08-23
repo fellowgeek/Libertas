@@ -1,6 +1,7 @@
 /* main container */
 .admin-container {
-	margin: 30px;
+	width: 1300px;
+	margin: 0 auto 0 auto;
 }
 
 /* shortcuts */
@@ -21,6 +22,20 @@
 .shortcuts .icon {
 	font-size: 35px;
 }
+
+/* commands */
+.commands ul {
+	list-style: none;
+	margin: 10px;
+}
+
+.commands ul li a {
+	float: left;
+	margin: 0px 10px 10px 0px;
+	width: 75px;
+	font-size: 12px;
+}
+
 
 /* quick stats */
 .stats {
@@ -61,19 +76,20 @@
   float: left;
 }
 
-/* responsive override */
-@media (min-width: 768px) and (max-width: 979px) {
-	body {
-		padding-top: 0px;
-	}
+/* admin ui elements */
+.admin-box {
+	margin: 20px;
 }
 
-@media (max-width: 767px) {
-	body {
-		padding-top: 0px;
-	}
-
-	.admin-container {
-		margin: 0px;
-	}
+.form-horizontal .control-label {
+	text-align: left;
+	width: 70px;
 }
+
+
+.form-horizontal .controls {
+	margin-left: 97px;
+}
+
+
+

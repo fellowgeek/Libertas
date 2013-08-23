@@ -2,6 +2,9 @@
 $(document).ready(function() {
     // init jquery masonry layout
     init_masonry();
+
+    $(".datepicker").datepicker();
+    $(".uniform_on").uniform();
 });
 
 // enhance text editor using behave.js

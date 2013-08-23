@@ -1,3 +1,10 @@
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+* {
+	font-family: 'Open Sans', sans-serif;
+}
+
 /** Home Page **/
 body {
 	padding-top: 50px;
@@ -143,3 +150,15 @@ body {
   bottom: 270px;
 }
 
+.block-header {
+	font-family: 'Open Sans', sans-serif;
+	text-transform: uppercase;
+}
+
+.form-horizontal .control-group {
+	margin-bottom: 10px;
+}
+
+textarea {
+	font-family: monospace;
+}

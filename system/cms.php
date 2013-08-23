@@ -885,9 +885,10 @@
 						// fix the path of all relative href attributes
 						$output = preg_replace("@href=\"(?!(http://)|(https://))(.*?)\"@i", "href=\"" . $protocol . __SITE__ . "/themes/". $theme. "/$3\"", $output);
 						// fix the path of all relative src attributes
-						$output = preg_replace("@src=\"(?!(http://)|(https://)(.*?)\"@i", "src=\"" . $protocol . __SITE__ . "/themes/". $theme. "/$3\"", $output);
+						$output = preg_replace("@src=\"(?!(http://)|(https://))(.*?)\"@i", "src=\"" . $protocol . __SITE__ . "/themes/". $theme. "/$3\"", $output);
 						// fix for themes built on skell.js
 						$output = preg_replace("@_skel_config\.prefix ?= ?\"(.*?)\"@i", "_skel_config.prefix = \"" . $protocol . __SITE__ . "/themes/". $theme. "/$1\"", $output);
+
 					} else {
 						$this->throwError('Page not found.',404,$type='notfound');
 						print("404 Not Found.");

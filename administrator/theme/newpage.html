@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html class="no-js">
+
+    <head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>Admin Home Page</title>
+        <!-- styles -->
+		<link href="assets/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <!-- <link href="assets/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen"> -->
+        <link href="assets/css/font-awesome.min.css" rel="stylesheet" media="screen">
+        <link href="vendors/datepicker.css" rel="stylesheet" media="screen">
+        <link href="vendors/uniform.default.css" rel="stylesheet" media="screen">
+        <link href="vendors/select2.css" rel="stylesheet" media="screen">
+        <link href="assets/theme.css" rel="stylesheet" media="screen">
+        <link href="assets/styles.css" rel="stylesheet" media="screen">
+		<!-- javascript -->
+        <script src="vendors/jquery-1.9.1.js"></script>
+        <script src="assets/js/bootstrap.min.js"></script>
+        <script src="vendors/jquery.uniform.min.js"></script>
+        <script src="vendors/select2.min.js"></script>
+        <script src="vendors/bootstrap-datepicker.js"></script>
+        <script src="vendors/behave.js"></script>
+        <script src="vendors/imagesloaded.min.js"></script>
+        <script src="vendors/masonry.min.js"></script>
+    </head>
+
+    <body>
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container-fluid">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span>
+                     <span class="icon-bar"></span>
+                     <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="#">Libertas</a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right">
+                            <li class="dropdown">
+                                <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-user"></i> [A:User] <i class="caret"></i>
+
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a tabindex="-1" href="#">Profile</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <a tabindex="-1" href="login.html">Logout</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="nav">
+                            <li class="active">
+                                <a href="#">Dashboard</a>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Content <i class="caret"></i>
+
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a tabindex="-1" href="#">A</a></li>
+                                    <li><a tabindex="-1" href="#">B</a></li>
+                                    <li class="divider"></li>
+                                    <li><a tabindex="-1" href="#">C</a></li>
+                                    <li><a tabindex="-1" href="#">D</a></li>
+
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Components <i class="caret"></i>
+
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a tabindex="-1" href="#">A</a></li>
+                                    <li><a tabindex="-1" href="#">B</a></li>
+                                    <li class="divider"></li>
+                                    <li><a tabindex="-1" href="#">C</a></li>
+                                    <li><a tabindex="-1" href="#">D</a></li>
+
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown">Users <i class="caret"></i>
+
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a tabindex="-1" href="#">A</a></li>
+                                    <li><a tabindex="-1" href="#">B</a></li>
+                                    <li class="divider"></li>
+                                    <li><a tabindex="-1" href="#">C</a></li>
+                                    <li><a tabindex="-1" href="#">D</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Settings <i class="caret"></i>
+
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a tabindex="-1" href="#">A</a></li>
+                                    <li><a tabindex="-1" href="#">B</a></li>
+                                    <li class="divider"></li>
+                                    <li><a tabindex="-1" href="#">C</a></li>
+                                    <li><a tabindex="-1" href="#">D</a></li>
+
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#">Help</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--/.nav-collapse -->
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <!--/span-->
+                <div class="admin-container">
+                    <div class="row-fluid">
+                        <div class="span9">
+                            <!-- block -->
+                            <div class="block">
+                                <div class="navbar navbar-inner block-header">
+                                    <div class="pull-left"><i class="icon-th-large"></i> PAGE EDITOR</div>
+                                </div>
+                                <div class="block-content collapse in admin-box">
+									<form class="form-horizontal">
+                                      <fieldset>
+                                        <!-- page title -->
+										<div class="control-group">
+											<label class="control-label" for="pageTitle">Page Title</label>
+											<div class="controls">
+												<input class="span12" id="pageTitle" type="text" value="" placeholder="Page Title">
+											</div>
+										</div>
+                                        <!-- page path -->
+										<div class="control-group">
+											<label class="control-label" for="pagePath">Page Path</label>
+											<div class="controls">
+												<input class="span12" id="pagePath" type="text" value="" placeholder="Path Path">
+											</div>
+										</div>
+										<!-- toolbar -->
+										<div class="btn-toolbar">
+										  <div class="btn-group">
+											<a class="btn" onclick="insertMarkupAtCaret('pageText','=','Heading Level 1','=\n');"><i class="icon-font"></i> Heading</a>
+											<a class="btn dropdown-toggle" data-toggle="dropdown">
+												<span class="caret"></span>
+											</a>
+											<ul class="dropdown-menu">
+												<li><a onclick="insertMarkupAtCaret('pageText','=','Heading Level 1','=\n');">Heading Level 1</a></li>
+												<li><a onclick="insertMarkupAtCaret('pageText','==','Heading Level 2','==\n');">Heading Level 2</a></li>
+												<li><a onclick="insertMarkupAtCaret('pageText','===','Heading Level 3','===\n');">Heading Level 3</a></li>
+												<li><a onclick="insertMarkupAtCaret('pageText','====','Heading Level 4','====\n');">Heading Level 4</a></li>
+												<li><a onclick="insertMarkupAtCaret('pageText','=====','Heading Level 5','=====\n');">Heading Level 5</a></li>
+												<li><a onclick="insertMarkupAtCaret('pageText','======','Heading Level 6','======\n');">Heading Level 6</a></li>
+											</ul>
+										  </div>
+										  <div class="btn-group">
+											<a class="btn" onclick="insertMarkupAtCaret('pageText','\'\'\'','Bold','\'\'\'');"><i class="icon-bold"></i></a>
+											<a class="btn" onclick="insertMarkupAtCaret('pageText','\'\'','Italic','\'\'');"><i class="icon-italic"></i></a>
+											<a class="btn" onclick="insertMarkupAtCaret('pageText','[[','Target Page Title',']]');"><i class="icon-link"></i></a>
+											<a class="btn" onclick="insertMarkupAtCaret('pageText','[http://','Target Page URL',']');"><i class="icon-external-link"></i></a>
+											<a class="btn" onclick="insertMarkupAtCaret('pageText','* ','Bulleted List Item','\n');"><i class="icon-list-ul"></i></a>
+											<a class="btn" onclick="insertMarkupAtCaret('pageText','# ','Numbered List Item','\n');"><i class="icon-list-ol"></i></a>
+											<a class="btn" onclick="insertMarkupAtCaret('pageText','<blockquote>\n','Nothing takes the taste out of peanut butter like unrequited love!','\n</blockquote>\n');"><i class="icon-quote-right"></i></a>
+											<a class="btn" onclick="insertMarkupAtCaret('pageText','\n<nowiki>\n<pre>\n','my problems[98];\nfor(x=0; x<99; x++){\n\tif(problems[x] == girl){\n\t\ti.feelbadfor(you, \'son\');\n\t}\n\telse{}\n}','\n</pre>\n</nowiki>\n');"><i class="icon-code"></i></a>
+											<a class="btn" onclick="insertCodeAtCaret('pageText','\n-8<-\n');"><i class="icon-cut"></i></a>
+											<a class="btn"><i class="icon-picture"></i></a>
+											<a class="btn"><i class="icon-music"></i></a>
+											<a class="btn"><i class="icon-film"></i></a>
+											<a class="btn"><i class="icon-file"></i></a>
+										  </div>
+										</div>
+										<textarea  class="span12" id="pageText" rows="20"></textarea>
+										<div class="clearfix"></div>
+										<br/>
+										<!-- categories -->
+                                        <div class="control-group">
+                                          <label class="control-label" for="pageCategories">Categories</label>
+                                          <div class="controls">
+	                                          <input type="hidden" id="pageCategories" value="Math, Physics, Geography" class="span12" />
+                                          </div>
+                                        </div>
+
+                                        <!--
+                                        <div class="control-group">
+                                          <label class="control-label" for="fileInput">File input</label>
+                                          <div class="controls">
+                                            <input class="input-file uniform_on span12" id="fileInput" type="file">
+                                          </div>
+                                        </div>
+										-->
+
+                                      </fieldset>
+                                    </form>
+
+                                </div>
+                            </div>
+                            <!-- /block -->
+                        </div>
+                        <div class="span3">
+                            <!-- block -->
+                            <div class="block">
+                                <div class="navbar navbar-inner block-header">
+                                    <div class="pull-left"><i class="icon-th-large"></i> PAGE ATTRIBUTES</div>
+                                </div>
+                                <div class="block-content collapse in admin-box">
+									<form class="form-horizontal">
+                                      <fieldset>
+                                        <!-- publish date -->
+										<div class="control-group">
+											<label class="control-label" for="pageDate">Date</label>
+											<div class="controls">
+												<input type="text" class="input-xlarge datepicker span12" id="pageDate" value="">
+											</div>
+										</div>
+										<!-- status -->
+										<div class="control-group">
+											<label class="control-label" for="pageStatus">Status</label>
+											<div class="controls">
+												<select id="pageStatus" class="span12">
+													<option selected>Draft</option><option>Pending</option><option>Published</option><option>Deleted</option>
+												</select>
+											</div>
+										</div>
+										<!-- visibility -->
+										<div class="control-group">
+											<label class="control-label" for="pageVisibility">Visibility</label>
+											<div class="controls">
+												<select id="pageVisibility" class="span12">
+													<option selected>Public</option><option>User</option><option>Author</option><option>Editor</option><option>Administrator</option>
+												</select>
+											</div>
+										</div>
+										<!-- theme -->
+										<div class="control-group">
+											<label class="control-label" for="pageTheme">Theme</label>
+											<div class="controls">
+												<select id="pageTheme" class="span12">
+													<option selected>Theme 1</option><option>Theme 2</option><option>Theme 3</option>
+												</select>
+											</div>
+										</div>
+										<!-- layout -->
+										<div class="control-group">
+											<label class="control-label" for="pageLayout">Layout</label>
+											<div class="controls">
+												<select id="pageLayout" class="span12">
+													<option selected>Layout 1</option><option>Layout 2</option><option>Layout 3</option>
+												</select>
+											</div>
+										</div>
+										<!-- SSL -->
+										<div class="control-group">
+											<label class="control-label" for="pageSSL">SSL</label>
+											<div class="controls">
+												<select id="pageSSL" class="span12">
+													<option selected>No</option><option>Yes</option>
+												</select>
+												<p class="help-block"><small>Only enable this if SSL certificate is installed, and the page contains sensitive information.</small></p>
+											</div>
+										</div>
+
+
+										<!-- --- --- --- --->
+                                      </fieldset>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- block -->
+                            <div class="block">
+                                <div class="navbar navbar-inner block-header">
+                                    <div class="pull-left"><i class="icon-th-large"></i> Commands</div>
+                                </div>
+                                <div class="block-content collapse in admin-box">
+									<div class="commands">
+										<ul>
+											<li><a class="btn btn-info">Save</a></li>
+											<li><a class="btn btn-info">Preview</a></li>
+											<li><a class="btn btn-info">Publish</a></li>
+											<li><a class="btn btn-info">Delete</a></li>
+										</ul>
+									</div
+                                </div>
+                            </div>
+                            <!-- /block -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <footer>
+                [A:Footer]
+            </footer>
+        </div>
+        <!--/.fluid-container-->
+		<!-- javascript -->
+        <script src="assets/new-page.js"></script>
+		<script>
+			$('#pageCategories').select2({
+				tags: ['ared', 'green', 'blue'],
+				tokenSeparators: [',']
+				});
+		</script>
+
+    </body>
+</html>
