@@ -553,6 +553,7 @@
 
 					// if theme / layout exists
 					if(file_exists(__SELF__ . 'themes/' . $theme . '/' . $layout) == TRUE) {
+
 						// load theme / layout in memory
 						$output = file_get_contents(__SELF__ . 'themes/' . $theme . '/' . $layout);
 						// fix the path of all relative href attributes
@@ -870,7 +871,8 @@
 						unset($matches);
 
 					} else {
-						$this->throwError('Selected theme and layout does not exist.',500,$type='notfound');
+						$this->throwError('Page not found.',404,$type='notfound');
+						print("404 Not Found.");
 					}
 
 				// if page does not exist show 404 message / html

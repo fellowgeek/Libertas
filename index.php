@@ -1,4 +1,5 @@
 <?php
+
 	// load settings
 	require_once 'settings.php';
 
@@ -33,4 +34,5 @@
 
 	// call ORouter's 'route' function
 	$router->route($_SERVER['REQUEST_URI']);
+
 ?>
