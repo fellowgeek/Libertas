@@ -19,7 +19,7 @@ define('__DebugMode__',TRUE);
 
 define('__SITE__', 'libertas.erfan.me');
 define('__THEME__', 'bootstrap');
-define('__LAYOUT__', 'index.html');
+define('__LAYOUT__', 'page-layout-1.html');
 
 /******************************************************
     DEFINE AVAILABLE ROUTES
@@ -30,6 +30,7 @@ define('__ROUTES__',
 		array(
 			'cmd' => __SELF__ . '/',
 			'sys' => __SELF__ . 'system/',
+			'com' => __SELF__ . 'components/',
 			// do not chnage this route
 			'c' => __PATH_TO_CORE__
 		)

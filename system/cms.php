@@ -104,6 +104,92 @@
 	    return $output;
 		}
 
+		// process components [C:COMPONENT|Param1=Value|Param2=Value|...]
+		public function process_components($text, $protocol) {
+
+			preg_match_all("@\[C:(.*?)\|(.*?)\]@i", $text, $matches);
+
+			if(isset($matches[1]) == TRUE && isset($matches[4]) == TRUE) {
+				$i = 0;
+				foreach($matches[1] as $component) {
+					$component_params = explode("|", $matches[4][$i]);
+
+					foreach($component_params as $component_param) {
+					}
+
+					$component_html = '';
+					$text = str_ireplace($matches[0][$i], $component_html, $text);
+					$i++;
+				}
+			}
+			unset($matches);
+
+			return $text;
+		}
+
+		// process snippet [S:Title|COMMAND] commands
+		public function process_snippets($text, $protocol) {
+
+			$snippet = new stdClass();
+			preg_match_all("@\[S:(.*?)(\|(.*?))?\]@i", $text, $matches);
+
+			if(empty($matches[1]) == FALSE) {
+				foreach($matches[1] as $snippet_title) {
+
+					$params = array(
+						'page_title' => $snippet_title
+					);
+
+					$snippet = $this->route('/sys/pages/get/', $params);
+
+					// if snippet exists at path
+					if(isset($snippet->data) && count($snippet->data) != 0) {
+
+						$snippet_text = $snippet->data[0]->page_text;
+
+						// process wiki markup
+						$snippet_text = $this->parser($snippet_text, $protocol);
+
+						$text = str_ireplace("[S:" . $snippet_title . "]", $snippet_text, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Text]", $snippet_text, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Title]", $snippet->data[0]->page_title, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Slug]", $snippet->data[0]->slug, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Link]", $snippet->data[0]->page_path, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Image]", $snippet->data[0]->page_image, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Audio]", $snippet->data[0]->page_audio, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Video]", $snippet->data[0]->page_video, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|File]", $snippet->data[0]->page_file, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Author]", $snippet->data[0]->page_author, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Description]", $snippet->data[0]->page_description, $text);
+
+						// process timestamp
+						$snippet_timestamp = $snippet->data[0]->page_timestamp;
+						$text = str_ireplace("[S:" . $snippet_title . "|Timestamp]", date('U', $snippet_timestamp), $text);
+
+						$snippet_timestamp_format = '';
+						preg_match_all("@\[S\:(.*?)\|Timestamp\|Format=(.*?)\]@i", $text, $matches);
+						if(empty($matches[2]) == FALSE) {
+							foreach($matches[2] as $snippet_timestamp_format) {
+								$text = str_ireplace("[S:" . $snippet_title . "|Timestamp|Format=" . $snippet_timestamp_format . "]", date($snippet_timestamp_format, $snippet_timestamp), $text);
+							}
+						}
+						unset($matches);
+
+						$text = str_ireplace("[S:" . $snippet_title . "|Views]", $snippet->data[0]->page_views, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Tags]", $snippet->data[0]->page_tags, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Tags|Format=List]", $snippet->data[0]->page_tags_list, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Keywords]", $snippet->data[0]->page_keywords, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Keywords|Format=List]", $snippet->data[0]->page_keywords_list, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Categories]", $snippet->data[0]->page_categories, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Categories|Format=List]", $snippet->data[0]->page_categories_list, $text);
+					}
+				}
+			}
+			unset($matches);
+
+			return $text;
+		}
+
 		public function parser($text, $protocol, $paragraphs=TRUE) {
 
 			// process <nowiki></nowiki> tags
@@ -472,7 +558,6 @@
 			// page break after in print
 			$text = preg_replace("@-8<-\n@","\n<div style=\"page-break-after: always;\"></div>\n",$text);
 
-
 			$text = $this->parse_lists($text);
 
 			return $text;
@@ -488,7 +573,6 @@
 
 			// route to administrator panel
 			if(isset($path_array[1]) == TRUE && $path_array[1] == 'admin') {
-				//new dBug($path_array);
 				$oobject_admin = $this->route('/cmd/administrator/admin/');
 				$oobject_admin->out($path, $params, $direct);
 				$this->html = $oobject_admin->html;
@@ -557,9 +641,9 @@
 						// load theme / layout in memory
 						$output = file_get_contents(__SELF__ . 'themes/' . $theme . '/' . $layout);
 						// fix the path of all relative href attributes
-						$output = preg_replace("@href=\"(?!(http://)|(https://))(.*?)\"@i", "href=\"" . $protocol . __SITE__ . "/themes/". $theme. "/$3\"", $output);
+						$output = preg_replace("@href=\"(?!(http://)|(\[)|(https://))(.*?)\"@i", "href=\"" . $protocol . __SITE__ . "/themes/". $theme. "/$4\"", $output);
 						// fix the path of all relative src attributes
-						$output = preg_replace("@src=\"(?!(http://)|(https://))(.*?)\"@i", "src=\"" . $protocol . __SITE__ . "/themes/". $theme. "/$3\"", $output);
+						$output = preg_replace("@src=\"(?!(http://)|(\[)|(https://))(.*?)\"@i", "src=\"" . $protocol . __SITE__ . "/themes/". $theme. "/$4\"", $output);
 						// fix for themes built on skell.js
 						$output = preg_replace("@_skel_config\.prefix ?= ?\"(.*?)\"@i", "_skel_config.prefix = \"" . $protocol . __SITE__ . "/themes/". $theme. "/$1\"", $output);
 
@@ -570,64 +654,10 @@
 
 						$output = str_ireplace("[P:Text]", $page_text, $output);
 
-						// process snippet [S:Title|COMMAND] commands
-						$snippet = '';
-						preg_match_all("@\[S:(.*?)(\|(.*?))?\]@i", $output, $matches);
-
-						if(empty($matches[1]) == FALSE) {
-							foreach($matches[1] as $snippet_title) {
-
-								$params = array(
-									'page_title' => $snippet_title
-								);
-
-								$snippet = $this->route('/sys/pages/get/', $params);
-
-								// if snippet exists at path
-								if(isset($snippet->data) && count($snippet->data) != 0) {
-
-									$snippet_text = $snippet->data[0]->page_text;
-
-									// process wiki markup
-									$snippet_text = $this->parser($snippet_text, $protocol);
-
-									$output = str_ireplace("[S:" . $snippet_title . "]", $snippet_text, $output);
-									$output = str_ireplace("[S:" . $snippet_title . "|Text]", $snippet_text, $output);
-
-									$output = str_ireplace("[S:" . $snippet_title . "|Title]", $snippet->data[0]->page_title, $output);
-									$output = str_ireplace("[S:" . $snippet_title . "|Slug]", $snippet->data[0]->slug, $output);
-									$output = str_ireplace("[S:" . $snippet_title . "|Link]", $snippet->data[0]->page_path, $output);
-									$output = str_ireplace("[S:" . $snippet_title . "|Image]", $snippet->data[0]->page_image, $output);
-									$output = str_ireplace("[S:" . $snippet_title . "|Audio]", $snippet->data[0]->page_audio, $output);
-									$output = str_ireplace("[S:" . $snippet_title . "|Video]", $snippet->data[0]->page_video, $output);
-									$output = str_ireplace("[S:" . $snippet_title . "|File]", $snippet->data[0]->page_file, $output);
-									$output = str_ireplace("[S:" . $snippet_title . "|Author]", $snippet->data[0]->page_author, $output);
-									$output = str_ireplace("[S:" . $snippet_title . "|Description]", $snippet->data[0]->page_description, $output);
-
-									// process timestamp
-									$snippet_timestamp = $snippet->data[0]->page_timestamp;
-									$output = str_ireplace("[S:" . $snippet_title . "|Timestamp]", date('U', $snippet_timestamp), $output);
-
-									$snippet_timestamp_format = '';
-									preg_match_all("@\[S\:(.*?)\|Timestamp\|Format=(.*?)\]@i", $output, $matches);
-									if(empty($matches[2]) == FALSE) {
-										foreach($matches[2] as $snippet_timestamp_format) {
-											$output = str_ireplace("[S:" . $snippet_title . "|Timestamp|Format=" . $snippet_timestamp_format . "]", date($snippet_timestamp_format, $snippet_timestamp), $output);
-										}
-									}
-									unset($matches);
-
-									$output = str_ireplace("[S:" . $snippet_title . "|Views]", $snippet->data[0]->page_views, $output);
-									$output = str_ireplace("[S:" . $snippet_title . "|Tags]", $snippet->data[0]->page_tags, $output);
-									$output = str_ireplace("[S:" . $snippet_title . "|Tags|Format=List]", $snippet->data[0]->page_tags_list, $output);
-									$output = str_ireplace("[S:" . $snippet_title . "|Keywords]", $snippet->data[0]->page_keywords, $output);
-									$output = str_ireplace("[S:" . $snippet_title . "|Keywords|Format=List]", $snippet->data[0]->page_keywords_list, $output);
-									$output = str_ireplace("[S:" . $snippet_title . "|Categories]", $snippet->data[0]->page_categories, $output);
-									$output = str_ireplace("[S:" . $snippet_title . "|Categories|Format=List]", $snippet->data[0]->page_categories_list, $output);
-								}
-							}
+						// process snippet [S:Title|COMMAND] commands (loop trough snippets 7 times to catch all nested snippets
+						for($loop=1;$loop<=7;$loop++) {
+							$output = $this->process_snippets($output, $protocol);
 						}
-						unset($matches);
 
 						// process [S:Title|Image|Channel=A]
 						$i = 0;
@@ -825,13 +855,10 @@
 						$output = str_ireplace("[P:Title]", $page->data[0]->page_title, $output);
 						$output = str_ireplace("[P:Slug]", $page->data[0]->slug, $output);
 						$output = str_ireplace("[P:Link]", $page->data[0]->page_path, $output);
-						$output = str_ireplace("[P:Image]", $page->data[0]->page_image, $output);
-
-
-
-						$output = str_ireplace("[P:Audio]", $page->data[0]->page_audio, $output);
-						$output = str_ireplace("[P:Video]", $page->data[0]->page_video, $output);
-						$output = str_ireplace("[P:File]", $page->data[0]->page_file, $output);
+						$output = str_ireplace("[P:Image]", $protocol . __SITE__ . '/files/' . $page->data[0]->page_image, $output);
+						$output = str_ireplace("[P:Audio]", $protocol . __SITE__ . '/files/' . $page->data[0]->page_audio, $output);
+						$output = str_ireplace("[P:Video]", $protocol . __SITE__ . '/files/' . $page->data[0]->page_video, $output);
+						$output = str_ireplace("[P:File]", $protocol . __SITE__ . '/files/' . $page->data[0]->page_file, $output);
 						$output = str_ireplace("[P:Author]", $page->data[0]->page_author, $output);
 						$output = str_ireplace("[P:Description]", $page->data[0]->page_description, $output);
 
@@ -885,9 +912,9 @@
 						// load theme / layout in memory
 						$output = file_get_contents(__SELF__ . 'themes/' . $theme . '/' . $layout);
 						// fix the path of all relative href attributes
-						$output = preg_replace("@href=\"(?!(http://)|(https://))(.*?)\"@i", "href=\"" . $protocol . __SITE__ . "/themes/". $theme. "/$3\"", $output);
+						$output = preg_replace("@href=\"(?!(http://)|(\[)|(https://))(.*?)\"@i", "href=\"" . $protocol . __SITE__ . "/themes/". $theme. "/$4\"", $output);
 						// fix the path of all relative src attributes
-						$output = preg_replace("@src=\"(?!(http://)|(https://))(.*?)\"@i", "src=\"" . $protocol . __SITE__ . "/themes/". $theme. "/$3\"", $output);
+						$output = preg_replace("@src=\"(?!(http://)|(\[)|(https://))(.*?)\"@i", "src=\"" . $protocol . __SITE__ . "/themes/". $theme. "/$4\"", $output);
 						// fix for themes built on skell.js
 						$output = preg_replace("@_skel_config\.prefix ?= ?\"(.*?)\"@i", "_skel_config.prefix = \"" . $protocol . __SITE__ . "/themes/". $theme. "/$1\"", $output);
 
@@ -896,6 +923,16 @@
 						print("404 Not Found.");
 					}
 				}
+
+			$css_files = '';
+			if(isset($_SESSION["cms"]) == TRUE && isset($_SESSION["cms"]["css"]) == TRUE) {
+				foreach($_SESSION["cms"]["css"] as $css) {
+					$css_files .= "    " . $css . "\n";
+				}
+			}
+
+			$output = str_ireplace("</head>", "\n    <!-- stylesheets added by components -->\n" . $css_files . "\n</head>", $output);
+			//$output = preg_replace("@</body>@i", "<!-- added by components -->\n<script src=\"\"></script>\n</head>", $output);
 
 			$this->html = $output;
 			}
