@@ -40,7 +40,11 @@
 
 			$this->setContentType("text/html");
 			$this->html = "";
-			new dBug($_SESSION);
+
+			print "<pre>";
+			print_r($_SESSION);
+			print "</pre>";
+			//new dBug($_SESSION);
 
 		}
 

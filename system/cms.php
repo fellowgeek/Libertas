@@ -105,19 +105,63 @@
 		}
 
 		// process components [C:COMPONENT|Param1=Value|Param2=Value|...]
-		public function process_components($text, $protocol) {
+		function process_components($text, $path, $protocol) {
 
-			preg_match_all("@\[C:(.*?)\|(.*?)\]@i", $text, $matches);
+			$count = preg_match_all("@\[C:(.*?)\|(.*?)\]@i", $text, $matches);
 
-			if(isset($matches[1]) == TRUE && isset($matches[4]) == TRUE) {
+			if(isset($matches[1]) == TRUE && isset($matches[2]) == TRUE && $count > 0) {
 				$i = 0;
 				foreach($matches[1] as $component) {
-					$component_params = explode("|", $matches[4][$i]);
 
+					$component = strtolower($component);
+					$params = array();
+					$component_params = explode("|", $matches[2][$i]);
 					foreach($component_params as $component_param) {
+
+						preg_match("@^(.*?)=(.*?)$@i", $component_param, $matched_param_value);
+
+						if(isset($matched_param_value[1]) == TRUE && isset($matched_param_value[2]) == TRUE) {
+							$parameter = strtolower($matched_param_value[1]);
+							$value = $matched_param_value[2];
+							$params[$parameter] = $value;
+						}
+						unset($matched_param);
 					}
 
-					$component_html = '';
+					if(is_file(__SELF__ . 'components/' . $component . '/' . $component . '.php') == TRUE) {
+						// creating component object
+						$oobject_component = $this->route('/com/' . $component . '/' . $component . '/');
+						$oobject_component->name = $component;
+						$oobject_component->views = __SELF__ . 'components/' . $component . '/views/';
+						// start output buffering and call the output (out) method
+						ob_start();
+						$oobject_component->out($path, $protocol, $params);
+						$component_html = ob_get_clean();
+
+						// scan component's assets folder for css & js files
+						if(is_dir(__SELF__ . 'components/' . $component . '/assets/css/') == TRUE) {
+							$files = scandir(__SELF__ . 'components/' . $component . '/assets/css/');
+							foreach($files as $file) {
+								if($file != '.' && $file != '..' && pathinfo($file, PATHINFO_EXTENSION) == 'css') {
+									$_SESSION["cms"]["css"][] = '<link href="' . $protocol . __SITE__ . '/components/' . $component . '/assets/css/' . $file . '" rel="stylesheet">';
+								}
+							}
+						}
+
+						if(is_dir(__SELF__ . 'components/' . $component . '/assets/js/') == TRUE) {
+							$files = scandir(__SELF__ . 'components/' . $component . '/assets/js/');
+							foreach($files as $file) {
+								if($file != '.' && $file != '..' && pathinfo($file, PATHINFO_EXTENSION) == 'js') {
+									$_SESSION["cms"]["js"][] = '<script src="' . $protocol . __SITE__ . '/components/' . $component . '/assets/js/' . $file . '"></script>';
+								}
+							}
+						}
+
+
+					} else {
+						$component_html = '<br style="clear: both;" /><img src="/files/missing.png" title="Missing Component: ' . $component . '"/><br style="clear: both;" />';
+					}
+
 					$text = str_ireplace($matches[0][$i], $component_html, $text);
 					$i++;
 				}
@@ -128,12 +172,12 @@
 		}
 
 		// process snippet [S:Title|COMMAND] commands
-		public function process_snippets($text, $protocol) {
+		public function process_snippets($text, $path, $protocol) {
 
 			$snippet = new stdClass();
-			preg_match_all("@\[S:(.*?)(\|(.*?))?\]@i", $text, $matches);
+			$count = preg_match_all("@\[S:(.*?)(\|(.*?))?\]@i", $text, $matches);
 
-			if(empty($matches[1]) == FALSE) {
+			if(empty($matches[1]) == FALSE && $count > 0) {
 				foreach($matches[1] as $snippet_title) {
 
 					$params = array(
@@ -147,18 +191,21 @@
 
 						$snippet_text = $snippet->data[0]->page_text;
 
+						// process components
+						$snippet_text = $this->process_components($snippet_text, $path, $protocol);
+
 						// process wiki markup
-						$snippet_text = $this->parser($snippet_text, $protocol);
+						$snippet_text = $this->parser($snippet_text, $path, $protocol);
 
 						$text = str_ireplace("[S:" . $snippet_title . "]", $snippet_text, $text);
 						$text = str_ireplace("[S:" . $snippet_title . "|Text]", $snippet_text, $text);
 						$text = str_ireplace("[S:" . $snippet_title . "|Title]", $snippet->data[0]->page_title, $text);
 						$text = str_ireplace("[S:" . $snippet_title . "|Slug]", $snippet->data[0]->slug, $text);
 						$text = str_ireplace("[S:" . $snippet_title . "|Link]", $snippet->data[0]->page_path, $text);
-						$text = str_ireplace("[S:" . $snippet_title . "|Image]", $snippet->data[0]->page_image, $text);
-						$text = str_ireplace("[S:" . $snippet_title . "|Audio]", $snippet->data[0]->page_audio, $text);
-						$text = str_ireplace("[S:" . $snippet_title . "|Video]", $snippet->data[0]->page_video, $text);
-						$text = str_ireplace("[S:" . $snippet_title . "|File]", $snippet->data[0]->page_file, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Image]", $protocol . __SITE__ . '/files/' . $snippet->data[0]->page_image, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Audio]", $protocol . __SITE__ . '/files/' . $snippet->data[0]->page_audio, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Video]", $protocol . __SITE__ . '/files/' . $snippet->data[0]->page_video, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|File]", $protocol . __SITE__ . '/files/' . $snippet->data[0]->page_file, $text);
 						$text = str_ireplace("[S:" . $snippet_title . "|Author]", $snippet->data[0]->page_author, $text);
 						$text = str_ireplace("[S:" . $snippet_title . "|Description]", $snippet->data[0]->page_description, $text);
 
@@ -190,7 +237,7 @@
 			return $text;
 		}
 
-		public function parser($text, $protocol, $paragraphs=TRUE) {
+		public function parser($text, $path, $protocol, $paragraphs=TRUE) {
 
 			// process <nowiki></nowiki> tags
 			preg_match_all("@<nowiki>(.*?)<\/nowiki>@s", $text, $matches);
@@ -200,6 +247,12 @@
 				}
 			}
 			unset($matches);
+
+			// remove non visual markup
+			$text = preg_replace("@\[Tags:(.*?)\]@i", "", $text);
+			$text = preg_replace("@\[Keywords:(.*?)\]@i", "", $text);
+			$text = preg_replace("@\[Description:(.*?)\]@i", "", $text);
+			$text = preg_replace("@\[Categories:(.*?)\]@i", "", $text);
 
 			// paragraphs
 			if($paragraphs == TRUE) {
@@ -323,6 +376,10 @@
 						preg_match("@^Alt=(.*?)$@i", $image_param, $matched_param);
 						if(isset($matched_param[1]) == TRUE) { $image_alt = $matched_param[1]; }
 						unset($matched_param);
+						// class
+						preg_match("@^Class=(.*?)$@i", $image_param, $matched_param);
+						if(isset($matched_param[1]) == TRUE) { $image_class = $matched_param[1]; }
+						unset($matched_param);
 						// hidden
 						preg_match("@^Hidden=(.*?)$@i", $image_param, $matched_param);
 						if(isset($matched_param[1]) == TRUE) { $image_hidden = strtoupper($matched_param[1]); }
@@ -338,10 +395,13 @@
 					}
 
 					$image_html = '';
-					$image_html .= "\n" . '<div class="cms-image" ';
+					$image_html .= "\n" . '<div ';
+					if($image_class != '') { $image_html .= 'class="' . $image_class . '"'; }
 					if($image_hidden == 'YES') { $image_html .= 'style="display: none;"'; } else { if($image_alignment != '') { $image_html .= 'style="float: ' . $image_alignment . ';"'; } }
 					$image_html .= '>';
-					$image_html .= '<img src="' . $protocol . __SITE__ . '/files/' . $image . '" ';
+					$image_html .= '<img ';
+					if($image_class != '') { $image_html .= 'class="' . $image_class . '" '; }
+					$image_html .= 'src="' . $protocol . __SITE__ . '/files/' . $image . '" ';
 					if($image_alt != '') { $image_html .= 'alt="' . $image_alt . '" '; }
 					if($image_width != '') { $image_html .= 'width="' . $image_width . '" '; }
 					if($image_height != '') { $image_html .= 'height="' . $image_height . '" '; }
@@ -649,14 +709,18 @@
 
 						// process page [P:COMMAND] commands
 						$page_text = $page->data[0]->page_text;
+
+						// process [C:COMPONENT|Param1=VALUE|Param2=VALUE|...] command
+						$page_text = $this->process_components($page_text, $path, $protocol);
+
 						// process wiki markup
-						$page_text = $this->parser($page_text, $protocol);
+						$page_text = $this->parser($page_text, $path, $protocol);
 
 						$output = str_ireplace("[P:Text]", $page_text, $output);
 
 						// process snippet [S:Title|COMMAND] commands (loop trough snippets 7 times to catch all nested snippets
 						for($loop=1;$loop<=7;$loop++) {
-							$output = $this->process_snippets($output, $protocol);
+							$output = $this->process_snippets($output, $path, $protocol);
 						}
 
 						// process [S:Title|Image|Channel=A]
@@ -677,7 +741,7 @@
 								// if item exists at path and channel
 								if(isset($item->data) && count($item->data) != 0) {
 									$image_at_channel = $item->data[0]->image_at_channel;
-									$output = str_ireplace("[S:" . $snippet_title . "|Image|Channel=" . $channel . "]", $image_at_channel, $output);
+									$output = str_ireplace("[S:" . $snippet_title . "|Image|Channel=" . $channel . "]", $protocol . __SITE__ . '/files/' . $image_at_channel, $output);
 								}
 							$i++;
 							}
@@ -702,7 +766,7 @@
 								// if item exists at path and channel
 								if(isset($item->data) && count($item->data) != 0) {
 									$audio_at_channel = $item->data[0]->audio_at_channel;
-									$output = str_ireplace("[S:" . $snippet_title . "|Audio|Channel=" . $channel . "]", $audio_at_channel, $output);
+									$output = str_ireplace("[S:" . $snippet_title . "|Audio|Channel=" . $channel . "]", $protocol . __SITE__ . '/files/' . $audio_at_channel, $output);
 								}
 							$i++;
 							}
@@ -727,7 +791,7 @@
 								// if item exists at path and channel
 								if(isset($item->data) && count($item->data) != 0) {
 									$video_at_channel = $item->data[0]->video_at_channel;
-									$output = str_ireplace("[S:" . $snippet_title . "|Video|Channel=" . $channel . "]", $video_at_channel, $output);
+									$output = str_ireplace("[S:" . $snippet_title . "|Video|Channel=" . $channel . "]", $protocol . __SITE__ . '/files/' . $video_at_channel, $output);
 								}
 							$i++;
 							}
@@ -752,7 +816,7 @@
 								// if item exists at path and channel
 								if(isset($item->data) && count($item->data) != 0) {
 									$file_at_channel = $item->data[0]->file_at_channel;
-									$output = str_ireplace("[S:" . $snippet_title . "|File|Channel=" . $channel . "]", $file_at_channel, $output);
+									$output = str_ireplace("[S:" . $snippet_title . "|File|Channel=" . $channel . "]", $protocol . __SITE__ . '/files/' . $file_at_channel, $output);
 								}
 							$i++;
 							}
@@ -776,7 +840,7 @@
 								// if item exists at path and channel
 								if(isset($item->data) && count($item->data) != 0) {
 									$image_at_channel = $item->data[0]->image_at_channel;
-									$output = str_ireplace("[P:Image|Channel=" . $channel . "]", $image_at_channel, $output);
+									$output = str_ireplace("[P:Image|Channel=" . $channel . "]", $protocol . __SITE__ . '/files/' . $image_at_channel, $output);
 								}
 							}
 						}
@@ -799,7 +863,7 @@
 								// if item exists at path and channel
 								if(isset($item->data) && count($item->data) != 0) {
 									$audio_at_channel = $item->data[0]->audio_at_channel;
-									$output = str_ireplace("[P:Audio|Channel=" . $channel . "]", $audio_at_channel, $output);
+									$output = str_ireplace("[P:Audio|Channel=" . $channel . "]", $protocol . __SITE__ . '/files/' . $audio_at_channel, $output);
 								}
 							}
 						}
@@ -822,7 +886,7 @@
 								// if item exists at path and channel
 								if(isset($item->data) && count($item->data) != 0) {
 									$video_at_channel = $item->data[0]->video_at_channel;
-									$output = str_ireplace("[P:Video|Channel=" . $channel . "]", $video_at_channel, $output);
+									$output = str_ireplace("[P:Video|Channel=" . $channel . "]", $protocol . __SITE__ . '/files/' . $video_at_channel, $output);
 								}
 							}
 						}
@@ -845,7 +909,7 @@
 								// if item exists at path and channel
 								if(isset($item->data) && count($item->data) != 0) {
 									$file_at_channel = $item->data[0]->file_at_channel;
-									$output = str_ireplace("[P:File|Channel=" . $channel . "]", $file_at_channel, $output);
+									$output = str_ireplace("[P:File|Channel=" . $channel . "]", $protocol . __SITE__ . '/files/' . $file_at_channel, $output);
 								}
 							}
 						}
@@ -883,8 +947,6 @@
 						$output = str_ireplace("[P:Categories]", $page->data[0]->page_categories, $output);
 						$output = str_ireplace("[P:Categories|Format=List]", $page->data[0]->page_categories_list, $output);
 
-						// process [C:COMPONENT|Param1=VALUE|Param2=VALUE|...] command
-
 						// process [Base64:STRING], ( used for system level tasks, and <nowiki> )
 						$base64_encoded_string = '';
 						$base64_decoded_string = '';
@@ -910,13 +972,13 @@
 					// if theme / layout exists
 					if(file_exists(__SELF__ . 'themes/' . __THEME__ . '/' . $layout) == TRUE) {
 						// load theme / layout in memory
-						$output = file_get_contents(__SELF__ . 'themes/' . $theme . '/' . $layout);
+						$output = file_get_contents(__SELF__ . 'themes/' . __THEME__ . '/' . $layout);
 						// fix the path of all relative href attributes
-						$output = preg_replace("@href=\"(?!(http://)|(\[)|(https://))(.*?)\"@i", "href=\"" . $protocol . __SITE__ . "/themes/". $theme. "/$4\"", $output);
+						$output = preg_replace("@href=\"(?!(http://)|(\[)|(https://))(.*?)\"@i", "href=\"" . $protocol . __SITE__ . "/themes/". __THEME__. "/$4\"", $output);
 						// fix the path of all relative src attributes
-						$output = preg_replace("@src=\"(?!(http://)|(\[)|(https://))(.*?)\"@i", "src=\"" . $protocol . __SITE__ . "/themes/". $theme. "/$4\"", $output);
+						$output = preg_replace("@src=\"(?!(http://)|(\[)|(https://))(.*?)\"@i", "src=\"" . $protocol . __SITE__ . "/themes/". __THEME__. "/$4\"", $output);
 						// fix for themes built on skell.js
-						$output = preg_replace("@_skel_config\.prefix ?= ?\"(.*?)\"@i", "_skel_config.prefix = \"" . $protocol . __SITE__ . "/themes/". $theme. "/$1\"", $output);
+						$output = preg_replace("@_skel_config\.prefix ?= ?\"(.*?)\"@i", "_skel_config.prefix = \"" . $protocol . __SITE__ . "/themes/". __THEME__. "/$1\"", $output);
 
 					} else {
 						$this->throwError('Page not found.',404,$type='notfound');
@@ -924,6 +986,7 @@
 					}
 				}
 
+			// process additional stylesheets
 			$css_files = '';
 			if(isset($_SESSION["cms"]) == TRUE && isset($_SESSION["cms"]["css"]) == TRUE) {
 				foreach($_SESSION["cms"]["css"] as $css) {
@@ -931,8 +994,16 @@
 				}
 			}
 
-			$output = str_ireplace("</head>", "\n    <!-- stylesheets added by components -->\n" . $css_files . "\n</head>", $output);
-			//$output = preg_replace("@</body>@i", "<!-- added by components -->\n<script src=\"\"></script>\n</head>", $output);
+			// process additional scripts
+			$js_files = '';
+			if(isset($_SESSION["cms"]) == TRUE && isset($_SESSION["cms"]["js"]) == TRUE) {
+				foreach($_SESSION["cms"]["js"] as $js) {
+					$js_files .= "    " . $js . "\n";
+				}
+			}
+
+			$output = str_ireplace("</head>", "\n    <!-- stylesheets added by cms -->\n" . $css_files . "\n</head>", $output);
+			$output = str_ireplace("</body>", "\n    <!-- scripts added by cms -->\n" . $js_files . "\n</head>", $output);
 
 			$this->html = $output;
 			}

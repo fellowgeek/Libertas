@@ -39,20 +39,15 @@
 		}
 
 		// output
-		public function out() {
+		public function out($path, $protocol, $params) {
 
-			// set the content type
-			//$this->setContentType('text/html');
+			if(isset($params["param2"]) == TRUE && $params["param2"] == 'B') {
+				print("* YAY\n");
+				print("* NAY\n");
+			}
 
-			$this->css = array(
-				'style.css'
-			);
-
-			$this->js = array(
-				'application.js'
-			);
-
-			$this->html = 'Hello World.';
+			// include the main view
+	        include($this->views . 'main.php');
 		}
 
 	}
