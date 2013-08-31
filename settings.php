@@ -20,6 +20,7 @@ define('__DebugMode__',TRUE);
 define('__SITE__', 'libertas.erfan.me');
 define('__THEME__', 'bootstrap');
 define('__LAYOUT__', 'page-layout-1.html');
+//define('__LAYOUT__', 'index.html');
 
 /******************************************************
     DEFINE AVAILABLE ROUTES

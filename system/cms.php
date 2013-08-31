@@ -142,7 +142,7 @@
 						if(is_dir(__SELF__ . 'components/' . $component . '/assets/css/') == TRUE) {
 							$files = scandir(__SELF__ . 'components/' . $component . '/assets/css/');
 							foreach($files as $file) {
-								if($file != '.' && $file != '..' && pathinfo($file, PATHINFO_EXTENSION) == 'css') {
+								if($file != '.' && $file != '..' && preg_match("@^(.*?)\.css$@", $file) != FALSE) {
 									$_SESSION["cms"]["css"][] = '<link href="' . $protocol . __SITE__ . '/components/' . $component . '/assets/css/' . $file . '" rel="stylesheet">';
 								}
 							}
@@ -521,6 +521,10 @@
 						preg_match("@^Autoplay=(.*?)$@i", $video_param, $matched_param);
 						if(isset($matched_param[1]) == TRUE) { $video_autoplay = $matched_param[1]; }
 						unset($matched_param);
+						// muted
+						preg_match("@^Muted=(.*?)$@i", $video_param, $matched_param);
+						if(isset($matched_param[1]) == TRUE) { $video_muted = $matched_param[1]; }
+						unset($matched_param);
 						// controls
 						preg_match("@^controls=(.*?)$@i", $video_param, $matched_param);
 						if(isset($matched_param[1]) == TRUE) { $video_controls = $matched_param[1]; }
@@ -551,6 +555,7 @@
 					if($video_width != '') { $video_html .= 'width="' . $video_width . '" '; }
 					if($video_height != '') { $video_html .= 'height="' . $video_height . '" '; }
 					if($video_autoplay != '') { $video_html .= 'autoplay="' . $video_autoplay . '" '; }
+					if($video_muted != '') { $video_html .= 'muted="' . $video_muted . '" '; }
 					if($video_controls != '') { $video_html .= 'controls="' . $video_controls . '" '; }
 					if($video_loop != '') { $video_html .= 'loop="' . $video_loop . '" '; }
 					$video_html .= '/>';

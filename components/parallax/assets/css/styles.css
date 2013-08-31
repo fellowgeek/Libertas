@@ -1,0 +1,51 @@
+
+
+.scene {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  z-index: -1 !important;
+  margin-top: 0px;
+}
+
+li.layer {
+	/* border: 5px solid #f0f; */
+	height: 500px !important;
+}
+
+
+.layer:nth-child(1) {
+  opacity: 0.45;
+}
+.layer:nth-child(2) {
+  opacity: 0.75;
+}
+
+.static {
+	background: #fff;
+}
+
+img.parallax {
+	width: 1090px;
+
+}
+
+.parallax-text {
+	vertical-align: middle;
+	height: 600px;
+}
+
+.parallax-text h1 {
+	text-align: center;
+	margin-top: 300px;
+	font-size: 72px;
+	font-weight: 300;
+	font-family: 'Syncopate' !important;
+	letter-spacing: 4px;
+	text-shadow: 4px 4px 2px rgba(150, 150, 150, 0.75);
+	color: #fff;
+}
+
+body {
+	background: #000 !important;
+}

@@ -4,7 +4,7 @@ $(document).ready(function() {
 	console.log('Hello World.');
 
 
-	$('.flapjack').addClass('animated bounceInLeft');
+	$('body').addClass('animated shake');
 
 
 	setTimeout(function(){
