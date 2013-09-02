@@ -90,7 +90,6 @@
 			return $line;
 		}
 
-
 		// process lists ( main )
 		public function parse_lists($text) {
 			$output="";
@@ -139,24 +138,72 @@
 						$component_html = ob_get_clean();
 
 						// scan component's assets folder for css & js files
-						if(is_dir(__SELF__ . 'components/' . $component . '/assets/css/') == TRUE) {
-							$files = scandir(__SELF__ . 'components/' . $component . '/assets/css/');
+						if(is_dir(__SELF__ . 'components/' . $component . '/css/') == TRUE) {
+							$files = scandir(__SELF__ . 'components/' . $component . '/css/');
 							foreach($files as $file) {
 								if($file != '.' && $file != '..' && preg_match("@^(.*?)\.css$@", $file) != FALSE) {
-									$_SESSION["cms"]["css"][] = '<link href="' . $protocol . __SITE__ . '/components/' . $component . '/assets/css/' . $file . '" rel="stylesheet">';
+									$_SESSION["cms"]["css"][] = '<link href="' . $protocol . __SITE__ . '/components/' . $component . '/css/' . $file . '" rel="stylesheet">';
 								}
 							}
 						}
 
-						if(is_dir(__SELF__ . 'components/' . $component . '/assets/js/') == TRUE) {
-							$files = scandir(__SELF__ . 'components/' . $component . '/assets/js/');
+						if(is_dir(__SELF__ . 'components/' . $component . '/js/') == TRUE) {
+							$files = scandir(__SELF__ . 'components/' . $component . '/js/');
 							foreach($files as $file) {
 								if($file != '.' && $file != '..' && pathinfo($file, PATHINFO_EXTENSION) == 'js') {
-									$_SESSION["cms"]["js"][] = '<script src="' . $protocol . __SITE__ . '/components/' . $component . '/assets/js/' . $file . '"></script>';
+									$_SESSION["cms"]["js"][] = '<script src="' . $protocol . __SITE__ . '/components/' . $component . '/js/' . $file . '"></script>';
 								}
 							}
 						}
 
+					} else {
+						$component_html = '<br style="clear: both;" /><img src="/files/missing.png" title="Missing Component: ' . $component . '"/><br style="clear: both;" />';
+					}
+
+					$text = str_ireplace($matches[0][$i], $component_html, $text);
+					$i++;
+				}
+			}
+			unset($matches);
+
+			// process components without parametwers [C:COMPONENT]
+			$count = preg_match_all("@\[C:(.*?)\]@i", $text, $matches);
+
+			if(isset($matches[1]) == TRUE && $count > 0) {
+				$i = 0;
+				foreach($matches[1] as $component) {
+
+					$component = strtolower($component);
+					$params = array();
+
+					if(is_file(__SELF__ . 'components/' . $component . '/' . $component . '.php') == TRUE) {
+						// creating component object
+						$oobject_component = $this->route('/com/' . $component . '/' . $component . '/');
+						$oobject_component->name = $component;
+						$oobject_component->views = __SELF__ . 'components/' . $component . '/views/';
+						// start output buffering and call the output (out) method
+						ob_start();
+						$oobject_component->out($path, $protocol, $params);
+						$component_html = ob_get_clean();
+
+						// scan component's assets folder for css & js files
+						if(is_dir(__SELF__ . 'components/' . $component . '/css/') == TRUE) {
+							$files = scandir(__SELF__ . 'components/' . $component . '/css/');
+							foreach($files as $file) {
+								if($file != '.' && $file != '..' && preg_match("@^(.*?)\.css$@", $file) != FALSE) {
+									$_SESSION["cms"]["css"][] = '<link href="' . $protocol . __SITE__ . '/components/' . $component . '/css/' . $file . '" rel="stylesheet">';
+								}
+							}
+						}
+
+						if(is_dir(__SELF__ . 'components/' . $component . '/js/') == TRUE) {
+							$files = scandir(__SELF__ . 'components/' . $component . '/js/');
+							foreach($files as $file) {
+								if($file != '.' && $file != '..' && pathinfo($file, PATHINFO_EXTENSION) == 'js') {
+									$_SESSION["cms"]["js"][] = '<script src="' . $protocol . __SITE__ . '/components/' . $component . '/js/' . $file . '"></script>';
+								}
+							}
+						}
 
 					} else {
 						$component_html = '<br style="clear: both;" /><img src="/files/missing.png" title="Missing Component: ' . $component . '"/><br style="clear: both;" />';
@@ -356,55 +403,45 @@
 				foreach($matches[1] as $image) {
 					$image_params = explode("|", $matches[4][$i]);
 
-					$image_width =  '';
-					$image_height = '';
-					$image_alt = '';
 					$image_hidden = '';
 					$image_alignment = '';
 					$image_description = '';
+					$image_attributes = '';
 
 					foreach($image_params as $image_param) {
-						// width
-						preg_match("@^Width=(.*?)$@i", $image_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $image_width = $matched_param[1]; }
-						unset($matched_param);
-						// height
-						preg_match("@^Height=(.*?)$@i", $image_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $image_height = $matched_param[1]; }
-						unset($matched_param);
-						// alt
-						preg_match("@^Alt=(.*?)$@i", $image_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $image_alt = $matched_param[1]; }
-						unset($matched_param);
-						// class
-						preg_match("@^Class=(.*?)$@i", $image_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $image_class = $matched_param[1]; }
-						unset($matched_param);
-						// hidden
-						preg_match("@^Hidden=(.*?)$@i", $image_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $image_hidden = strtoupper($matched_param[1]); }
-						unset($matched_param);
-						// alignment
-						preg_match("@^Alignment=(.*?)$@i", $image_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $image_alignment = $matched_param[1]; }
-						unset($matched_param);
-						// description
-						preg_match("@^Description=(.*?)$@i", $image_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $image_description = $matched_param[1]; }
+						// detect attributes
+						preg_match("@^(.*?)=(.*?)$@i", $image_param, $matched_param_value);
+						if(isset($matched_param_value[1]) == TRUE && isset($matched_param_value[2]) == TRUE) {
+							$parameter = strtolower($matched_param_value[1]);
+							$value = $matched_param_value[2];
+
+							if($parameter != 'hidden' && $parameter != 'alignment' && $parameter != 'description') {
+								$image_attributes .= ' ' . $parameter . '="' . $value . '"';
+							} else {
+								// hidden
+								if($parameter == 'hidden') {
+									$image_hidden = $value;
+								}
+								// alignment
+								if($parameter == 'alignment') {
+									$image_alignment = $value;
+								}
+								// description
+								if($parameter == 'description') {
+									$image_description = $value;
+								}
+							}
+						}
 						unset($matched_param);
 					}
 
 					$image_html = '';
-					$image_html .= "\n" . '<div ';
-					if($image_class != '') { $image_html .= 'class="' . $image_class . '"'; }
-					if($image_hidden == 'YES') { $image_html .= 'style="display: none;"'; } else { if($image_alignment != '') { $image_html .= 'style="float: ' . $image_alignment . ';"'; } }
+					$image_html .= "\n" . '<div class="cms-image"';
+					if($image_hidden != '') { $image_html .= ' style="display: none;"'; } else { if($image_alignment != '') { $image_html .= ' style="float: ' . $image_alignment . ';"'; } }
 					$image_html .= '>';
 					$image_html .= '<img ';
-					if($image_class != '') { $image_html .= 'class="' . $image_class . '" '; }
-					$image_html .= 'src="' . $protocol . __SITE__ . '/files/' . $image . '" ';
-					if($image_alt != '') { $image_html .= 'alt="' . $image_alt . '" '; }
-					if($image_width != '') { $image_html .= 'width="' . $image_width . '" '; }
-					if($image_height != '') { $image_html .= 'height="' . $image_height . '" '; }
+					$image_html .= 'src="' . $protocol . __SITE__ . '/files/' . $image . '"';
+					if($image_attributes != '') { $image_html .= $image_attributes . ' '; }
 					$image_html .= '/>';
 					if($image_description != '') { $image_html .= '<p>' . $image_description . '</p>'; }
 					$image_html .= '</div>' . "\n";
@@ -425,60 +462,45 @@
 				foreach($matches[1] as $audio) {
 					$audio_params = explode("|", $matches[4][$i]);
 
-					$audio_width =  '';
-					$audio_height = '';
-					$audio_autoplay = '';
-					$audio_controls = '';
-					$audio_loop = '';
 					$audio_hidden = '';
 					$audio_alignment = '';
 					$audio_description = '';
+					$audio_attributes = '';
 
 					foreach($audio_params as $audio_param) {
-						// width
-						preg_match("@^Width=(.*?)$@i", $audio_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $audio_width = $matched_param[1]; }
-						unset($matched_param);
-						// height
-						preg_match("@^Height=(.*?)$@i", $audio_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $audio_height = $matched_param[1]; }
-						unset($matched_param);
-						// autoplay
-						preg_match("@^Autoplay=(.*?)$@i", $audio_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $audio_autoplay = $matched_param[1]; }
-						unset($matched_param);
-						// controls
-						preg_match("@^controls=(.*?)$@i", $audio_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $audio_controls = $matched_param[1]; }
-						unset($matched_param);
-						// loop
-						preg_match("@^Loop=(.*?)$@i", $audio_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $audio_loop = $matched_param[1]; }
-						unset($matched_param);
-						// hidden
-						preg_match("@^Hidden=(.*?)$@i", $audio_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $audio_hidden = strtoupper($matched_param[1]); }
-						unset($matched_param);
-						// alignment
-						preg_match("@^Alignment=(.*?)$@i", $audio_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $audio_alignment = $matched_param[1]; }
-						unset($matched_param);
-						// description
-						preg_match("@^Description=(.*?)$@i", $audio_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $audio_description = $matched_param[1]; }
+						// detect attributes
+						preg_match("@^(.*?)=(.*?)$@i", $audio_param, $matched_param_value);
+						if(isset($matched_param_value[1]) == TRUE && isset($matched_param_value[2]) == TRUE) {
+							$parameter = strtolower($matched_param_value[1]);
+							$value = $matched_param_value[2];
+
+							if($parameter != 'hidden' && $parameter != 'alignment' && $parameter != 'description') {
+								$audio_attributes .= ' ' . $parameter . '="' . $value . '"';
+							} else {
+								// hidden
+								if($parameter == 'hidden') {
+									$audio_hidden = $value;
+								}
+								// alignment
+								if($parameter == 'alignment') {
+									$audio_alignment = $value;
+								}
+								// description
+								if($parameter == 'description') {
+									$audio_description = $value;
+								}
+							}
+						}
 						unset($matched_param);
 					}
 
 					$audio_html = '';
-					$audio_html .= "\n" . '<div class="cms-audio" ';
-					if($audio_hidden == 'YES') { $audio_html .= 'style="display: none;"'; } else { if($audio_alignment != '') { $audio_html .= 'style="float: ' . $audio_alignment . ';"'; } }
+					$audio_html .= "\n" . '<div class="cms-audio"';
+					if($audio_hidden != '') { $audio_html .= ' style="display: none;"'; } else { if($audio_alignment != '') { $audio_html .= ' style="float: ' . $audio_alignment . ';"'; } }
 					$audio_html .= '>';
-					$audio_html .= '<audio src="' . $protocol . __SITE__ . '/files/' . $audio . '" ';
-					if($audio_width != '') { $audio_html .= 'width="' . $audio_width . '" '; }
-					if($audio_height != '') { $audio_html .= 'height="' . $audio_height . '" '; }
-					if($audio_autoplay != '') { $audio_html .= 'autoplay="' . $audio_autoplay . '" '; }
-					if($audio_controls != '') { $audio_html .= 'controls="' . $audio_controls . '" '; }
-					if($audio_loop != '') { $audio_html .= 'loop="' . $audio_loop . '" '; }
+					$audio_html .= '<audio ';
+					$audio_html .= 'src="' . $protocol . __SITE__ . '/files/' . $audio . '"';
+					if($audio_attributes != '') { $audio_html .= $audio_attributes . ' '; }
 					$audio_html .= '/>';
 					if($audio_description != '') { $audio_html .= '<p>' . $audio_description . '</p>'; }
 					$audio_html .= '</div>' . "\n";
@@ -499,65 +521,45 @@
 				foreach($matches[1] as $video) {
 					$video_params = explode("|", $matches[4][$i]);
 
-					$video_width =  '';
-					$video_height = '';
-					$video_autoplay = '';
-					$video_controls = '';
-					$video_loop = '';
 					$video_hidden = '';
 					$video_alignment = '';
 					$video_description = '';
+					$video_attributes = '';
 
 					foreach($video_params as $video_param) {
-						// width
-						preg_match("@^Width=(.*?)$@i", $video_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $video_width = $matched_param[1]; }
-						unset($matched_param);
-						// height
-						preg_match("@^Height=(.*?)$@i", $video_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $video_height = $matched_param[1]; }
-						unset($matched_param);
-						// autoplay
-						preg_match("@^Autoplay=(.*?)$@i", $video_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $video_autoplay = $matched_param[1]; }
-						unset($matched_param);
-						// muted
-						preg_match("@^Muted=(.*?)$@i", $video_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $video_muted = $matched_param[1]; }
-						unset($matched_param);
-						// controls
-						preg_match("@^controls=(.*?)$@i", $video_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $video_controls = $matched_param[1]; }
-						unset($matched_param);
-						// loop
-						preg_match("@^Loop=(.*?)$@i", $video_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $video_loop = $matched_param[1]; }
-						unset($matched_param);
-						// hidden
-						preg_match("@^Hidden=(.*?)$@i", $video_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $video_hidden = strtoupper($matched_param[1]); }
-						unset($matched_param);
-						// alignment
-						preg_match("@^Alignment=(.*?)$@i", $video_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $video_alignment = $matched_param[1]; }
-						unset($matched_param);
-						// description
-						preg_match("@^Description=(.*?)$@i", $video_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $video_description = $matched_param[1]; }
+						// detect attributes
+						preg_match("@^(.*?)=(.*?)$@i", $video_param, $matched_param_value);
+						if(isset($matched_param_value[1]) == TRUE && isset($matched_param_value[2]) == TRUE) {
+							$parameter = strtolower($matched_param_value[1]);
+							$value = $matched_param_value[2];
+
+							if($parameter != 'hidden' && $parameter != 'alignment' && $parameter != 'description') {
+								$video_attributes .= ' ' . $parameter . '="' . $value . '"';
+							} else {
+								// hidden
+								if($parameter == 'hidden') {
+									$video_hidden = $value;
+								}
+								// alignment
+								if($parameter == 'alignment') {
+									$video_alignment = $value;
+								}
+								// description
+								if($parameter == 'description') {
+									$video_description = $value;
+								}
+							}
+						}
 						unset($matched_param);
 					}
 
 					$video_html = '';
-					$video_html .= "\n" . '<div class="cms-video" ';
-					if($video_hidden == 'YES') { $video_html .= 'style="display: none;"'; } else { if($video_alignment != '') { $video_html .= 'style="float: ' . $video_alignment . ';"'; } }
+					$video_html .= "\n" . '<div class="cms-video"';
+					if($video_hidden != '') { $video_html .= ' style="display: none;"'; } else { if($video_alignment != '') { $video_html .= ' style="float: ' . $video_alignment . ';"'; } }
 					$video_html .= '>';
-					$video_html .= '<video src="' . $protocol . __SITE__ . '/files/' . $video . '" ';
-					if($video_width != '') { $video_html .= 'width="' . $video_width . '" '; }
-					if($video_height != '') { $video_html .= 'height="' . $video_height . '" '; }
-					if($video_autoplay != '') { $video_html .= 'autoplay="' . $video_autoplay . '" '; }
-					if($video_muted != '') { $video_html .= 'muted="' . $video_muted . '" '; }
-					if($video_controls != '') { $video_html .= 'controls="' . $video_controls . '" '; }
-					if($video_loop != '') { $video_html .= 'loop="' . $video_loop . '" '; }
+					$video_html .= '<video ';
+					$video_html .= 'src="' . $protocol . __SITE__ . '/files/' . $video . '"';
+					if($video_attributes != '') { $video_html .= $video_attributes . ' '; }
 					$video_html .= '/>';
 					if($video_description != '') { $video_html .= '<p>' . $video_description . '</p>'; }
 					$video_html .= '</div>' . "\n";
@@ -581,34 +583,43 @@
 					$file_hidden = '';
 					$file_alignment = '';
 					$file_description = '';
-					$file_download = '';
+					$file_attributes = '';
 
 					foreach($file_params as $file_param) {
-						// hidden
-						preg_match("@^Hidden=(.*?)$@i", $file_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $file_hidden = strtoupper($matched_param[1]); }
-						unset($matched_param);
-						// alignment
-						preg_match("@^Alignment=(.*?)$@i", $file_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $file_alignment = $matched_param[1]; }
-						unset($matched_param);
-						// description
-						preg_match("@^Description=(.*?)$@i", $file_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $file_description = $matched_param[1]; }
-						unset($matched_param);
-						// HTML5 download
-						preg_match("@^Download=(.*?)$@i", $file_param, $matched_param);
-						if(isset($matched_param[1]) == TRUE) { $file_download = $matched_param[1]; }
+						// detect attributes
+						preg_match("@^(.*?)=(.*?)$@i", $file_param, $matched_param_value);
+						if(isset($matched_param_value[1]) == TRUE && isset($matched_param_value[2]) == TRUE) {
+							$parameter = strtolower($matched_param_value[1]);
+							$value = $matched_param_value[2];
+
+							if($parameter != 'hidden' && $parameter != 'alignment' && $parameter != 'description') {
+								$file_attributes .= ' ' . $parameter . '="' . $value . '"';
+							} else {
+								// hidden
+								if($parameter == 'hidden') {
+									$file_hidden = $value;
+								}
+								// alignment
+								if($parameter == 'alignment') {
+									$file_alignment = $value;
+								}
+								// description
+								if($parameter == 'description') {
+									$file_description = $value;
+								}
+							}
+						}
 						unset($matched_param);
 					}
 
 					$file_html = '';
-					$file_html .= "\n" . '<div class="cms-file" ';
-					if($file_hidden == 'YES') { $file_html .= 'style="display: none;"'; } else { if($file_alignment != '') { $file_html .= 'style="float: ' . $file_alignment . ';"'; } }
+					$file_html .= "\n" . '<div class="cms-file"';
+					if($file_hidden != '') { $file_html .= ' style="display: none;"'; } else { if($file_alignment != '') { $file_html .= ' style="float: ' . $file_alignment . ';"'; } }
 					$file_html .= '>';
-					$file_html .= '<a href="' . $protocol . __SITE__ . '/files/' . $file . '" ';
-					if($file_download != '') { $file_html .= 'download'; }
-					$file_html .= '>' . $file . '</a>';
+					$file_html .= '<a ';
+					$file_html .= 'href="' . $protocol . __SITE__ . '/files/' . $file . '"';
+					if($file_attributes != '') { $file_html .= $file_attributes . ' '; }
+					$file_html .= '>' .  $file. '</a>';
 					if($file_description != '') { $file_html .= '<p>' . $file_description . '</p>'; }
 					$file_html .= '</div>' . "\n";
 
