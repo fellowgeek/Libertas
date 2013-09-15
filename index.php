@@ -16,16 +16,6 @@
 	$_SESSION["cms"]["css"] = array();
 	$_SESSION["cms"]["js"] = array();
 
-	// function to include a PHP view script ( using output buffering )
-	function loadView($filename) {
-	    if(is_file($filename)) {
-	        ob_start();
-	        include $filename;
-	        return ob_get_clean();
-	    }
-	    return false;
-	}
-
 	// include ORouter
 	require_once __PATH_TO_CORE__ . 'ORouter.php';
 

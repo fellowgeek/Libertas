@@ -1,0 +1,44 @@
+/*
+----- ----- ----- ----- ----- ----- ----- -----
+body
+----- ----- ----- ----- ----- ----- ----- -----
+*/
+
+body {
+	background: url('../images/noisy_grid.png');
+}
+
+
+.panel, .navbar, .jumbotron {
+	-webkit-box-shadow: 2px 2px 8px rgba(80, 80, 80, 0.35);
+	-moz-box-shadow:    2px 2px 8px rgba(80, 80, 80, 0.35);
+	box-shadow:         2px 2px 8px rgba(80, 80, 80, 0.35);
+}
+
+/*
+----- ----- ----- ----- ----- ----- ----- -----
+dashboard panels
+----- ----- ----- ----- ----- ----- ----- -----
+*/
+
+.dashboard-panel {
+	min-height: 380px;
+}
+
+
+/*
+----- ----- ----- ----- ----- ----- ----- -----
+shortcuts
+----- ----- ----- ----- ----- ----- ----- -----
+*/
+
+.shortcuts button {
+	width: 72px;
+	height: 72px;
+	margin: 0px 10px 10px 0px;
+}
+
+.shortcuts .icon {
+	font-size: 25px;
+}
+

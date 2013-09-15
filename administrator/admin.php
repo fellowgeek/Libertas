@@ -44,7 +44,19 @@
 			);
 		}
 
-		// admin output method
+
+		// load a PHP view script ( using output buffering )
+		public function load_view($filename) {
+
+		    if(is_file($filename)) {
+		        ob_start();
+		        include $filename;
+		        return ob_get_clean();
+		    }
+		    return false;
+		}
+
+		// generate admin section
 		public function out($path, $params, $direct=TRUE) {
 
 			//new dBug($path);
@@ -64,29 +76,64 @@
 
 			// set the layout based on the path
 			if($path == '/admin/newPage/') { $layout = 'newpage.html'; }
+			//if($path == '/admin/?/') { $layout = '?.html'; }
+			//if($path == '/admin/?/') { $layout = '?.html'; }
+			//if($path == '/admin/?/') { $layout = '?.html'; }
+			//if($path == '/admin/?/') { $layout = '?.html'; }
+			//if($path == '/admin/?/') { $layout = '?.html'; }
+			//if($path == '/admin/?/') { $layout = '?.html'; }
 
-
-			// if theme / layout exists
-			if(file_exists(__SELF__ . 'administrator/theme/' . $layout) == TRUE) {
+			// load theme / layout
+			if(file_exists(__SELF__ . 'administrator/theme/default/' . $layout) == TRUE) {
 				// load theme / layout in memory
-				$output = file_get_contents(__SELF__ . 'administrator/theme/' . $layout);
+				$output = file_get_contents(__SELF__ . 'administrator/theme/default/' . $layout);
 				// fix the path of all relative href attributes
-				$output = preg_replace("@href=\"(?!(http://)|(https://))(.*?)\"@i", "href=\"" . $protocol . __SITE__ . "/administrator/theme/$3\"", $output);
+				$output = preg_replace("@href=\"(?!(http://)|(https://))(.*?)\"@i", "href=\"" . $protocol . __SITE__ . "/administrator/theme/default/$3\"", $output);
 				// fix the path of all relative src attributes
-				$output = preg_replace("@src=\"(?!(http://)|(https://))(.*?)\"@i", "src=\"" . $protocol . __SITE__ . "/administrator/theme/$3\"", $output);
+				$output = preg_replace("@src=\"(?!(http://)|(https://))(.*?)\"@i", "src=\"" . $protocol . __SITE__ . "/administrator/theme/default/$3\"", $output);
 			}
 
-			// process admin dashboard
+			// content switcher for different views in admin section
 
-			$output = str_ireplace("[A:Shortcuts]", include_view( __SELF__ . 'administrator/views/shortcuts.php'), $output);
-			$output = str_ireplace("[A:Stats]", include_view( __SELF__ . 'administrator/views/stats.php'), $output);
-			$output = str_ireplace("[A:Pending]", include_view( __SELF__ . 'administrator/views/pending.php'), $output);
-			$output = str_ireplace("[A:Pending|Count]", rand(1,100), $output);
-			$output = str_ireplace("[A:Drafts]", include_view( __SELF__ . 'administrator/views/drafts.php'), $output);
-			$output = str_ireplace("[A:Drafts|Count]", rand(1,100), $output);
-			$output = str_ireplace("[A:Images]", include_view( __SELF__ . 'administrator/views/images.php'), $output);
+			// general
+			$output = str_ireplace("[A:Navigation]",	$this->load_view( __SELF__ . 'administrator/views/navigation.php'),				$output);
+
+			// dashboard
+			$output = str_ireplace("[A:Tips]",		 	$this->load_view( __SELF__ . 'administrator/views/dashboard/tips.php'),			$output);
+			$output = str_ireplace("[A:Shortcuts]",	 	$this->load_view( __SELF__ . 'administrator/views/dashboard/shortcuts.php'),	$output);
+			$output = str_ireplace("[A:Stats]", 		$this->load_view( __SELF__ . 'administrator/views/dashboard/stats.php'),		$output);
+			$output = str_ireplace("[A:Pending]", 		$this->load_view( __SELF__ . 'administrator/views/dashboard/pending.php'),		$output);
+			$output = str_ireplace("[A:Drafts]", 		$this->load_view( __SELF__ . 'administrator/views/dashboard/drafts.php'),		$output);
+
+			// content
+			$output = str_ireplace("[A:Editor]",	 	$this->load_view( __SELF__ . 'administrator/views/dashboard/tips.php'),			$output);
+
+			// components
+
+			// users
+
+			// settings
+
+
+
+			//$output = str_ireplace("[A:Images]", $this->load_view( __SELF__ . 'administrator/views/images.php'), $output);
 
 			$this->html = $output;
 		}
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ?>
