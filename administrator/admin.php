@@ -44,9 +44,8 @@
 			);
 		}
 
-
 		// load a PHP view script ( using output buffering )
-		public function load_view($filename) {
+		public function load_view($filename, $data = array()) {
 
 		    if(is_file($filename)) {
 		        ob_start();
@@ -74,8 +73,11 @@
 			// default layout
 			$layout = 'dashboard.html';
 
+
+			$data = array();
+
 			// set the layout based on the path
-			if($path == '/admin/newPage/') { $layout = 'newpage.html'; }
+			if($path == '/admin/content/new/') { $layout = 'content.html'; }
 			//if($path == '/admin/?/') { $layout = '?.html'; }
 			//if($path == '/admin/?/') { $layout = '?.html'; }
 			//if($path == '/admin/?/') { $layout = '?.html'; }
@@ -106,15 +108,33 @@
 			$output = str_ireplace("[A:Drafts]", 		$this->load_view( __SELF__ . 'administrator/views/dashboard/drafts.php'),		$output);
 
 			// content
-			$output = str_ireplace("[A:Editor]",	 	$this->load_view( __SELF__ . 'administrator/views/dashboard/tips.php'),			$output);
+			if($path == '/admin/content/new/') {
+                
+                $data = array(
+					'contentMode' => 'new',
+                    'contentTitle' => '',
+					'contentText' => '',
+					'contentDescription' => '',
+					'contentStatus' => 'draft',
+					'contentPublish' => date('m/d/Y'),
+					'contentPath' => '',
+					'contentSSL' => '',
+					'contentCategories' => '',
+					'contentTags' => '',
+					'contentLayout' => '',
+					'contentTheme' => '',
+					'contentVisibility' => 'everyone'
+				);
+			}
+
+			$output = str_ireplace("[A:Editor]",	 	$this->load_view( __SELF__ . 'administrator/views/content/editor.php', $data),			$output);
+			$output = str_ireplace("[A:Options]",	 	$this->load_view( __SELF__ . 'administrator/views/content/options.php', $data),		$output);
 
 			// components
 
 			// users
 
 			// settings
-
-
 
 			//$output = str_ireplace("[A:Images]", $this->load_view( __SELF__ . 'administrator/views/images.php'), $output);
 

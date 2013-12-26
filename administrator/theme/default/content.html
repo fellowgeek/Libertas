@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Navbar Template for Bootstrap</title>
+    <!-- Style Sheet -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/datepicker.css" rel="stylesheet">
+    <link href="css/select2.css" rel="stylesheet">
+	<link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/dropzone.css" rel="stylesheet">
+	<link href="css/styles.css" rel="stylesheet">
+    <!-- JavaScript -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/select2.min.js"></script>
+    <script src="js/datepicker.js"></script>
+    <script src="js/dropzone.min.js"></script>
+    <script src="js/behave.js"></script>
+    <script src="js/application.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <!-- navigation -->
+	  [A:Navigation]
+
+	  <div class="row">
+      	<div class="col-lg-12">
+	      	<div class="alert hidden">
+			  	<span id="adminAlert"></span>
+			</div>
+      	</div>
+	  	<!-- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -->
+	  	<div class="col-lg-9">
+		  	<div class="panel panel-primary">
+			  	<div class="panel-heading">
+				  	<h3 class="panel-title">Content</h3>
+				</div>
+				[A:Editor]
+			</div>
+	  	</div>
+	  	<!-- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -->
+	  	<div class="col-lg-3">
+			<div class="panel panel-primary">
+				<div class="panel-heading">
+					<h3 class="panel-title">Options</h3>
+				</div>
+				[A:Options]
+			</div>
+	  	</div>
+	  </div>
+	</div>
+
+    </div> <!-- /container -->
+	<script>
+		$('#contentCategories').select2({
+			tags: ['ared', 'green', 'blue'],
+			tokenSeparators: [',']
+		});
+		$('#contentTags').select2({
+			tags: ['ared', 'green', 'blue'],
+			tokenSeparators: [',']
+		});
+	</script>
+  </body>
+</html>

@@ -3,19 +3,19 @@
     /*****************************************************************************
 
 	The MIT License (MIT)
-
+	
 	Copyright (c) 2013 Nathan A Obray <nathanobray@gmail.com>
-
+	
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
 	in the Software without restriction, including without limitation the rights
 	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 	copies of the Software, and to permit persons to whom the Software is
 	furnished to do so, subject to the following conditions:
-
+	
 	The above copyright notice and this permission notice shall be included in
 	all copies or substantial portions of the Software.
-
+	
 	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,18 +23,15 @@
 	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	THE SOFTWARE.
-
+	
 	*****************************************************************************/
 
 
 	require_once 'settings.php';										                  // see if a setting file exists for a given application (looks at the base path where your obray.php file exists)
-
-	require_once 'dbug.php';                                                              // easy readout function (i.e. new dBug($yourvariable);
-	require_once 'functions.php';
 	require_once 'OObject.php';                                                           // the base object for all obray objects (basically everything will extend this or a class that has already extended it)
 	require_once 'ODBO.php';                                                              // object that extends OObject but includes database functionality and table definition support
-	require_once 'OUsers.php';
-
+	require_once 'OUsers.php';                                                            // User/Permission Manager
+	
 	if (!class_exists( 'OObject' )) { die(); }
 
 	/********************************************************************************************************************
@@ -147,7 +144,7 @@
     			 case 'text/html':                                                                   // Handle HTML
 
     			 	$obj->runtime = (microtime(TRUE) - $start_time)*1000;
-    			 	if(!headers_sent()){ header("Server-Runtime: " . $obj->runtime . "ms" ); }    	// set header runtime
+    			 	if(!headers_sent()){ header("Server-Runtime: " . $obj->runtime . "ms" ); }    			// set header runtime
     			 	echo $obj->html;
 					break;
 

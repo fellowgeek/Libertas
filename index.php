@@ -3,8 +3,14 @@
 	// load settings
 	require_once 'settings.php';
 
-	// enable debugging
-	error_reporting(E_ALL);
+
+	if($debugMode == TRUE) {
+		// enable debugging
+		error_reporting(E_ALL);
+
+		// load dBug class
+		require_once __PATH_TO_CORE__ . 'dbug.php';
+	}
 
 	// set error reporting to display all errors and types
 	ini_set('display_errors', true);

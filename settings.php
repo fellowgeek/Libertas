@@ -11,7 +11,7 @@ define('__SELF__', dirname(__FILE__).'/');
 // the path to obray's core files
 define('__PATH_TO_CORE__', dirname(__FILE__).'/core/');
 // enable Debug Mode
-define('__DebugMode__',TRUE);
+$debugMode = TRUE;
 
 /******************************************************
     SITE SETTINGS
@@ -19,8 +19,7 @@ define('__DebugMode__',TRUE);
 
 define('__SITE__', 'libertas.erfan.me');
 define('__THEME__', 'bootstrap');
-define('__LAYOUT__', 'page-layout-1.html');
-//define('__LAYOUT__', 'index.html');
+define('__LAYOUT__', 'index.html');
 
 /******************************************************
     DEFINE AVAILABLE ROUTES

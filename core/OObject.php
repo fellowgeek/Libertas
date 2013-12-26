@@ -3,19 +3,19 @@
 	/*****************************************************************************
 
 	The MIT License (MIT)
-
+	
 	Copyright (c) 2013 Nathan A Obray <nathanobray@gmail.com>
-
+	
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
 	in the Software without restriction, including without limitation the rights
 	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 	copies of the Software, and to permit persons to whom the Software is
 	furnished to do so, subject to the following conditions:
-
+	
 	The above copyright notice and this permission notice shall be included in
 	all copies or substantial portions of the Software.
-
+	
 	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,10 +23,44 @@
 	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	THE SOFTWARE.
-
+	
 	*****************************************************************************/
 
 	if (!class_exists( 'OObject' )) { die(); }
+	
+	/******************************************************
+	    SETUP DB CONNECTION - DO NOT MODIFY
+	******************************************************/
+	
+	function getDatabaseConnection(){
+		
+		global $conn;
+		
+		if( !isSet( $conn ) ){
+			try {
+		        $conn = new PDO('mysql:host='.__DBHost__.';dbname='.__DB__, __DBUserName__,__DBPassword__);
+		        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		    } catch(PDOException $e) {
+		        echo 'ERROR: ' . $e->getMessage();
+		        exit();
+		    }
+		}
+	    return $conn;
+	
+	}
+	
+	/******************************************************
+	    REMOVE SPECIAL CHARS (cleans a string)
+	******************************************************/
+	
+	function removeSpecialChars($string,$space = '',$amp = ''){
+
+		$string = str_replace(' ',$space,$string);
+		$string = str_replace('&',$amp,$string);
+		$string = preg_replace("/[^a-zA-Z0-9\-_s]/", "", $string);
+		return $string;
+	
+	}
 
 	/********************************************************************************************************************
 
@@ -48,7 +82,7 @@
 
 		// public data members
 		public $object = '';                                                                        // stores the name of the class
-
+		
 		/***********************************************************************
 
 			ROUTE FUNCTION
@@ -56,7 +90,7 @@
 		***********************************************************************/
 
 		public function route( $path , $params = array(), $direct = TRUE ) {
-
+			
 			$params = array_merge($params,$_GET,$_POST);
 			$cmd = $path;
 			$components = parse_url($path);
@@ -65,7 +99,7 @@
 				handle remote HTTP(S) calls
 			*********************************/
 			if( isSet($components["host"]) && $direct ){
-
+				
 				$ch = curl_init();
 				$timeout = 5;
 				curl_setopt($ch, CURLOPT_URL, $path);
@@ -74,50 +108,50 @@
 				$this->data = curl_exec($ch);
 				$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 				switch($content_type ){ case "application/json": $this->data = json_decode($this->data); break; }
-
+			
 			} else {
 
 	    		/*********************************
 	    			Parse Path & setup params
 	    		*********************************/
-
+				
 	    		if( isSet($components["query"]) ){ parse_str($components["query"],$tmp); $params = array_merge($tmp,$params);  }
 	    		$_REQUEST = $params;
-
+	    		
 				$path_array = preg_split('[/]',$components["path"],NULL,PREG_SPLIT_NO_EMPTY);
 				$base_path = $this->getBasePath($path_array);
-
+				
 	    		/*********************************
 	    			Create Object
 	    		*********************************/
 				if( !empty($base_path) ){
-
+	
 					$obj = $this->createObject($path_array,$path,$base_path,$params,$direct);
 					if( isSet($obj) ){ return $obj; }
-
+	
 	    		/*********************************
 	    			Call Function
 	    		*********************************/
-
+	
 				} else if( count($path_array) == 1 ) {
-
+	
 					return $this->executeMethod($path,$path_array,$direct,$params);
-
+	
 	    		/*********************************
 	    			Handle Unknown Routes
 	    		*********************************/
 				} else {
-
+					
 					return $this->findMissingRoute($cmd,$params);
-
+					
 				}
-
+			
 			}
 
 			return $this;
 
 		}
-
+		
 		/***********************************************************************
 
 			CREATE OBJECT
@@ -125,7 +159,7 @@
 		***********************************************************************/
 
 		private function createObject($path_array,$path,$base_path,&$params,$direct){
-
+			
 			$path = "";
 			while(count($path_array)>0){
 				$obj_name = array_pop($path_array);
@@ -145,10 +179,10 @@
 
 				    		//	CHECK PERMISSIONS
 				    		$params = array_merge($obj->checkPermissions("object",$direct),$params);
-
+							
 				    		//	SETUP DATABSE CONNECTION
 				    		if( method_exists($obj,'setDatabaseConnection') ){ $obj->setDatabaseConnection(getDatabaseConnection()); }
-
+							
 				    		//	ROUTE REMAINING PATH - function calls
 					        $obj->route($path,$params,$direct);
 
@@ -178,7 +212,7 @@
 
 
 			if( method_exists($this,$path) ){
-
+				
 			   try{
 					$params = array_merge($this->checkPermissions($path,$direct),$params);
 					if( !$this->isError() ){ $this->$path($params); }
@@ -187,7 +221,7 @@
 				return $this;
 
 		    } else {
-
+				
 		    	return $this->findMissingRoute($path,$params);
 
 		    }
@@ -253,7 +287,7 @@
 			return array("path_array"=>$path_array,"path"=>$path,"base_path"=>$base_path,"params"=>$params);
 
 		}
-
+		
 		/***********************************************************************
 
 			GET BASE PATH - returns the path of a specified route
@@ -265,11 +299,11 @@
 			if( !empty($path_array) && isSet($routes[$path_array[0]]) ){ $base_path = $routes[array_shift($path_array)]; } else { $base_path = ""; }
 			return $base_path;
 		}
-
+		
 		/***********************************************************************
 
 			CLEANUP FUNCTION - removes parameters form object for output
-
+			
 				The idea here is to prevent infromation from "leaking"
 				that's not explicitly intended.
 
@@ -279,23 +313,23 @@
 			// remove all object keys not white listed for output - this is so we don't expose unnecessary information
 			foreach($this as $key => $value) { if($key != "object" && $key != "errors" && $key != "data" && $key != "runtime" && $key != "html" && $key != "success"){ unset($this->$key); } }
 		}
-
+		
 		/***********************************************************************
 
 			IS OBJECT - Determines if path is an object
 
 		***********************************************************************/
-
+		
 		public function isObject($path){
-
+			
 			$components = $this->parsePath($path);
 			$obj_name = array_pop($components["path_array"]);
 			if( count($components["path_array"]) > 0 ){ $seperator = '/'; } else { $seperator = ''; }
 			$path = $components["base_path"] . implode('/',$components["path_array"]).$seperator.$obj_name.'.php';
 			if (file_exists( $path ) ) { require_once $path; if (class_exists( $obj_name )){ return TRUE; } }
-
+			
 			return FALSE;
-
+			
 		}
 
 		/***********************************************************************
@@ -305,7 +339,7 @@
 		***********************************************************************/
 
 		private function findMissingRoute($path,$params){
-
+			
 			if( isSet($this->missing_path_handler) ){
 				include $this->missing_path_handler_path;
 
@@ -343,7 +377,6 @@
 		}
 		public function isError(){ return $this->is_error; }
 
-
 		/***********************************************************************
 
 			GETTER AND SETTER FUNCTIONS
@@ -354,7 +387,6 @@
 		public  function getStatusCode(){ return $this->status_code; }
 		public  function getContentType(){ return $this->content_type; }
 		public  function setContentType($type){ if($this->content_type != 'text/html'){ $this->content_type = $type; } }
-		public  function setCustomRouter($router){ $this->custom_router = $router; }
 		public  function getPermissions(){ return $this->permissions; }
 		public  function setMissingPathHandler($handler,$path){ $this->missing_path_handler = $handler; $this->missing_path_handler_path = $path; }
 

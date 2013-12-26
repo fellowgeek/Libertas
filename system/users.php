@@ -42,9 +42,9 @@
 
 			$this->permissions = array(
 				'object' => 'any',
-				'add' => 'any',
+				'add' => 1,
 				'login' => 'any',
-				'get' => 'any',
+				'get' => 1,
 				'logout' => 'any'
 			);
 		}

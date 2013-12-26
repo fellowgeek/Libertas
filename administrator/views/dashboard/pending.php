@@ -1,6 +1,6 @@
 <div class="panel panel-default dashboard-panel pending">
 	<div class="panel-heading">
-		<h3 class="panel-title">Pending Approval<span class="badge pull-right">23</span></h3>
+		<h3 class="panel-title text-muted">Pending Approval<span class="badge pull-right">23</span></h3>
 	</div>
 	<div class="panel-body">
 		<table class="table table-hover">

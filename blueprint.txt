@@ -50,7 +50,6 @@ Commands :
 [S:Title|Keywords]					// returns the current snippets's list of keywords in <ul></li>KEYWORDS</li></ul> format
 [S:Title|Categories]				// returns the current snippets's list of tags in <ul></li>CATEGORY</li></ul> format
 
-
 [C:COMPONENT|Param1=VALUE|Param2=VALUE|...]
 
 [C:LatestPosts|Categories=Stories, Music, Dance; Length=200; Class=lastest-posts]

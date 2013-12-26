@@ -1,6 +1,6 @@
 <div class="panel panel-default dashboard-panel">
   <div class="panel-heading">
-    <h3 class="panel-title">Quick Stats</h3>
+    <h3 class="panel-title text-muted">Quick Stats</h3>
   </div>
   <div class="panel-body">
 	<div class="row">

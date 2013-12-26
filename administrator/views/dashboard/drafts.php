@@ -1,6 +1,6 @@
 <div class="panel panel-default dashboard-panel drafts">
 	<div class="panel-heading">
-		<h3 class="panel-title">Drafts<span class="badge pull-right">75</span></h3>
+		<h3 class="panel-title text-muted">Drafts<span class="badge pull-right">75</span></h3>
 	</div>
 	<div class="panel-body">
 		<table class="table table-hover">

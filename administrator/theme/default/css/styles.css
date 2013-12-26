@@ -1,23 +1,127 @@
 /*
 ----- ----- ----- ----- ----- ----- ----- -----
-body
+FONTS
 ----- ----- ----- ----- ----- ----- ----- -----
 */
 
-body {
-	background: url('../images/noisy_grid.png');
-}
-
-
-.panel, .navbar, .jumbotron {
-	-webkit-box-shadow: 2px 2px 8px rgba(80, 80, 80, 0.35);
-	-moz-box-shadow:    2px 2px 8px rgba(80, 80, 80, 0.35);
-	box-shadow:         2px 2px 8px rgba(80, 80, 80, 0.35);
-}
+@import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
 
 /*
 ----- ----- ----- ----- ----- ----- ----- -----
-dashboard panels
+GLOBAL & UI ELEMENTS
+----- ----- ----- ----- ----- ----- ----- -----
+*/
+
+* {
+    color: #151515;
+}
+
+body {
+	background: url('../images/background.png');
+	font-family: 'Open Sans';
+}
+
+.container {
+    width: 1500px;
+    max-width: 1600px;
+}
+
+.panel, .navbar, .jumbotron, .alert, .ui-btn {
+    -webkit-box-shadow: 2px 2px 2px rgba(80, 80, 80, 0.15);
+	-moz-box-shadow:    2px 2px 2px rgba(80, 80, 80, 0.15);
+	box-shadow:         2px 2px 2px rgba(80, 80, 80, 0.15);
+    color: #151515 !important;
+    /* border-radius: 10px; */
+    /* opacity: 0.9; */
+}
+
+.navbar {
+    border-radius: 0px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.navbar-nav>li>a, .navbar-brand {
+    color: #151515 !important;
+}
+
+.navbar-default {
+    background: #ddd;
+    border-color: #ddd;
+    z-index: 1000;
+}
+
+.panel-heading {
+    background-color: #ddd !important;
+    border-color: #444 !important;
+    color: #151515 !important;
+    text-transform: uppercase;
+}
+
+.panel, .panel-body {
+    background: #ddd;
+    border-color: #444;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.help-block {
+	color: #888;
+}
+
+.form-control:focus {
+	border-color: #444;
+	outline: 0;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 4px rgba(0, 0, 0, 0.6);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 4px rgba(0, 0, 0, 0.6);
+}
+
+legend {
+    font-size: 15px;
+	padding-bottom: 5px;
+	border-color: #888;
+	color: #444;
+}
+
+.control-label {
+	font-weight: 200;
+	color: #444;
+}
+
+textarea {
+	font-family: 'Ubuntu Mono', monospace;
+}
+
+.ui-btn {
+	min-width: 120px;
+}
+
+.btn-default {
+	background: #f7f7f7;
+}
+
+.btn-primaty {
+	background: #298CBA;
+}
+
+.dropzone {
+    min-height: 220px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background: #fff;
+}
+
+.datepicker {
+	padding: 8px 12px 8px 12px;
+}
+
+.margin-left-75px {
+    margin-left: 75px;
+}
+/*
+----- ----- ----- ----- ----- ----- ----- -----
+DASHBOARD
 ----- ----- ----- ----- ----- ----- ----- -----
 */
 
@@ -25,15 +129,9 @@ dashboard panels
 	min-height: 380px;
 }
 
-
-/*
------ ----- ----- ----- ----- ----- ----- -----
-shortcuts
------ ----- ----- ----- ----- ----- ----- -----
-*/
-
 .shortcuts button {
 	width: 72px;
+	min-width: 72px;
 	height: 72px;
 	margin: 0px 10px 10px 0px;
 }
@@ -42,3 +140,12 @@ shortcuts
 	font-size: 25px;
 }
 
+/*
+----- ----- ----- ----- ----- ----- ----- -----
+CONTENT
+----- ----- ----- ----- ----- ----- ----- -----
+*/
+
+.content-new-right, .content-new-left {
+	min-height: 860px;
+}
