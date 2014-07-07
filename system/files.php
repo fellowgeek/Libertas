@@ -50,7 +50,7 @@
 				$file_extention = strtolower(pathinfo($file, PATHINFO_EXTENSION));
 
 				$params = array('text' => $file_name);
-				$file_name_slug = $this->route('/sys/utilities/slugify/', $params)->data["slug"];
+				$file_name_slug = $this->route('/sys/utilities/slugify/', $params)->data->slug;
 				$file = $file_name_slug . '.' . $file_extention;
 				$uploadfile = './files/' . $file;
 
@@ -63,7 +63,7 @@
 						if(in_array($file_extention, array('jpg','png','gif')) == TRUE) { $this->data["wiki_code"] = '[Image:' . $file . ']'; }
 						if(in_array($file_extention, array('mp3','ogg','wav')) == TRUE) { $this->data["wiki_code"] = '[Audio:' . $file . ']'; }
 						if(in_array($file_extention, array('mp4','mov','webm')) == TRUE) { $this->data["wiki_code"] = '[Video:' . $file . ']'; }
-						if(in_array($file_extention, array('pdf','zip')) == TRUE) { $this->data["wiki_code"] = '[File:' . $file . ']'; }
+						if(in_array($file_extention, array('pdf','zip','rar')) == TRUE) { $this->data["wiki_code"] = '[File:' . $file . ']'; }
 					} else {
 						$this->throwError('Unable to move uploaded file.', 200);
 					}

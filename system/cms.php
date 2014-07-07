@@ -45,7 +45,7 @@
 		}
 
 		// parse lists ( handler )
-		function parse_lists_handler($matches,$close=false) {
+		function parseListsHandler($matches,$close=false) {
 			$this->listtypes = array("*" => "ul", "#" => "ol");
 			$output='';
 
@@ -74,7 +74,7 @@
 		}
 
 		// process lists ( line )
-		function parse_lists_line($line) {
+		private function parseListsLine($line) {
 			$line_regexes=array("list" => "^([\*\*]+)(.*?)$");
 			$this->stop = FALSE;
 			$this->stop_all = FALSE;
@@ -82,29 +82,29 @@
 			foreach($line_regexes as $func => $regex) {
 				if(preg_match("/$regex/i", $line, $matches)) {
 					$called[$func] = TRUE;
-					$line = $this->parse_lists_handler($matches);
+					$line = $this->parseListsHandler($matches);
 					if ($this->stop || $this->stop_all) break;
 				}
 			}
-			if (($this->list_level > 0) && !$called["list"]) $line = $this->parse_lists_handler(FALSE, TRUE) . $line;
+			if (($this->list_level > 0) && !$called["list"]) $line = $this->parseListsHandler(FALSE, TRUE) . $line;
 			return $line;
 		}
 
 		// process lists ( main )
-		public function parse_lists($text) {
+		public function parseLists($text) {
 			$output="";
 			$this->list_level_types = array();
 			$this->list_level = 0;
 			$lines = explode("\n", $text);
 			foreach ($lines as $line) {
-				$line = $this->parse_lists_line($line);
+				$line = $this->parseListsLine($line);
 				$output .= "\n" . $line;
 			}
 	    return $output;
 		}
 
 		// process components [C:COMPONENT|Param1=Value|Param2=Value|...]
-		function process_components($text, $path, $protocol) {
+		public function processComponents($text, $path, $protocol) {
 
 			$count = preg_match_all("@\[C:(.*?)\|(.*?)\]@i", $text, $matches);
 
@@ -219,7 +219,7 @@
 		}
 
 		// process snippet [S:Title|COMMAND] commands
-		public function process_snippets($text, $path, $protocol) {
+		public function processSnippets($text, $path, $protocol) {
 
 			$snippet = new stdClass();
 			$count = preg_match_all("@\[S:(.*?)(\|(.*?))?\]@i", $text, $matches);
@@ -228,7 +228,7 @@
 				foreach($matches[1] as $snippet_title) {
 
 					$params = array(
-						'title' => $snippet_title
+						'page_title' => $snippet_title
 					);
 
 					$snippet = $this->route('/sys/pages/get/', $params);
@@ -236,25 +236,25 @@
 					// if snippet exists at path
 					if(isset($snippet->data) && count($snippet->data) != 0) {
 
-						$snippet_text = $snippet->data[0]->text;
+						$snippet_text = $snippet->data[0]->page_text;
 
 						// process components
-						$snippet_text = $this->process_components($snippet_text, $path, $protocol);
+						$snippet_text = $this->processComponents($snippet_text, $path, $protocol);
 
 						// process wiki markup
 						$snippet_text = $this->parser($snippet_text, $path, $protocol);
 
 						$text = str_ireplace("[S:" . $snippet_title . "]", $snippet_text, $text);
 						$text = str_ireplace("[S:" . $snippet_title . "|Text]", $snippet_text, $text);
-						$text = str_ireplace("[S:" . $snippet_title . "|Title]", $snippet->data[0]->title, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Title]", $snippet->data[0]->page_title, $text);
 						$text = str_ireplace("[S:" . $snippet_title . "|Slug]", $snippet->data[0]->slug, $text);
-						$text = str_ireplace("[S:" . $snippet_title . "|Link]", $snippet->data[0]->path, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Link]", $snippet->data[0]->page_path, $text);
 						$text = str_ireplace("[S:" . $snippet_title . "|Image]", $protocol . __SITE__ . '/files/' . $snippet->data[0]->image, $text);
 						$text = str_ireplace("[S:" . $snippet_title . "|Audio]", $protocol . __SITE__ . '/files/' . $snippet->data[0]->audio, $text);
 						$text = str_ireplace("[S:" . $snippet_title . "|Video]", $protocol . __SITE__ . '/files/' . $snippet->data[0]->video, $text);
 						$text = str_ireplace("[S:" . $snippet_title . "|File]", $protocol . __SITE__ . '/files/' . $snippet->data[0]->file, $text);
-						$text = str_ireplace("[S:" . $snippet_title . "|Author]", $snippet->data[0]->author, $text);
-						$text = str_ireplace("[S:" . $snippet_title . "|Description]", $snippet->data[0]->description, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Author]", $snippet->data[0]->page_author, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Description]", $snippet->data[0]->page_description, $text);
 
 						// process timestamp
 						$snippet_timestamp = $snippet->data[0]->timestamp;
@@ -269,12 +269,12 @@
 						}
 						unset($matches);
 
-						$text = str_ireplace("[S:" . $snippet_title . "|Views]", $snippet->data[0]->views, $text);
-						$text = str_ireplace("[S:" . $snippet_title . "|Tags]", $snippet->data[0]->tags, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Views]", $snippet->data[0]->page_views, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Tags]", $snippet->data[0]->page_tags, $text);
 						$text = str_ireplace("[S:" . $snippet_title . "|Tags|Format=List]", $snippet->data[0]->tags_list, $text);
-						$text = str_ireplace("[S:" . $snippet_title . "|Keywords]", $snippet->data[0]->keywords, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Keywords]", $snippet->data[0]->page_keywords, $text);
 						$text = str_ireplace("[S:" . $snippet_title . "|Keywords|Format=List]", $snippet->data[0]->keywords_list, $text);
-						$text = str_ireplace("[S:" . $snippet_title . "|Categories]", $snippet->data[0]->categories, $text);
+						$text = str_ireplace("[S:" . $snippet_title . "|Categories]", $snippet->data[0]->page_categories, $text);
 						$text = str_ireplace("[S:" . $snippet_title . "|Categories|Format=List]", $snippet->data[0]->categories_list, $text);
 					}
 				}
@@ -345,14 +345,14 @@
 					$link_protocol = 'http://';
 
 					$params = array(
-						'title' => $title
+						'page_title' => $title
 					);
 
 					$page = $this->route('/sys/pages/get/', $params);
 
 					// if page exists at path
 					if(isset($page->data) && count($page->data) != 0) {
-						if(isset($page->data[0]->ssl_enabled) == TRUE && $page->data[0]->ssl_enabled == TRUE) {
+						if(isset($page->data[0]->page_ssl) == TRUE && $page->data[0]->page_ssl == TRUE) {
 							$link_protocol = 'https://';
 						}
 					}
@@ -372,14 +372,14 @@
 					$link_protocol = 'http://';
 
 					$params = array(
-						'title' => $title
+						'page_title' => $title
 					);
 
 					$page = $this->route('/sys/pages/get/', $params);
 
 					// if page exists at path
 					if(isset($page->data) && count($page->data) != 0) {
-						if(isset($page->data[0]->ssl_enabled) == TRUE && $page->data[0]->ssl_enabled == TRUE) {
+						if(isset($page->data[0]->page_ssl) == TRUE && $page->data[0]->page_ssl == TRUE) {
 							$link_protocol = 'https://';
 						}
 					}
@@ -391,9 +391,9 @@
 			unset($matches);
 
 			// external links ( renamed )
-			$text = preg_replace("@\[(https?://)(.*?)\|(.*?)\]\n@i", "<a target=\"_blank\" href=\"$1$2\">$3</a>", $text);
+			$text = preg_replace("@\[(https?://)(.*?)\|(.*?)\]@i", "<a target=\"_blank\" href=\"$1$2\">$3</a>", $text);
 			// external links
-			$text = preg_replace("@\[(https?://)(.*?)\]\n@i", "<a target=\"_blank\" href=\"$1$2\">$1$2</a>", $text);
+			$text = preg_replace("@\[(https?://)(.*?)\]@i", "<a target=\"_blank\" href=\"$1$2\">$1$2</a>", $text);
 
 			// images
 			preg_match_all("@\[Image:((.*?)\.(jpg|png|gif))\|(.*?)\]@i", $text, $matches);
@@ -634,7 +634,7 @@
 			// page break after in print
 			$text = preg_replace("@-8<-\n@","\n<div style=\"page-break-after: always;\"></div>\n",$text);
 
-			$text = $this->parse_lists($text);
+			$text = $this->parseLists($text);
 
 			return $text;
 		}
@@ -677,11 +677,11 @@
 				$theme = __THEME__;
 
 				// create a MD5 hash from the current path
-				$path_hash = md5($path);
+				$page_hash = md5($path);
 
 				// check the database for existing page at the path
 				$params = array(
-					'path_hash' => $path_hash
+					'page_hash' => $page_hash
 				);
 
 				// store the page into memory object
@@ -691,7 +691,7 @@
 				if(isset($page->data) && count($page->data) != 0) {
 
 					// redirect to HTTPS version if the ssl_enabled is TRUE
-					if(isset($page->data[0]->ssl_enabled) == TRUE && $page->data[0]->ssl_enabled == TRUE) {
+					if(isset($page->data[0]->page_ssl) == TRUE && $page->data[0]->page_ssl == TRUE) {
 						if(empty($_SERVER['HTTPS']) == TRUE) {
 							$redirect = 'https://' . __SITE__ . $path;
 							header('Location: ' . $redirect);
@@ -701,14 +701,14 @@
 
 					// set the theme
 					$theme = __THEME__;
-					if($page->data[0]->theme != '') {
-						$theme = $page->data[0]->theme;
+					if($page->data[0]->page_theme != '') {
+						$theme = $page->data[0]->page_theme;
 					}
 
 					// set the layout
 					$layout = __LAYOUT__;
-					if($page->data[0]->layout != '') {
-						$layout = $page->data[0]->layout;
+					if($page->data[0]->page_layout != '') {
+						$layout = $page->data[0]->page_layout;
 					}
 
 					// if theme / layout exists
@@ -724,10 +724,10 @@
 						$output = preg_replace("@_skel_config\.prefix ?= ?\"(.*?)\"@i", "_skel_config.prefix = \"" . $protocol . __SITE__ . "/themes/". $theme. "/$1\"", $output);
 
 						// process page [P:COMMAND] commands
-						$text = $page->data[0]->text;
+						$text = $page->data[0]->page_text;
 
 						// process [C:COMPONENT|Param1=VALUE|Param2=VALUE|...] command
-						$text = $this->process_components($text, $path, $protocol);
+						$text = $this->processComponents($text, $path, $protocol);
 
 						// process wiki markup
 						$text = $this->parser($text, $path, $protocol);
@@ -736,7 +736,7 @@
 
 						// process snippet [S:Title|COMMAND] commands (loop trough snippets 7 times to catch all nested snippets
 						for($loop=1;$loop<=7;$loop++) {
-							$output = $this->process_snippets($output, $path, $protocol);
+							$output = $this->processSnippets($output, $path, $protocol);
 						}
 
 						// process [S:Title|Image|Channel=A]
@@ -747,7 +747,7 @@
 							foreach($matches[2] as $channel) {
 								$snippet_title = $matches[1][$i];
 								$params = array(
-									'title' => $snippet_title,
+									'page_title' => $snippet_title,
 									'item'			 => 'Image',
 									'channel'		 => $channel
 								);
@@ -772,7 +772,7 @@
 							foreach($matches[2] as $channel) {
 								$snippet_title = $matches[1][$i];
 								$params = array(
-									'title' => $snippet_title,
+									'page_title' => $snippet_title,
 									'item'			 => 'Audio',
 									'channel'		 => $channel
 								);
@@ -797,7 +797,7 @@
 							foreach($matches[2] as $channel) {
 								$snippet_title = $matches[1][$i];
 								$params = array(
-									'title' => $snippet_title,
+									'page_title' => $snippet_title,
 									'item'			 => 'Video',
 									'channel'		 => $channel
 								);
@@ -822,7 +822,7 @@
 							foreach($matches[2] as $channel) {
 								$snippet_title = $matches[1][$i];
 								$params = array(
-									'title' => $snippet_title,
+									'page_title' => $snippet_title,
 									'item'			 => 'File',
 									'channel'		 => $channel
 								);
@@ -846,7 +846,7 @@
 							foreach($matches[1] as $channel) {
 
 								$params = array(
-									'path_hash' => $path_hash,
+									'page_hash' => $page_hash,
 									'item'			 => 'Image',
 									'channel'		 => $channel
 								);
@@ -869,7 +869,7 @@
 							foreach($matches[1] as $channel) {
 
 								$params = array(
-									'path_hash' => $path_hash,
+									'page_hash' => $page_hash,
 									'item'			 => 'Audio',
 									'channel'		 => $channel
 								);
@@ -892,7 +892,7 @@
 							foreach($matches[1] as $channel) {
 
 								$params = array(
-									'path_hash' => $path_hash,
+									'page_hash' => $page_hash,
 									'item'			 => 'Video',
 									'channel'		 => $channel
 								);
@@ -915,7 +915,7 @@
 							foreach($matches[1] as $channel) {
 
 								$params = array(
-									'path_hash' => $path_hash,
+									'page_hash' => $page_hash,
 									'item'			 => 'File',
 									'channel'		 => $channel
 								);
@@ -931,16 +931,15 @@
 						}
 						unset($matches);
 
-
-						$output = str_ireplace("[P:Title]", $page->data[0]->title, $output);
+						$output = str_ireplace("[P:Title]", $page->data[0]->page_title, $output);
 						$output = str_ireplace("[P:Slug]", $page->data[0]->slug, $output);
-						$output = str_ireplace("[P:Link]", $page->data[0]->path, $output);
+						$output = str_ireplace("[P:Link]", $page->data[0]->page_path, $output);
 						$output = str_ireplace("[P:Image]", $protocol . __SITE__ . '/files/' . $page->data[0]->image, $output);
 						$output = str_ireplace("[P:Audio]", $protocol . __SITE__ . '/files/' . $page->data[0]->audio, $output);
 						$output = str_ireplace("[P:Video]", $protocol . __SITE__ . '/files/' . $page->data[0]->video, $output);
 						$output = str_ireplace("[P:File]", $protocol . __SITE__ . '/files/' . $page->data[0]->file, $output);
-						$output = str_ireplace("[P:Author]", $page->data[0]->author, $output);
-						$output = str_ireplace("[P:Description]", $page->data[0]->description, $output);
+						$output = str_ireplace("[P:Author]", $page->data[0]->page_author, $output);
+						$output = str_ireplace("[P:Description]", $page->data[0]->page_description, $output);
 
 						// process timestamp
 						$timestamp = $page->data[0]->timestamp;
@@ -955,12 +954,12 @@
 						}
 						unset($matches);
 
-						$output = str_ireplace("[P:Views]", $page->data[0]->views, $output);
-						$output = str_ireplace("[P:Tags]", $page->data[0]->tags, $output);
+						$output = str_ireplace("[P:Views]", $page->data[0]->page_views, $output);
+						$output = str_ireplace("[P:Tags]", $page->data[0]->page_tags, $output);
 						$output = str_ireplace("[P:Tags|Format=List]", $page->data[0]->tags_list, $output);
-						$output = str_ireplace("[P:Keywords]", $page->data[0]->keywords, $output);
+						$output = str_ireplace("[P:Keywords]", $page->data[0]->page_keywords, $output);
 						$output = str_ireplace("[P:Keywords|Format=List]", $page->data[0]->keywords_list, $output);
-						$output = str_ireplace("[P:Categories]", $page->data[0]->categories, $output);
+						$output = str_ireplace("[P:Categories]", $page->data[0]->page_categories, $output);
 						$output = str_ireplace("[P:Categories|Format=List]", $page->data[0]->categories_list, $output);
 
 						// process [Base64:STRING], ( used for system level tasks, and <nowiki> )

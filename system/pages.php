@@ -42,24 +42,24 @@
 
 			$this->table = 'pages';
 			$this->table_definition = array(
-				'id' =>					array('primary_key' => TRUE),
-				'title' =>				array('data_type' => 'varchar(512)',		'required' => TRUE,			'slug' => TRUE),
-				'path' =>				array('data_type' => 'varchar(512)',		'required' => TRUE),
-				'path_hash' =>			array('data_type' => 'varchar(256)',		'required' => TRUE),
-				'text' =>				array('data_type' => 'text',				'required' => FALSE),
-				'author' =>				array('data_type' => 'integer',				'required' => FALSE),
-				'publish_date' =>		array('data_type' => 'varchar(30)',			'required' => FALSE),
-				'tags' =>				array('data_type' => 'varchar(512)',		'required' => FALSE),
-				'keywords' =>			array('data_type' => 'varchar(512)',		'required' => FALSE),
-				'description' =>		array('data_type' => 'text',				'required' => FALSE),
-				'categories' =>			array('data_type' => 'varchar(512)',		'required' => FALSE),
-				'layout' =>				array('data_type' => 'varchar(256)',		'required' => FALSE),
-				'theme' =>				array('data_type' => 'varchar(256)',		'required' => FALSE),
-				'visibility' =>			array('data_type' => 'varchar(30)',			'required' => FALSE),
-				'ssl_enabled' =>		array('data_type' => 'boolean',				'required' => FALSE),
-				'views' =>				array('data_type' => 'integer',				'required' => FALSE),
-				'status' =>				array('data_type' => 'varchar(30)',			'required' => FALSE),
-				'OCDT' =>				array('data_type' => 'datetime',			'required' => FALSE)
+				'page_id' =>				array('primary_key' => TRUE),
+				'page_title' =>				array('data_type' => 'varchar(512)',		'required' => TRUE,			'slug_key' => TRUE),
+				'page_path' =>				array('data_type' => 'varchar(512)',		'required' => TRUE),
+				'page_hash' =>				array('data_type' => 'varchar(256)',		'required' => TRUE),
+				'page_text' =>				array('data_type' => 'text',				'required' => FALSE),
+				'page_author' =>			array('data_type' => 'integer',				'required' => FALSE),
+				'page_publish_date' =>		array('data_type' => 'varchar(30)',			'required' => FALSE),
+				'page_tags' =>				array('data_type' => 'varchar(512)',		'required' => FALSE),
+				'page_keywords' =>			array('data_type' => 'varchar(512)',		'required' => FALSE),
+				'page_description' =>		array('data_type' => 'text',				'required' => FALSE),
+				'page_categories' =>		array('data_type' => 'varchar(512)',		'required' => FALSE),
+				'page_layout' =>			array('data_type' => 'varchar(256)',		'required' => FALSE),
+				'page_theme' =>				array('data_type' => 'varchar(256)',		'required' => FALSE),
+				'page_visibility' =>		array('data_type' => 'varchar(30)',			'required' => FALSE),
+				'page_ssl' =>				array('data_type' => 'boolean',				'required' => FALSE),
+				'page_views' =>				array('data_type' => 'integer',				'required' => FALSE),
+				'page_status' =>			array('data_type' => 'varchar(30)',			'required' => FALSE),
+				'slug' =>					array('data_type' => 'varchar(256)',		'required' => FALSE,		'slug_value' => TRUE)
 
 			);
 
@@ -70,96 +70,69 @@
 				'update' => 3,
 				'delete' => 2,
 				'out' => 'any',
-				'abcd' => 'any',
-                'page_exists' => 'any'
+				'getParsed' => 1,
+                'pageExists' => 1,
+                'getTags' => 1,
+                'getCategories' => 1,
+                'suggestSlug' => 1
 			);
 
 		}
 
 		public function add($params=array()) {
 
+			/*
+			$this->setContentType('text/html');
+			$this->html = '';
+			new dBug($params);
+			*/
+
             // create page data from params submitted using the interface
-            if(isset($params['contentTitle']) == TRUE && $params['contentTitle'] != '') {
-                $data['title'] = $params['contentTitle'];
-            } else { $this->throwError('Title, is required.', 200); }
-
-
-            if($params['contentMode'] == 'new') {
-                $params['contentPath'] = 'tmp-' . rand(100000,10000000);
+            if(empty($params['page_title']) == TRUE) {
+            	$this->throwError('Title, is required.', 200);
+            	$this->throwError('page_title', 200, 'fields');
             }
 
-            if(isset($params['contentPath']) == TRUE && $params['contentPath'] != '') {
-                $data['path'] = $params['contentPath'];
-                $data['path_hash'] = md5($params['contentPath']);
-            } else { $this->throwError('Page path, is required.', 200); }
-
-            if(isset($params['contentText']) == TRUE) {
-                $data['text'] = $params['contentText'];
-            }
-
-            $data['author'] = $_SESSION['ouser']->ouser_id;
-
-            if(isset($params['contentPublish']) == TRUE && $params['contentPublish'] != '') {
-                $data['publish_date'] = $params['contentPublish'];
+            if(empty($params['page_path']) == TRUE) {
+            	$this->throwError('Page path, is required.', 200);
+            	$this->throwError('page_path', 200, 'fields');
             } else {
-                $data['publish_date'] = date('m/d/Y');
+                $params['page_hash'] = md5($params['page_path']);
             }
 
-            if(isset($params['contentTags']) == TRUE && $params['contentTags'] != '') {
-                $data['tags'] = $params['contentTags'];
+            $params['page_author'] = $_SESSION['ouser']->ouser_id;
+
+            if(empty($params['page_publish_date']) == TRUE) {
+                $params['page_publish_date'] = date('m/d/Y');
             }
 
-            if(isset($params['contentDescription']) == TRUE && $params['contentDescription'] != '') {
-                $data['description'] = $params['contentDescription'];
+            if(empty($params['page_visibility']) == TRUE) {
+                $params['page_visibility'] = 'everyone';
             }
 
-            if(isset($params['contentCategories']) == TRUE && $params['contentCategories'] != '') {
-                $data['categories'] = $params['contentCategories'];
+            if(empty($params['page_ssl']) == TRUE) {
+				$params['page_ssl'] = FALSE;
             }
 
-            if(isset($params['contentLayout']) == TRUE && $params['contentLayout'] != '') {
-                $data['layout'] = $params['contentLayout'];
-            }
-
-            if(isset($params['contentTheme']) == TRUE && $params['contentTheme'] != '') {
-                $data['theme'] = $params['contentTheme'];
-            }
-
-            if(isset($params['contentVisibility']) == TRUE && $params['contentVisibility'] != '') {
-                $data['visibility'] = $params['contentVisibility'];
-            } else {
-                $data['visibility'] = 'everyone';
-            }
-
-            if(isset($params['contentSSL']) == TRUE && $params['contentSSL'] != FALSE) {
-                $data['ssl_enabled'] = $params['contentSSL'];
-            } else {
-                $data['ssl_enabled'] = FALSE;
-            }
-
-            if(isset($params['contentStatus']) == TRUE && $params['contentStatus'] != '') {
-                $data['status'] = $params['contentStatus'];
-            } else {
-                $data['status'] = 'draft';
+            if(empty($params['page_status']) == TRUE) {
+                $params['page_status'] = 'draft';
             }
 
             // create page data from commands embed in page text
 
 
-
             // if there are no errors proceed with add/update
-            if($this->isError() == FALSE) {
-                $page_exists = $this->page_exists( array('path' => $params['contentPath']) );
-                if($page_exists == FALSE) {
+            if(isset($this->errors) == FALSE) {
+
+                if(empty($params["page_id"]) == TRUE) {
                     // add new page
-                    $data['views'] = 0;
-                    parent::add($data);
+                    $params['page_views'] = 0;
+                    parent::add($params);
                     // success message
                     $this->success = 'Page, successfully created.';
                 } else {
                     // update existing page
-                    $data['id'] = $page_exists;
-                    parent::update($data);
+                    parent::update($params);
                     // success message
                     $this->success = 'Page, successfully updated.';
                 }
@@ -173,195 +146,231 @@
 			parent::get($params);
 
 			if(isset($this->data) && count($this->data) != 0) {
+				for($item = 0; $item < count($this->data); $item++) {
 
-				// add new line to the begining and end of page text
-				$this->data[0]->text = "\n" . $this->data[0]->text . "\n";
-				$text = $this->data[0]->text;
+					// add new line to the begining and end of page text
+					$this->data[$item]->page_text = "\n" . $this->data[$item]->page_text . "\n";
+					$text = $this->data[$item]->page_text;
 
-				// process image at channel [P:Image|Channel=A]
-				if(isset($params['channel']) == TRUE && $params['channel'] != '' && isset($params['item']) == TRUE && $params['item'] == 'Image') {
-					$image_at_channel = '';
+					// process image at channel [P:Image|Channel=A]
+					if(isset($params['channel']) == TRUE && $params['channel'] != '' && isset($params['item']) == TRUE && $params['item'] == 'Image') {
+						$image_at_channel = '';
 
-					preg_match_all("@\[image:((.*?)\.(jpg|png|gif))(.*?)\|channel=(.*?)(\|(.*?))?\]@i", $text, $matches);
+						preg_match_all("@\[image:((.*?)\.(jpg|png|gif))(.*?)\|channel=(.*?)(\|(.*?))?\]@i", $text, $matches);
 
-					if(empty($matches[1]) == FALSE && empty($matches[5]) == FALSE) {
-						$i = 0;
-						foreach($matches[5] as $matched_channel) {
-							if($matched_channel == $params['channel']) {
-								$image_at_channel = $matches[1][$i];
+						if(empty($matches[1]) == FALSE && empty($matches[5]) == FALSE) {
+							$i = 0;
+							foreach($matches[5] as $matched_channel) {
+								if($matched_channel == $params['channel']) {
+									$image_at_channel = $matches[1][$i];
+								}
+							$i++;
 							}
-						$i++;
 						}
+
+						$this->data[$item]->image_at_channel = $image_at_channel;
 					}
+					unset($matches);
 
-					$this->data[0]->image_at_channel = $image_at_channel;
-				}
-				unset($matches);
+					// process audio at channel [P:Audio|Channel=A]
+					if(isset($params['channel']) == TRUE && $params['channel'] != '' && isset($params['item']) == TRUE && $params['item'] == 'Audio') {
+						$audio_at_channel = '';
 
-				// process audio at channel [P:Audio|Channel=A]
-				if(isset($params['channel']) == TRUE && $params['channel'] != '' && isset($params['item']) == TRUE && $params['item'] == 'Audio') {
-					$audio_at_channel = '';
+						preg_match_all("@\[Audio:((.*?)\.(mp3|ogg|wav))(.*?)\|channel=(.*?)(\|(.*?))?\]@i", $text, $matches);
 
-					preg_match_all("@\[Audio:((.*?)\.(mp3|ogg|wav))(.*?)\|channel=(.*?)(\|(.*?))?\]@i", $text, $matches);
-
-					if(empty($matches[1]) == FALSE && empty($matches[5]) == FALSE) {
-						$i = 0;
-						foreach($matches[5] as $matched_channel) {
-							if($matched_channel == $params['channel']) {
-								$audio_at_channel = $matches[1][$i];
+						if(empty($matches[1]) == FALSE && empty($matches[5]) == FALSE) {
+							$i = 0;
+							foreach($matches[5] as $matched_channel) {
+								if($matched_channel == $params['channel']) {
+									$audio_at_channel = $matches[1][$i];
+								}
+							$i++;
 							}
-						$i++;
 						}
+
+						$this->data[$item]->audio_at_channel = $audio_at_channel;
 					}
+					unset($matches);
 
-					$this->data[0]->audio_at_channel = $audio_at_channel;
-				}
-				unset($matches);
+					// process video at channel [P:Video|Channel=A]
+					if(isset($params['channel']) == TRUE && $params['channel'] != '' && isset($params['item']) == TRUE && $params['item'] == 'Video') {
+						$video_at_channel = '';
 
-				// process video at channel [P:Video|Channel=A]
-				if(isset($params['channel']) == TRUE && $params['channel'] != '' && isset($params['item']) == TRUE && $params['item'] == 'Video') {
-					$video_at_channel = '';
+						preg_match_all("@\[Video:((.*?)\.(mp4|mov|webm))(.*?)\|channel=(.*?)(\|(.*?))?\]@i", $text, $matches);
 
-					preg_match_all("@\[Video:((.*?)\.(mp4|mov|webm))(.*?)\|channel=(.*?)(\|(.*?))?\]@i", $text, $matches);
-
-					if(empty($matches[1]) == FALSE && empty($matches[5]) == FALSE) {
-						$i = 0;
-						foreach($matches[5] as $matched_channel) {
-							if($matched_channel == $params['channel']) {
-								$video_at_channel = $matches[1][$i];
+						if(empty($matches[1]) == FALSE && empty($matches[5]) == FALSE) {
+							$i = 0;
+							foreach($matches[5] as $matched_channel) {
+								if($matched_channel == $params['channel']) {
+									$video_at_channel = $matches[1][$i];
+								}
+							$i++;
 							}
-						$i++;
 						}
+
+						$this->data[$item]->video_at_channel = $video_at_channel;
 					}
+					unset($matches);
 
-					$this->data[0]->video_at_channel = $video_at_channel;
-				}
-				unset($matches);
+					// process file at channel [P:File|Channel=A]
+					if(isset($params['channel']) == TRUE && $params['channel'] != '' && isset($params['item']) == TRUE && $params['item'] == 'File') {
+						$file_at_channel = '';
 
-				// process file at channel [P:File|Channel=A]
-				if(isset($params['channel']) == TRUE && $params['channel'] != '' && isset($params['item']) == TRUE && $params['item'] == 'File') {
-					$file_at_channel = '';
+						preg_match_all("@\[File:(.*?)\|((.*?)\|)?channel=(.*?)(\|(.*?))?\]@i", $text, $matches);
 
-					preg_match_all("@\[File:(.*?)\|((.*?)\|)?channel=(.*?)(\|(.*?))?\]@i", $text, $matches);
-
-					if(empty($matches[1]) == FALSE && empty($matches[4]) == FALSE) {
-						$i = 0;
-						foreach($matches[4] as $matched_channel) {
-							if($matched_channel == $params['channel']) {
-								$file_at_channel = $matches[1][$i];
+						if(empty($matches[1]) == FALSE && empty($matches[4]) == FALSE) {
+							$i = 0;
+							foreach($matches[4] as $matched_channel) {
+								if($matched_channel == $params['channel']) {
+									$file_at_channel = $matches[1][$i];
+								}
+							$i++;
 							}
-						$i++;
 						}
+
+						$this->data[$item]->file_at_channel = $file_at_channel;
 					}
+					unset($matches);
 
-					$this->data[0]->file_at_channel = $file_at_channel;
-				}
-				unset($matches);
-
-				// process the text for default image
-				$image = '';
-				if(preg_match("@\[Image:(.*?)\.(jpg|png)\|(.*?)\]@i", $text, $matches) == 0) {
-					preg_match("@\[Image:(.*?)\.(jpg|png)\]@i", $text, $matches);
-				}
-				if(empty($matches[1]) == FALSE && empty($matches[2]) == FALSE) {
-					$image = $matches[1] . '.' . $matches[2];
-				}
-				unset($matches);
-				$this->data[0]->image = $image;
-
-				// process the text for default audio
-				$audio = '';
-				if(preg_match("@\[Audio:(.*?)\.(mp3|ogg)\|(.*?)\]@i", $text, $matches) == 0) {
-					preg_match("@\[Audio:(.*?)\.(mp3|ogg)\]@i", $text, $matches);
-				}
-				if(empty($matches[1]) == FALSE && empty($matches[2]) == FALSE) {
-					$audio = $matches[1] . '.' . $matches[2];
-				}
-				unset($matches);
-				$this->data[0]->audio = $audio;
-
-				// process the text for default video
-				$video = '';
-				if(preg_match("@\[Video:(.*?)\.(mp4|mov)\|(.*?)\]@i", $text, $matches) == 0) {
-					preg_match("@\[Video:(.*?)\.(mp4|mov)\]@i", $text, $matches);
-				}
-				if(empty($matches[1]) == FALSE && empty($matches[2]) == FALSE) {
-					$video = $matches[1] . '.' . $matches[2];
-				}
-				$matches = array();
-				$this->data[0]->video = $video;
-
-				// process the text for default file
-				$file = '';
-				if(preg_match("@\[File:(.*?)\.(.*?)\|(.*?)\]@i", $text, $matches) == 0) {
-					preg_match("@\[File:(.*?)\.(.*?)\]@i", $text, $matches);
-				}
-				if(empty($matches[1]) == FALSE && empty($matches[2]) == FALSE) {
-					$file = $matches[1] . '.' . $matches[2];
-				}
-				unset($matches);
-				$this->data[0]->file = $file;
-
-				// process the page for author full name
-				$author = '';
-
-				$params = array(
-					'ouser_id' => $this->data[0]->author
-				);
-
-				$user = $this->route('/sys/users/get/', $params);
-				if(isset($user->data) == TRUE && count($user->data) !=0) {
-					$author = $user->data[0]->ouser_first_name . ' ' . $user->data[0]->ouser_last_name;
-				}
-				$this->data[0]->author = $author;
-
-				// process timestamp
-				$timestamp =  strtotime($this->data[0]->OCDT); // replace with OCDT
-				$this->data[0]->timestamp = $timestamp;
-
-				// process tags
-				$tags = '';
-				$tags_array = explode(',', $this->data[0]->tags);
-
-				if(count($tags_array) != 0) {
-					$tags = '<ul>';
-					foreach($tags_array as $tag) {
-						$tags .= '<li>' . trim($tag) . '</li>';
+					// process the text for default image
+					$image = '';
+					if(preg_match("@\[Image:(.*?)\.(jpg|png)\|(.*?)\]@i", $text, $matches) == 0) {
+						preg_match("@\[Image:(.*?)\.(jpg|png)\]@i", $text, $matches);
 					}
-					$tags .= '</ul>';
-				}
-				$this->data[0]->tags_list = $tags;
-
-				// process keywords
-				$keywords = '';
-				$keywords_array = explode(',', $this->data[0]->keywords);
-
-				if(count($keywords_array) != 0) {
-					$keywords = '<ul>';
-					foreach($keywords_array as $keyword) {
-						$keywords .= '<li>' . trim($keyword) . '</li>';
+					if(empty($matches[1]) == FALSE && empty($matches[2]) == FALSE) {
+						$image = $matches[1] . '.' . $matches[2];
 					}
-					$keywords .= '</ul>';
-				}
-				$this->data[0]->keywords_list = $keywords;
+					unset($matches);
+					$this->data[$item]->image = $image;
 
-				// process categories
-				$categories = '';
-				$categories_array = explode(',', $this->data[0]->categories);
-
-				if(count($categories_array) != 0) {
-					$categories = '<ul>';
-					foreach($categories_array as $category) {
-						$categories .= '<li>' . trim($category) . '</li>';
+					// process the text for default audio
+					$audio = '';
+					if(preg_match("@\[Audio:(.*?)\.(mp3|ogg)\|(.*?)\]@i", $text, $matches) == 0) {
+						preg_match("@\[Audio:(.*?)\.(mp3|ogg)\]@i", $text, $matches);
 					}
-					$categories .= '</ul>';
+					if(empty($matches[1]) == FALSE && empty($matches[2]) == FALSE) {
+						$audio = $matches[1] . '.' . $matches[2];
+					}
+					unset($matches);
+					$this->data[$item]->audio = $audio;
+
+					// process the text for default video
+					$video = '';
+					if(preg_match("@\[Video:(.*?)\.(mp4|mov)\|(.*?)\]@i", $text, $matches) == 0) {
+						preg_match("@\[Video:(.*?)\.(mp4|mov)\]@i", $text, $matches);
+					}
+					if(empty($matches[1]) == FALSE && empty($matches[2]) == FALSE) {
+						$video = $matches[1] . '.' . $matches[2];
+					}
+					$matches = array();
+					$this->data[$item]->video = $video;
+
+					// process the text for default file
+					$file = '';
+					if(preg_match("@\[File:(.*?)\.(.*?)\|(.*?)\]@i", $text, $matches) == 0) {
+						preg_match("@\[File:(.*?)\.(.*?)\]@i", $text, $matches);
+					}
+					if(empty($matches[1]) == FALSE && empty($matches[2]) == FALSE) {
+						$file = $matches[1] . '.' . $matches[2];
+					}
+					unset($matches);
+					$this->data[$item]->file = $file;
+
+					// process the page for author full name
+					$author = '';
+
+					$params = array(
+						'ouser_id' => $this->data[$item]->page_author
+					);
+
+					$user = $this->route('/sys/users/get/', $params);
+					if(isset($user->data) == TRUE && count($user->data) !=0) {
+						$author = $user->data[0]->ouser_first_name . ' ' . $user->data[0]->ouser_last_name;
+					}
+					$this->data[$item]->page_author = $author;
+
+					// process timestamp
+					$timestamp =  strtotime($this->data[$item]->OCDT); // replace with OCDT
+					$this->data[$item]->timestamp = $timestamp;
+
+					// process tags
+					$tags = '';
+					$tags_array = explode(',', $this->data[$item]->page_tags);
+
+					if(count($tags_array) != 0) {
+						$tags = '<ul>';
+						foreach($tags_array as $tag) {
+							$tags .= '<li>' . trim($tag) . '</li>';
+						}
+						$tags .= '</ul>';
+					}
+					$this->data[$item]->tags_list = $tags;
+
+					// process keywords
+					$keywords = '';
+					$keywords_array = explode(',', $this->data[$item]->page_keywords);
+
+					if(count($keywords_array) != 0) {
+						$keywords = '<ul>';
+						foreach($keywords_array as $keyword) {
+							$keywords .= '<li>' . trim($keyword) . '</li>';
+						}
+						$keywords .= '</ul>';
+					}
+					$this->data[$item]->keywords_list = $keywords;
+
+					// process categories
+					$categories = '';
+					$categories_array = explode(',', $this->data[$item]->page_categories);
+
+					if(count($categories_array) != 0) {
+						$categories = '<ul>';
+						foreach($categories_array as $category) {
+							$categories .= '<li>' . trim($category) . '</li>';
+						}
+						$categories .= '</ul>';
+					}
+					$this->data[$item]->categories_list = $categories;
 				}
-				$this->data[0]->categories_list = $categories;
 			}
 
 		}
 
-        public function page_exists($params) {
+		public function getParsed($params=array()) {
+
+			// default protocol
+			$protocol = 'http://';
+
+			// update the protocol if page is being accessed with ssl_enabled
+			if(empty($_SERVER['HTTPS']) == FALSE) {
+				$protocol = 'https://';
+			}
+
+			parent::get($params);
+
+			if(isset($this->data) && count($this->data) != 0) {
+
+				$this->data[0]->page_text = "\n" . $this->data[0]->page_text . "\n";
+				$text = $this->data[0]->page_text;
+
+				// process [C:COMPONENT|Param1=VALUE|Param2=VALUE|...] command
+				$text = $this->route('/sys/cms/')->processComponents($text, '', $protocol);
+
+				// process wiki markup
+				$text = $this->route('/sys/cms/')->parser($text, '', $protocol);
+
+				// process snippet [S:Title|COMMAND] commands (loop trough snippets 7 times to catch all nested snippets
+				for($loop=1;$loop<=7;$loop++) {
+					$text = $this->route('/sys/cms/')->processSnippets($text, '', $protocol);
+				}
+
+				$this->data[0]->parsed = $text;
+			}
+
+		}
+
+		// check if a page already exists
+        public function pageExists($params = array()) {
 
             if(isset($params['path']) == TRUE) {
                 $params['path_hash'] = md5($params['path']);
@@ -372,7 +381,7 @@
                 // if page exists at path
                 if(isset($page->data) && count($page->data) != 0) {
                     // if page exists return page ID
-                    return $page->data[0]->id;
+                    return $page->data[0]->page_id;
                 } else {
                     return FALSE;
                 }
@@ -381,6 +390,106 @@
             }
 
         }
+
+		// get all tags form all pages
+		public function getTags($params = array()) {
+
+			$tags = '';
+			$tagsArray = array();
+
+			// get all the pages and separate tags
+			parent::get($params);
+
+			if(isset($this->data) && count($this->data) != 0) {
+				for($item = 0; $item < count($this->data); $item++) {
+					$tags .= $this->data[$item]->page_tags . ',';
+				}
+			}
+
+			// create unique array from tags and sort
+			$tagsArray = explode(',', $tags);
+			$tagsArray = array_unique($tagsArray);
+			$tagsArray = array_filter($tagsArray);
+			sort($tagsArray);
+
+			// rebuid tags
+			$tags = '';
+			foreach($tagsArray as $tag) {
+				$tags .= $tag . ',';
+			}
+			$tags = substr($tags, 0, -1);
+
+			// prepare output
+			$this->data = new stdClass();
+			$this->data->tags = $tags;
+			$this->data->tagsArray = $tagsArray;
+
+		}
+
+
+		// get all categories form all pages
+		public function getCategories($params = array()) {
+
+			$categories = '';
+			$categoriesArray = array();
+
+			// get all the pages and separate categories
+			parent::get($params);
+
+			if(isset($this->data) && count($this->data) != 0) {
+				for($item = 0; $item < count($this->data); $item++) {
+					$categories .= $this->data[$item]->page_categories . ',';
+				}
+			}
+
+			// create unique array from categories and sort
+			$categoriesArray = explode(',', $categories);
+			$categoriesArray = array_unique($categoriesArray);
+			$categoriesArray = array_filter($categoriesArray);
+			sort($categoriesArray);
+
+			// rebuid categories
+			$categories = '';
+			foreach($categoriesArray as $category) {
+				$categories .= $category . ',';
+			}
+			$categories = substr($categories, 0, -1);
+
+			// prepare output
+			$this->data = new stdClass();
+			$this->data->categories = $categories;
+			$this->data->categoriesArray = $categoriesArray;
+
+		}
+
+		// suggest page slug based on title
+		public function suggestSlug($params = array()) {
+
+			$i = 0;
+			$slug = '';
+			$found = FALSE;
+
+			$this->data = new stdClass();
+
+			if(isset($params["page_title"]) == TRUE) {
+
+				$params["text"] = $params["page_title"];
+				$slug = $this->route('/sys/utilities/slugify/', $params)->data->slug;
+
+				while($found == FALSE) {
+					$i++;
+					$pages = $this->route('/sys/pages/get/?slug=' . $slug)->data;
+					if(count($pages) == 0) {
+						$found = TRUE;
+					} else {
+						$slug = $slug . '-' . $i;
+					}
+				}
+			}
+
+			$this->data->slug = $slug;
+
+		}
 
 	}
 ?>

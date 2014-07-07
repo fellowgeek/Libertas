@@ -33,7 +33,7 @@ Commands :
 
 [S:Title]							// returns the current snippets's text
 [S:Title|Title]						// returns the current snippets's title
-[S:Title|Slug]						// returns the current snippets's slug ( The-Awesome-Snippet )
+[S:Title|Slug]						// returns the current snippets's slug ( the-awesome-snippet )
 [S:Title|Link]						// returns the current snippets's link ( http://www.example.com/The-Awesome-Snippet/ )
 [S:Title|Image]						// returns the current snippets's first image link ( http://www.example.com/AS2DFGDG3432RE2D2F.jpg )
 [S:Title|Image|Channel=A]			// returns the current snippets's first image link ( http://www.example.com/AS2DFGDG3432RE2D2F.jpg )

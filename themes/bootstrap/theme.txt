@@ -1,0 +1,5 @@
+[THEME:Bootstrap Default]
+
+[LAYOUT:index.html|NAME=Home]
+[LAYOUT:page-layout-1.html|NAME=Default With Sidebar]
+[LAYOUT:page-layout-2.html|NAME=Default]

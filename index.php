@@ -4,12 +4,12 @@
 	require_once 'settings.php';
 
 
-	if($debugMode == TRUE) {
+	if(__OBRAY_DEBUG_MODE__ == TRUE) {
 		// enable debugging
 		error_reporting(E_ALL);
 
 		// load dBug class
-		require_once __PATH_TO_CORE__ . 'dbug.php';
+		require_once __OBRAY_PATH_TO_CORE__ . 'dbug.php';
 	}
 
 	// set error reporting to display all errors and types
@@ -23,7 +23,7 @@
 	$_SESSION["cms"]["js"] = array();
 
 	// include ORouter
-	require_once __PATH_TO_CORE__ . 'ORouter.php';
+	require_once __OBRAY_PATH_TO_CORE__ . 'ORouter.php';
 
 	// instatiate ORouter
 	$router = new ORouter();

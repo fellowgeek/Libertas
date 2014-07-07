@@ -1,0 +1,6 @@
+[THEME:South Park]
+
+[LAYOUT:index.html|NAME=Main]
+[LAYOUT:services.html|NAME=Company Services]
+[LAYOUT:contact.html|NAME=Contact]
+[LAYOUT:faq.html|NAME=FAQ]

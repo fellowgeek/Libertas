@@ -1,67 +1,70 @@
 <?php
 
-/******************************************************
-    GENERAL SETTINGS
-******************************************************/
+/*
+----------------------------------------------------------------------------------------------------
+APPLICATION SETTINGS
+----------------------------------------------------------------------------------------------------
+*/
 
-// the application name
-define('__APP__','libertas');
-// the should contain the path to your application
 define('__SELF__', dirname(__FILE__).'/');
-// the path to obray's core files
-define('__PATH_TO_CORE__', dirname(__FILE__).'/core/');
-// enable Debug Mode
-$debugMode = TRUE;
-
-/******************************************************
-    SITE SETTINGS
-******************************************************/
-
-define('__SITE__', 'libertas.erfan.me');
+define('__SITE__' , 'example.com');
 define('__THEME__', 'bootstrap');
 define('__LAYOUT__', 'index.html');
 
-/******************************************************
-    DEFINE AVAILABLE ROUTES
-******************************************************/
+/*
+----------------------------------------------------------------------------------------------------
+OBRAY CONSTANTS
+----------------------------------------------------------------------------------------------------
+*/
 
-define('__ROUTES__',
-	serialize(
-		array(
-			'cmd' => __SELF__ . '/',
-			'sys' => __SELF__ . 'system/',
-			'com' => __SELF__ . 'components/',
-			// do not chnage this route
-			'c' => __PATH_TO_CORE__
-		)
-	)
-);
+define('__OBRAY_PATH_TO_CORE__',  dirname(__FILE__) . '/core/');						// the path to obray's core files
+define('__OBRAY_DEBUG_MODE__', FALSE);													// enable Debug Mode - will script database and tables if set to TRUE
+
+/*
+----------------------------------------------------------------------------------------------------
+DEFINE AVAILABLE ROUTES
+----------------------------------------------------------------------------------------------------
+*/
+
+define('__OBRAY_ROUTES__',serialize(array(
+	'cmd' => __SELF__ . '/',
+	'sys' => __SELF__ . 'system/',
+	'com' => __SELF__ . 'components/',
+	// do not chnage this route
+	'obray' => __OBRAY_PATH_TO_CORE__
+	)));
+
+/*
+----------------------------------------------------------------------------------------------------
+USER SETTINGS
+----------------------------------------------------------------------------------------------------
+*/
+
+define('__OBRAY_MAX_FAILED_LOGIN_ATTEMPTS__',10);										// the maximium allowed failed login attempts before an account is locked
 
 
-/******************************************************
-    DATABASE SETTINGS
-******************************************************/
+/*
+----------------------------------------------------------------------------------------------------
+DATABASE SETTINGS
+----------------------------------------------------------------------------------------------------
+*/
 
-// database server host
-define('__DBHost__','localhost');
-// database server port
-define('__DBPort__','3306');
-// database username
-define('__DBUserName__','root');
-// database password
-define('__DBPassword__','t0nback23jende');
-// database name
-define('__DB__','libertas');
+define('__OBRAY_DATABASE_HOST__','localhost');											// database server host
+define('__OBRAY_DATABASE_PORT__','3306');												// database server port
+define('__OBRAY_DATABASE_USERNAME__','USERNAME');										// database username
+define('__OBRAY_DATABASE_PASSWORD__','PASSWORD');										// database password
+define('__OBRAY_DATABASE_NAME__','DATABASE');											// database name
+define('__OBRAY_DATABASE_ENGINE__','MyISAM');											// database engine
+define('__OBRAY_DATABASE_CHARACTER_SET__','utf8');										// database characterset (default: utf8)
 
-// do not edit these unless you know what you are doing
-define('__DBEngine__','MyISAM');
-define('__DBCharSet__','utf8');
-
-/******************************************************
-    User Settings
-******************************************************/
-
-// the maximium allowed failed login attempts before an account is locked
-define('__MAX_FAILED_LOGIN_ATTEMPTS__', 10);
+define ("__OBRAY_DATATYPES__", serialize (array (
+    "varchar"   =>  array("sql"=>" VARCHAR(size) COLLATE utf8_general_ci ",	"my_sql_type"=>"varchar(size)",		"validation_regex"=>""),
+    "text"      =>  array("sql"=>" TEXT COLLATE utf8_general_ci ",			"my_sql_type"=>"text",				"validation_regex"=>""),
+    "integer"   =>  array("sql"=>" int ",									"my_sql_type"=>"int(11)",			"validation_regex"=>"/^([0-9])*$/"),
+    "float"     =>  array("sql"=>" float ",									"my_sql_type"=>"float",				"validation_regex"=>"/[0-9\.]*/"),
+    "boolean"   =>  array("sql"=>" boolean ",								"my_sql_type"=>"boolean",			"validation_regex"=>""),
+    "datetime"  =>  array("sql"=>" datetime ",								"my_sql_type"=>"datetime",			"validation_regex"=>""),
+    "password"  =>  array("sql"=>" varchar(255) ",							"my_sql_type"=>"varchar(255)",		"validation_regex"=>"")
+)));
 
 ?>

@@ -1,0 +1,336 @@
+/*
+----- ----- ----- ----- ----- ----- ----- -----
+FONTS
+----- ----- ----- ----- ----- ----- ----- -----
+*/
+
+@import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+@import url(http://fonts.googleapis.com/css?family=Roboto:300);
+
+/*
+----- ----- ----- ----- ----- ----- ----- -----
+GLOBAL & UI ELEMENTS
+----- ----- ----- ----- ----- ----- ----- -----
+*/
+
+body {
+	background: url('../images/background.png');
+	font-family: 'Open Sans';
+}
+
+a, a:hover {
+	color: #151515;
+	white-space: nowrap;
+}
+
+.container {
+    width: 95%;
+    max-width: 2800px;
+}
+
+.alert {
+    -webkit-box-shadow: 2px 2px 2px rgba(80, 80, 80, 0.15);
+	-moz-box-shadow:    2px 2px 2px rgba(80, 80, 80, 0.15);
+	box-shadow:         2px 2px 2px rgba(80, 80, 80, 0.15);
+}
+
+.alert h4 {
+	letter-spacing: 1px;
+}
+
+.panel, .navbar, .jumbotron, .well {
+    -webkit-box-shadow: 2px 2px 2px rgba(80, 80, 80, 0.15);
+	-moz-box-shadow:    2px 2px 2px rgba(80, 80, 80, 0.15);
+	box-shadow:         2px 2px 2px rgba(80, 80, 80, 0.15);
+    color: #151515 !important;
+}
+
+.navbar {
+    border-radius: 0px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.navbar-nav>li>a, .navbar-brand {
+    color: #151515 !important;
+}
+
+.navbar-default {
+    background: #ddd;
+    border-color: #ddd;
+    z-index: 1000;
+}
+
+.dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus {
+	background: #ddd;
+}
+
+.badge {
+	border-radius:  2px;
+	font-weight: normal;
+}
+
+.small-badge-pill {
+	padding: 7px;
+	margin: 0px 0px 8px 0px;
+	border-top-right-radius: 0px;
+	border-bottom-right-radius: 0px;
+}
+
+.small-badge-pill-count {
+	margin: 0px 4px 8px 0px;
+	padding: 7px;
+	background: #666;
+	border-top-left-radius: 0px;
+	border-bottom-left-radius: 0px;
+}
+
+.medium-badge-pill {
+	padding: 12px;
+	margin: 0px 0px 8px 0px;
+	border-top-right-radius: 0px;
+	border-bottom-right-radius: 0px;
+}
+
+.medium-badge-pill-count {
+	margin: 0px 4px 8px 0px;
+	padding: 12px;
+	background: #666;
+	border-top-left-radius: 0px;
+	border-bottom-left-radius: 0px;
+}
+
+.well {
+    background-color: #ddd !important;
+    border-color: #444 !important;
+}
+
+.panel-heading {
+    background-color: #ddd !important;
+    border-color: #444 !important;
+    color: #151515 !important;
+    text-transform: uppercase;
+}
+
+.panel, .panel-body {
+    background: #ddd;
+    border-color: #444;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.modal-header {
+	padding: 10px 15px;
+	background: #ddd;
+	border-color: #444;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.modal-title {
+	margin-top: 0;
+	margin-bottom: 0;
+	font-size: 16px;
+	line-height: 1.1;
+	text-transform: uppercase;
+}
+
+.modal-body {
+	background: #ddd;
+}
+
+.modal-footer {
+	margin: 0px;
+	padding: 0px 20px 20px 20px;
+	background: #ddd;
+	border-top: none;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+
+}
+
+.modal-backdrop.in {
+	opacity: 0.8;
+}
+
+.help-block {
+	color: #888;
+}
+
+.form-control:focus {
+	border-color: #444;
+	outline: 0;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 4px rgba(0, 0, 0, 0.6);
+	box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),0 0 4px rgba(0, 0, 0, 0.6);
+}
+
+legend {
+    font-size: 15px;
+	padding-bottom: 5px;
+	border-color: #888;
+	color: #444;
+}
+
+.control-label {
+	font-weight: 200;
+	color: #444;
+}
+
+textarea {
+	font-family: 'Ubuntu Mono', monospace;
+}
+
+.btn:focus, a:focus {
+	outline: none !important;
+}
+
+.btn-xs {
+	min-width: 24px !important;
+}
+
+.btn-default {
+	background: #f7f7f7;
+}
+
+.btn-primaty {
+	background: #298CBA;
+}
+
+.dash {
+	padding: 0px 5px 0px 5px;
+}
+
+.pagination {
+	margin: 0px;
+}
+
+.dropzone {
+    min-height: 220px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background: #fff;
+}
+
+.dropzone .dz-message {
+	position: absolute;
+	font-size: 38px;
+	text-transform: capitalize;
+	text-align: center;
+	width: 100%;
+	color: #909090;
+}
+
+.datepicker {
+	padding: 8px 12px 8px 12px;
+}
+
+.margin-left-75px {
+    margin-left: 75px;
+}
+
+.position-bottom-right {
+	position: absolute;
+	bottom: 38px;
+	right: 32px;
+}
+
+.small-button {
+	min-width: 100px;
+}
+
+.small-panel {
+	min-height: 150px;
+}
+
+.medium-panel {
+	min-height: 338px;
+}
+
+.big-panel {
+	min-height: 238px;
+}
+
+.large-panel {
+	min-height: 600px;
+}
+
+.small-column {
+	width: 9%;
+}
+
+.medium-column {
+	width: 11%;
+}
+
+.large-column {
+	width: 42%;
+}
+
+.cms-image img {
+	margin: 5px 0px 5px 0px;
+	max-width: 100%;
+}
+
+/*
+----- ----- ----- ----- ----- ----- ----- -----
+DASHBOARD
+----- ----- ----- ----- ----- ----- ----- -----
+*/
+
+.shortcuts a.btn {
+	margin: 0px 10px 10px 0px;
+	padding-top: 15px;
+	height: 82px;
+	width: 82px;
+	font-size: 12px;
+}
+
+.icon {
+	margin-bottom: 5px;
+	font-size: 25px;
+	color: #fff;
+}
+
+/*
+----- ----- ----- ----- ----- ----- ----- -----
+CONTENT
+----- ----- ----- ----- ----- ----- ----- -----
+*/
+
+.content-new-right, .content-new-left {
+	min-height: 820px;
+}
+
+#contentFiles {
+	margin: 0 auto;
+}
+
+.file {
+	width: 200px;
+	margin: 10px;
+	float: left;
+	border: 1px solid #bbb;
+	border-radius: 4px;
+	-webkit-box-shadow: 2px 2px 2px 0px rgba(50, 50, 50, 0.25);
+	-moz-box-shadow:    2px 2px 2px 0px rgba(50, 50, 50, 0.25);
+	box-shadow:         2px 2px 2px 0px rgba(50, 50, 50, 0.25);
+	background: #fff;
+}
+
+.file-box img {
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+}
+
+.file-box h3 {
+	padding: 10px;
+}
+
+.file-box p {
+	padding: 10px;
+}
+
+ul.pagination li a {
+	min-width: 50px;
+}
